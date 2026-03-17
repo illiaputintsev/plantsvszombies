@@ -1,33 +1,30 @@
-
+import java.util.List;
 /**
  * Write a description of class Plants here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Plants
+public abstract class Plants extends Entity
 {
-    // instance variables - replace the example below with your own
-    private int x;
-
+    int cooldown;
+    int cost;
+    
     /**
      * Constructor for objects of class Plants
      */
-    public Plants()
+    public Plants(int hp, int cost, boolean alive)
     {
-        // initialise instance variables
-        x = 0;
+        super(hp, cost, alive);
     }
-
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    
+    protected void shoot(){
+        //shoots zombies
+    }
+    
+    abstract public void act(List<Plants> newPlant);
+    
+    protected void projectile(){
+        
     }
 }
