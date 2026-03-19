@@ -22,15 +22,9 @@ public abstract class Plants extends Entity
         this.timer = 0;
     }
     
-    protected void shoot(){
-        //shoots zombies
-    }
+    protected Bullet shoot(){ return null; }
     
-    abstract public void act(List<Plants> newPlant);
-    
-    protected void projectile(){
-        
-    }
+    abstract public void act(List<Entity> entities);
     
     public int getCost() { return cost; }
     public int getCooldown() { return cooldown; }

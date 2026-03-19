@@ -22,7 +22,7 @@ public class Sunflower extends Plants
     }
 
     @Override
-    public void act(List<Plants> newSunflower){
+    public void act(List<Entity> entities){
         if (!alive) return;
         
         timer++;

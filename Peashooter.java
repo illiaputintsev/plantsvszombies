@@ -1,13 +1,13 @@
 import java.util.List;
 
 /**
- * Write a description of class Peashooter here.
  *
- * @author (your name)
- * @version (a version number or a date)
  */
 public class Peashooter extends Plants
 {
+    private static final int COOLDOWN = 300;
+    private int timer;
+    
     /**
      * Constructor for objects of class Peashooter
      */
@@ -17,10 +17,34 @@ public class Peashooter extends Plants
 
     }
     
+    /**
+     * Called every game tick
+     * Only shoots if a zombie is in the range of 5 coloums
+     */
     @Override
-    public void act(List<Plants> newPeashooter){
+    public void act(List<Entity> entities){
         if (!alive) { return; }
         
-        
+        timer ++;
+        for (Entity entity : entities) {
+            if (entity instanceof Zombies){
+                Zombies zombie = (Zombies) entity;
+                zombie.getRow();
+                zombie.getCol();
+            
+                if (timer >= COOLDOWN && zombie.getRow() == this.getRow() && zombie.getCol() > this.getCol() 
+                && zombie.getCol() <= this.getCol() + 5 && zombie.isAlive())
+                {
+                    shoot();
+                }
+        }
+        }
+    }
+    
+    /**
+     * creates and returns a Bullet at the Peashooter`s location
+     */
+    public Bullet shoot(){
+        return new Bullet(this.getCol(), this.getRow());
     }
 }
