@@ -19,7 +19,7 @@ public class Walnut extends Plants
     }
     
     @Override
-    public void act(List<Plants> newWallnut) {
+    public void act(List<Entity> entities) {
         if (!alive) return;
     }
 }

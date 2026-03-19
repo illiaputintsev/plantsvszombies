@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
  * TODO:
  *  onScreen()
  *  contact()
- * 
+ *  Game class will keep track of bullets 
  */
 public class Bullet
 {
@@ -15,6 +15,7 @@ public class Bullet
     private double dx;
     private double y;
     private double dy;
+    
     /**
      * Constructor for objects of class Bullet
      */

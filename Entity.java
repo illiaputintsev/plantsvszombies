@@ -28,7 +28,7 @@ public abstract class Entity extends Game
         }
     }
     
-    protected boolean isAlvie(){ return alive; }
+    protected boolean isAlive(){ return alive; }
     
     protected void setDead(){ alive = false; }
     
