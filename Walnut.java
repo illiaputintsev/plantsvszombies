@@ -8,18 +8,18 @@ import java.util.List;
  */
 public class Walnut extends Plants
 {
+    private static final int COOLDOWN = 0;
+    
     /**
      * Constructor for objects of class Wallnut
      */
-    public Walnut(int hp, int cost, boolean alive)//int HP, int cost)
+    public Walnut(int col, int row)
     {
-        super(hp, cost, alive);
-        hp = 125;
-        cost = 75;
-        alive = true;
+        super(200, 50, row, col);
     }
     
+    @Override
     public void act(List<Plants> newWallnut) {
-        takeDamage(); //if zombie attack
+        if (!alive) return;
     }
 }

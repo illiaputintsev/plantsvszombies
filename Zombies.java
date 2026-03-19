@@ -1,4 +1,5 @@
 import java.util.List;
+
 /**
  * Write a description of class Zombies here.
  *
@@ -12,10 +13,9 @@ public abstract class Zombies extends Entity
     /**
      * Constructor for objects of class Zombies
      */
-    public Zombies(int hp, int cost, boolean alive)
+    public Zombies(int hp, int row, int col, boolean alive)
     {
-        super(hp, cost, alive);
-        cost = 0;
+        super(hp, row, col, alive);
         hp = 125;
         alive = true;        
     }

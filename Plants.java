@@ -7,15 +7,19 @@ import java.util.List;
  */
 public abstract class Plants extends Entity
 {
-    int cooldown;
-    int cost;
+    protected int cooldown;
+    protected int cost;
+    protected int timer;
     
     /**
      * Constructor for objects of class Plants
      */
-    public Plants(int hp, int cost, boolean alive)
+    public Plants(int hp, int cost, int row, int col)
     {
-        super(hp, cost, alive);
+        super(hp, row, col, true);
+        this.cost = cost;
+        this.cooldown = 0;
+        this.timer = 0;
     }
     
     protected void shoot(){
@@ -27,4 +31,8 @@ public abstract class Plants extends Entity
     protected void projectile(){
         
     }
+    
+    public int getCost() { return cost; }
+    public int getCooldown() { return cooldown; }
+    public int getTimer() { return timer; }
 }

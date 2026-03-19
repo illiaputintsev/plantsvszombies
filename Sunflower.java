@@ -8,28 +8,32 @@ import java.util.List;
  */
 public class Sunflower extends Plants
 {
+    private int sunAmount;
+    private static final int COOLDOWN = 300;
+    private int timer;
+    
     /**
      * Constructor for objects of class Sunflower
      */
-    public Sunflower(int hp, int cost, boolean alive)
+    public Sunflower(int row, int col)
     {
-        super(hp, cost, alive);
-        hp = 75;
-        cost = 50;
-        alive = true;
+        super(100, 50, row, col); // 100 -> hp, 50 -> cost
+        this.cooldown = 300;
     }
 
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
+    @Override
     public void act(List<Plants> newSunflower){
-        generateSun();
+        if (!alive) return;
+        
+        timer++;
+        if (timer >= cooldown) {
+            generateSun();
+            timer = 0;
+        }
     }
     
-    public int generateSun(){
-        return 50;
+    public void generateSun(){
+        System.out.println("Sunflower produced " + sunAmount + " sun");
+        // Game.addSun(sunAmount);
     }
 }
