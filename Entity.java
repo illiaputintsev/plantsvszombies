@@ -7,26 +7,33 @@ import java.util.List;
  */
 public abstract class Entity extends Game
 {
-    int hp;
-    int row;
-    int col;
-    boolean alive;
-    int DAMAGE;
+    protected int hp;
+    protected int row;
+    protected int col;
+    protected boolean alive;
+    protected static final int DAMAGE = 25;
     
-    public Entity(int hp, int cost, boolean alive)
+    public Entity(int hp, int row, int col, boolean alive)
     {
-        DAMAGE = 25;
+        this.hp = hp;
+        this.row = row;
+        this.col = col;
+        this.alive = alive;
     }
     
-    protected int takeDamage(){
-        return DAMAGE;
+    protected void takeDamage(){
+        hp -= DAMAGE;
+        if (hp <= 0){
+            setDead();
+        }
     }
     
-    protected boolean isAlvie(){
-        return alive;
-    }
+    protected boolean isAlvie(){ return alive; }
     
-    protected void setDead(){
-        alive = false;
-    }
+    protected void setDead(){ alive = false; }
+    
+    public int getHp() { return hp; }
+    public int getRow() { return row; }
+    public int getCol() { return col;}
+    
 }

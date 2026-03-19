@@ -11,15 +11,16 @@ public class Peashooter extends Plants
     /**
      * Constructor for objects of class Peashooter
      */
-    public Peashooter(int hp, int cost, boolean alive)
+    public Peashooter(int row, int col)
     {
-        super(hp, cost, alive);
-        hp = 75;
-        cost = 100;
-        alive = true;
+        super(100, 100, row, col);
+
     }
     
+    @Override
     public void act(List<Plants> newPeashooter){
+        if (!alive) { return; }
+        
         
     }
 }
