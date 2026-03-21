@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Write a description of class Game here.
@@ -10,6 +11,7 @@ public class Game extends Board
 {
     List<Zombies> Zombie;
     List<Plants> Plant;
+    List<Bullet> bullets;
     int sun;
     boolean gameRunning;
     int time;
@@ -19,7 +21,7 @@ public class Game extends Board
      */
     public Game()
     {
-        
+        bullets = new ArrayList<>();
     }
 
     public void startGame(){
@@ -27,10 +29,16 @@ public class Game extends Board
     }
     
     public void update(){
-        
+        for (Plants plant: Plant){
+            bullets.addAll(plant.shoot());
+        }
     }
     
     public void genFallingSun(){
         // generates the sun that falls from the sky
+    }
+    
+    private void checkCollision(){
+        
     }
 }

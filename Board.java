@@ -7,6 +7,7 @@
  */
 public class Board extends Tile
 {
+    public static final int BOARD_WIDTH = 800;
     // instance variables - replace the example below with your own
     private int x;
 
