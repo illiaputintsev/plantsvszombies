@@ -71,8 +71,9 @@ public class Game extends Board
         ui.launch();
     }
 
-    public void update(double deltaTime){
-    
+    public void update(double deltaTime)
+    {
+
     }
 
     /**
@@ -80,7 +81,7 @@ public class Game extends Board
      */
     public void spawnZombie()
     {
-        
+
     }
 
     /**
@@ -104,17 +105,17 @@ public class Game extends Board
 
     public void removeDeadEntities()
     {
-        
+
     }
 
     public void checkWinCondition()
     {
-        
+
     }
 
     public void checkLoseCondition()
     {
-        
+
     }
 
     /**
@@ -122,6 +123,11 @@ public class Game extends Board
      */
     public void genFallingSun()
     {
-        
+
+    }
+
+    private void checkCollision()
+    {
+
     }
 }

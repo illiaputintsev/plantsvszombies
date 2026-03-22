@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.ArrayList;
 /**
  * Write a description of class Plants here.
  *
@@ -22,7 +23,7 @@ public abstract class Plants extends Entity
         this.timer = 0;
     }
     
-    protected Bullet shoot(){ return null; }
+    protected List<Bullet> shoot(){ return new ArrayList<>(); }
     
     abstract public void act(List<Entity> entities);
     
