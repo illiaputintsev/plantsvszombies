@@ -2,9 +2,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- * TODO:
- *  onScreen()
- *  contact()
  *  Game class will keep track of bullets 
  */
 public class Bullet
@@ -12,9 +9,8 @@ public class Bullet
     public static final Color COLOR = Color.GREEN;
     public static final int SIZE = 7;
     private double x;
-    private double dx;
+    private double dx = 1;
     private double y;
-    private double dy;
     
     /**
      * Constructor for objects of class Bullet
@@ -22,6 +18,7 @@ public class Bullet
     public Bullet(double x, double y)
     {
         this.x = x;
+        this.y = y;
     }
 
     /**
@@ -30,13 +27,14 @@ public class Bullet
      */
     public void update(){
         x = x + (dx * 6);
+        
     }
     
     /**
      * Returns true if the projectile is on screen
      */
-    public double onScreen(){
-        return 0;
+    public boolean onScreen(){
+        return x < Board.BOARD_WIDTH;
     }
     
     /**
@@ -49,8 +47,8 @@ public class Bullet
     /**
      * Returns true if in contact with the Zombie
      */
-    public boolean contact(double x, double y){
-        return true;
+    public boolean contact(Zombies zombie){
+        return x == zombie.getCol() && y == zombie.getRow();
     }
     
     /**

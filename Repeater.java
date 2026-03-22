@@ -1,20 +1,21 @@
 import java.util.List;
 import java.util.ArrayList;
 /**
- *  Represents a Peashooter plant that shoots a single bullet at zombies
- *  in the same row within a range of 5 columns.
+ * Write a description of class Repeater here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
  */
-public class Peashooter extends Plants
+public class Repeater extends Plants
 {
     private static final int COOLDOWN = 300;
-    
+
     /**
-     * Constructor for objects of class Peashooter
+     * Constructor for objects of class Repeater
      */
-    public Peashooter(int row, int col)
+    public Repeater(int row, int col)
     {
         super(100, 100, row, col);
-
     }
     
     /**
@@ -34,6 +35,11 @@ public class Peashooter extends Plants
                 && zombie.getCol() <= this.getCol() + 5 && zombie.isAlive())
                 {
                     shoot();
+                }
+                if (timer >= COOLDOWN + 10 && zombie.getRow() == this.getRow() && zombie.getCol() > this.getCol() 
+                && zombie.getCol() <= this.getCol() + 5 && zombie.isAlive())
+                {
+                    shoot();
                     timer = 0;
                 }
         }
@@ -41,7 +47,7 @@ public class Peashooter extends Plants
     }
     
     /**
-     * creates and returns a Bullet at the Peashooter`s location
+     * creates and returns a Bullet at the Repeater`s location
      */
     public List<Bullet> shoot(){
         List<Bullet> bullets = new ArrayList<>();
