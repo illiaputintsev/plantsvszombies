@@ -34,7 +34,7 @@ public class Bullet
      * Returns true if the projectile is on screen
      */
     public boolean onScreen(){
-        return x < Board.BOARD_WIDTH;
+        return x < Game.WIDTH;
     }
     
     /**
