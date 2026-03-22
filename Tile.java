@@ -1,33 +1,44 @@
-
 /**
- * Write a description of class Tile here.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * Represents a single cell on the game board.
+ * Each tile can hold one plant.
  */
-public class Tile 
+public class Tile
 {
-    // instance variables - replace the example below with your own
-    private int x;
+    private int row;
+    private int col;
+    private Plants plant;
 
-    /**
-     * Constructor for objects of class Tile
-     */
     public Tile()
     {
-        // initialise instance variables
-        x = 0;
+        this.row = 0;
+        this.col = 0;
+        this.plant = null;
     }
 
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
+    public Tile(int row, int col)
     {
-        // put your code here
-        return x + y;
+        this.row = row;
+        this.col = col;
+        this.plant = null;
+    }
+
+    public void setPlant(Plants plant)
+    {
+        this.plant = plant;
+    }
+
+    public void removePlant()
+    {
+        this.plant = null;
+    }
+
+    public boolean hasPlant()
+    {
+        return plant != null && plant.isAlive();
+    }
+
+    public Plants getPlant()
+    {
+        return plant;
     }
 }

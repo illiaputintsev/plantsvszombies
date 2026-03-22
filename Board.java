@@ -1,34 +1,75 @@
-
 /**
- * Write a description of class Board here.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * Manages the game grid as a 2D array of Tiles.
+ * Provides methods to place, remove, and query plants on the grid.
  */
 public class Board extends Tile
 {
-    public static final int BOARD_WIDTH = 800;
-    // instance variables - replace the example below with your own
-    private int x;
+    private int rows;
+    private int cols;
+    private Tile[][] grid;
 
-    /**
-     * Constructor for objects of class Board
-     */
     public Board()
     {
-        // initialise instance variables
-        x = 0;
+        this.rows = 5;
+        this.cols = 9;
+        grid = new Tile[rows][cols];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                grid[r][c] = new Tile(r, c);
+            }
+        }
     }
 
     /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
+     * Returns the tile at the given row and column.
      */
-    public int sampleMethod(int y)
+    public Tile getTile(int row, int col)
     {
-        // put your code here
-        return x + y;
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+            return grid[row][col];
+        }
+        return null;
+    }
+
+    /**
+     * Places a plant on the grid at the certain position
+     */
+    public void placePlant(Plants plant, int row, int col)
+    {
+        if (row >= 0 && row < rows && col >= 0 && col < cols
+            && !grid[row][col].hasPlant()) {
+            grid[row][col].setPlant(plant);
+        }
+    }
+
+    /**
+     * Removes a plant from the grid at the certain position
+     */
+    public void removePlant(int row, int col)
+    {
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+            grid[row][col].removePlant();
+        }
+    }
+
+    /**
+     * Checks whether a tile is occupied by a plant.
+     */
+    public boolean isTileOccupied(int row, int col)
+    {
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+            return grid[row][col].hasPlant();
+        }
+        return false;
+    }
+
+    public int getRows()
+    {
+        return rows;
+    }
+
+    public int getCols()
+    {
+        return cols;
     }
 }
