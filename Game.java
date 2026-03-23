@@ -28,6 +28,13 @@ public class Game extends Board
     public static final int CELL_H = 100;
     public static final int GRID_X = 120;
     public static final int GRID_Y = 80;
+    
+    // Shop constants
+    public static final int SHOP_X = 120;
+    public static final int SHOP_Y = 10;
+    public static final int SHOP_CELL_W = 80;
+    public static final int SHOP_CELL_H = 60;
+    public static final int SHOVEL_INDEX = 4; // last slot, after 4 plants
 
     public static double colToPixelX(int col) {
         return GRID_X + col * CELL_W + CELL_W / 2;
@@ -61,7 +68,7 @@ public class Game extends Board
         zombieSpawnTimer = 0;
         spawnInterval = 10.0;
         rng = new Random();
-        selectedPlant = 0;
+        selectedPlant = -1;
     }
 
     /**
