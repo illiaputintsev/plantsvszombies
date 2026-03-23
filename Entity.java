@@ -5,7 +5,7 @@ import java.util.List;
  * @author (your name)
  * @version (a version number or a date)
  */
-public abstract class Entity extends Game
+public abstract class Entity
 {
     protected int hp;
     protected int row;
