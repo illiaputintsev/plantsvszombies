@@ -74,7 +74,7 @@ public class Game extends Board
     /**
      * Resets game state and launches the UI
      */
-    public void startGame()
+    public void startGame(GameUI ui)
     {
         Zombie.clear();
         Plant.clear();
@@ -83,10 +83,9 @@ public class Game extends Board
         score = 0;
         zombieSpawnTimer = 0;
         spawnInterval = 6.0;
-        selectedPlant = 0;
+        selectedPlant = -1;
         gameRunning = true;
-
-        GameUI ui = new GameUI(this);
+        
         ui.launch();
     }
 

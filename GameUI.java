@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 public class GameUI {
     private Game game;
+    private Stage stage;
 
     // Shop entries: name, cost (cost = 0 means free / shovel)
     private static final String[] SHOP_NAMES = {
@@ -16,39 +17,33 @@ public class GameUI {
     };
     private static final int[] SHOP_COSTS = { 100, 50, 50, 100, 0 };
 
-    public GameUI(Game game) {
+    public GameUI(Game game, Stage stage) {
         this.game = game;
+        this.stage = stage;
     }
 
     public void launch() {
-        Platform.startup(() -> {
-            Stage stage = new Stage();
-            Canvas canvas = new Canvas(Game.WIDTH, Game.HEIGHT);
-            Scene scene = new Scene(new StackPane(canvas));
-            stage.setScene(scene);
-            stage.setTitle("Plants vs Zombies");
-            stage.show();
+        Canvas canvas = new Canvas(Game.WIDTH, Game.HEIGHT);
+        Scene scene = new Scene(new StackPane(canvas));
+        stage.setScene(scene);
+        stage.setTitle("Plants vs Zombies");
+        stage.show();
 
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            canvas.setOnMouseClicked(e -> handleClick(e.getX(), e.getY()));
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        canvas.setOnMouseClicked(e -> handleClick(e.getX(), e.getY()));
 
-            new AnimationTimer() {
-                private long lastTime = -1;
+        new AnimationTimer() {
+            private long lastTime = -1;
 
-                @Override
-                public void handle(long now) {
-                    if (lastTime < 0) {
-                        lastTime = now;
-                        return;
-                    }
-                    double deltaTime = (now - lastTime) / 1_000_000_000.0;
-                    lastTime = now;
-
-                    game.update(deltaTime);
-                    render(gc);
-                }
-            }.start();
-        });
+            @Override
+            public void handle(long now) {
+                if (lastTime < 0) { lastTime = now; return; }
+                double deltaTime = (now - lastTime) / 1_000_000_000.0;
+                lastTime = now;
+                game.update(deltaTime);
+                render(gc);
+            }
+        }.start();
     }
 
     private void handleClick(double mx, double my) {
@@ -106,6 +101,7 @@ public class GameUI {
 
             if (p != null) {
                 game.placePlant(p, row, col);
+                game.selectedPlant = -1;
             }
         }
     }
@@ -144,7 +140,7 @@ public class GameUI {
         }
 
         // Sun counter
-        gc.setFill(Color.YELLOW);
+        gc.setFill(Color.BLACK);
         gc.fillText("Sun: " + game.sun, 10, 30);
     }
 
