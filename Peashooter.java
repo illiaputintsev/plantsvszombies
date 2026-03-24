@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import javafx.scene.canvas.GraphicsContext;
 /**
  *  Represents a Peashooter plant that shoots a single bullet at zombies
  *  in the same row within a range of 5 columns.
@@ -22,7 +23,7 @@ public class Peashooter extends Plants
      * Only shoots if a zombie is in the range of 5 coloums
      */
     @Override
-    public void act(List<Entity> entities){
+    public void act(List<Entity> entities, List<Bullet> bullets, Game game){
         if (!alive) { return; }
         
         timer ++;
@@ -30,10 +31,10 @@ public class Peashooter extends Plants
             if (entity instanceof Zombies){
                 Zombies zombie = (Zombies) entity;
             
-                if (timer >= COOLDOWN && zombie.getRow() == this.getRow() && zombie.getCol() > this.getCol() 
+                if (timer >= COOLDOWN && zombie.getRow() == this.getRow() && zombie.getCol() >= this.getCol() 
                 && zombie.getCol() <= this.getCol() + 5 && zombie.isAlive())
                 {
-                    shoot();
+                    bullets.addAll(shoot());
                     timer = 0;
                 }
         }
@@ -45,7 +46,11 @@ public class Peashooter extends Plants
      */
     public List<Bullet> shoot(){
         List<Bullet> bullets = new ArrayList<>();
-        bullets.add(new Bullet(this.getCol(), this.getRow()));
+        bullets.add(new Bullet(this.getX(), this.getY()));
         return bullets;
+    }
+    
+    public void draw(GraphicsContext gc){
+    // TODO: draw plant sprite
     }
 }
