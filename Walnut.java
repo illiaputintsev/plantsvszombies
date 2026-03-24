@@ -1,5 +1,7 @@
 import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 /**
  * Write a description of class Wallnut here.
  *
@@ -14,7 +16,7 @@ public class Walnut extends Plants
      */
     public Walnut(int row, int col)
     {
-        super(200, 50, row, col);
+        super(1000, 50, row, col);
     }
     
     @Override
@@ -23,6 +25,10 @@ public class Walnut extends Plants
     }
     
     public void draw(GraphicsContext gc){
-    // TODO: draw plant sprite
+        //change this to improve the visual design of the plant
+        gc.setFill(Color.SADDLEBROWN);
+        gc.fillRoundRect(x - 25, y - 35, 50, 70, 18, 18);
+        gc.setFill(Color.PERU);
+        gc.fillRoundRect(x - 16, y - 22, 32, 44, 10, 10);
     }
 }
