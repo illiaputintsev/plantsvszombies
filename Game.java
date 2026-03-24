@@ -130,4 +130,12 @@ public class Game extends Board
     {
 
     }
+    
+    /**
+     * Called by SunFlower when it produces sun
+     * Adds the given amount of sun to the player`s total sun count
+     */
+    public void addSun(int amount){
+        sun += amount;
+    }
 }

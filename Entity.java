@@ -8,8 +8,8 @@ import java.util.List;
 public abstract class Entity extends Game
 {
     protected int hp;
-    protected int row;
-    protected int col;
+    protected int row, col;
+    protected int x, y;
     protected boolean alive;
     protected static final int DAMAGE = 25;
     
@@ -19,6 +19,8 @@ public abstract class Entity extends Game
         this.row = row;
         this.col = col;
         this.alive = alive;
+        this.x = col * Game.CELL_W + Game.GRID_X;
+        this.y = row * Game.CELL_H + Game.GRID_Y;
     }
     
     protected void takeDamage(){
@@ -35,5 +37,6 @@ public abstract class Entity extends Game
     public int getHp() { return hp; }
     public int getRow() { return row; }
     public int getCol() { return col;}
-    
+    public int getX() { return x;}
+    public int getY() { return y;}  
 }
