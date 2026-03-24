@@ -1,0 +1,26 @@
+#BlueJ class context
+comment0.target=Entity
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Entity\ here.\r\n\r\n\ @author\ (your\ name)\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=hp\ row\ col\ alive
+comment1.target=Entity(int,\ int,\ int,\ boolean)
+comment10.params=x
+comment10.target=void\ setX(double)
+comment11.params=y
+comment11.target=void\ setY(double)
+comment2.params=
+comment2.target=void\ takeDamage()
+comment3.params=
+comment3.target=boolean\ isAlive()
+comment4.params=
+comment4.target=void\ setDead()
+comment5.params=
+comment5.target=int\ getHp()
+comment6.params=
+comment6.target=int\ getRow()
+comment7.params=
+comment7.target=int\ getCol()
+comment8.params=
+comment8.target=double\ getX()
+comment9.params=
+comment9.target=double\ getY()
+numComments=12
