@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.target=Bullet
+comment0.text=\r\n\ \ Game\ class\ will\ keep\ track\ of\ bullets\ \r\n
+comment1.params=x\ y
+comment1.target=Bullet(double,\ double)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Bullet\r\n
+comment2.params=
+comment2.target=void\ update()
+comment2.text=\r\n\ \ Modifies\ the\ position\ of\ the\ bullet.\ \r\n\ 6\ is\ the\ speed\r\n
+comment3.params=
+comment3.target=boolean\ onScreen()
+comment3.text=\r\n\ Returns\ true\ if\ the\ projectile\ is\ on\ screen\r\n
+comment4.params=
+comment4.target=double[]\ getPos()
+comment4.text=\r\n\ Get\ the\ projectile\ coordinates\r\n
+comment5.params=zombie
+comment5.target=boolean\ contact(Zombies)
+comment5.text=\r\n\ Returns\ true\ if\ in\ contact\ with\ the\ Zombie\r\n
+comment6.params=gc
+comment6.target=void\ draw(javafx.scene.canvas.GraphicsContext)
+comment6.text=\r\n\ Draw\ the\ bullet\r\n
+numComments=7
