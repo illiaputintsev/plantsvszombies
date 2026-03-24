@@ -9,8 +9,9 @@ public abstract class Entity extends Game
 {
     protected int hp;
     protected int row, col;
-    protected int x, y;
     protected boolean alive;
+    protected double x;
+    protected double y;
     protected static final int DAMAGE = 25;
     
     public Entity(int hp, int row, int col, boolean alive)
@@ -34,9 +35,39 @@ public abstract class Entity extends Game
     
     protected void setDead(){ alive = false; }
     
-    public int getHp() { return hp; }
-    public int getRow() { return row; }
-    public int getCol() { return col;}
-    public int getX() { return x;}
-    public int getY() { return y;}  
+    public int getHp()
+    {
+        return hp;
+    }
+
+    public int getRow()
+    {
+        return row;
+    }
+
+    public int getCol()
+    {
+        return col;
+    }
+
+    public double getX()
+    {
+        return x;
+    }
+
+    public double getY()
+    {
+        return y;
+    }
+
+    public void setX(double x)
+    {
+        this.x = x;
+    }
+
+    public void setY(double y)
+    {
+        this.y = y;
+    }
+
 }
