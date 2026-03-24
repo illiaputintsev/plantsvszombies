@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 /**
  * Write a description of class Repeater here.
  *
@@ -10,6 +12,8 @@ import javafx.scene.canvas.GraphicsContext;
 public class Repeater extends Plants
 {
     private static final int COOLDOWN = 300;
+    private static final int BURST_DELAY = 10;
+    private int shootPhase = 0;
 
     /**
      * Constructor for objects of class Repeater
@@ -28,24 +32,34 @@ public class Repeater extends Plants
         if (!alive) { return; }
         
         timer ++;
+        
+        boolean zombieInRange = false;
         for (Entity entity : entities) {
-            if (entity instanceof Zombies){
+            if (entity instanceof Zombies) {
                 Zombies zombie = (Zombies) entity;
-            
-                if (timer >= COOLDOWN && zombie.getRow() == this.getRow() && zombie.getCol() >= this.getCol() 
-                && zombie.getCol() <= this.getCol() + 5 && zombie.isAlive())
+                if (zombie.isAlive()
+                    && zombie.getRow() == this.getRow()
+                    && zombie.getCol() >= this.getCol()
+                    && zombie.getCol() <= this.getCol() + 5)
                 {
-                    bullets.addAll(shoot());
+                    zombieInRange = true;
+                    break;
                 }
-                if (timer >= COOLDOWN + 10 && zombie.getRow() == this.getRow() && zombie.getCol() >= this.getCol() 
-                && zombie.getCol() <= this.getCol() + 5 && zombie.isAlive())
-                {
-                    bullets.addAll(shoot());
-                    timer = 0;
-                }
+            }
         }
+ 
+        if (!zombieInRange) { return; }
+ 
+        if (shootPhase == 0 && timer >= COOLDOWN) {
+            bullets.addAll(shoot());
+            shootPhase = 1;
+        } else if (shootPhase == 1 && timer >= COOLDOWN + BURST_DELAY) {
+            bullets.addAll(shoot());
+            timer = 0;
+            shootPhase = 0;
         }
     }
+    
     
     /**
      * creates and returns a Bullet at the Repeater`s location
@@ -57,6 +71,11 @@ public class Repeater extends Plants
     }
     
     public void draw(GraphicsContext gc){
-    // TODO: draw plant sprite
+        //change this to improve the visual design of the plant
+        gc.setFill(Color.DARKGREEN);
+        gc.fillOval(x - 25, y - 30, 50, 60);
+        gc.setFill(Color.LIME);
+        gc.fillOval(x - 14, y - 10, 12, 12);
+        gc.fillOval(x + 2, y - 10, 12, 12);
     }
 }
