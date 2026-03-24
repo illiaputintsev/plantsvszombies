@@ -101,8 +101,8 @@ public class Game extends Board
         for (Plants p : Plant) {
             if (!p.isAlive()) continue;
             //p.act(entityList);
-            List<Bullet> newBullets = p.shoot();
-            bullets.addAll(newBullets);
+            //List<Bullet> newBullets = p.shoot();
+            //bullets.addAll(newBullets);
         }
 
         // update bullets
