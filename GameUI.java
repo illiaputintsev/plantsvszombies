@@ -15,7 +15,7 @@ public class GameUI {
     private static final String[] SHOP_NAMES = {
         "Pea", "Sun", "Nut", "Rep", "Shovel"
     };
-    private static final int[] SHOP_COSTS = { 100, 50, 50, 100, 0 };
+    private static final int[] SHOP_COSTS = { 100, 50, 50, 200, 0 };
 
     public GameUI(Game game, Stage stage) {
         this.game = game;
