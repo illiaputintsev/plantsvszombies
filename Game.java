@@ -29,6 +29,18 @@ public class Game extends Board
     public static final int GRID_X = 120;
     public static final int GRID_Y = 80;
 
+    public static double colToPixelX(int col) {
+        return GRID_X + col * CELL_W + CELL_W / 2;
+    }
+
+    public static double rowToPixelY(int row) {
+        return GRID_Y + row * CELL_H + CELL_H / 2;
+    }
+
+    public static int pixelXToCol(double x) {
+        return (int) ((x - GRID_X) / CELL_W);
+    }
+
     private double zombieSpawnTimer;
     private double spawnInterval;
     private Random rng;
@@ -73,7 +85,39 @@ public class Game extends Board
 
     public void update(double deltaTime)
     {
+        if (!gameRunning){
+            return;
+        }
+        // spawn zombies on timer
+        zombieSpawnTimer += deltaTime;
+        if (zombieSpawnTimer >= spawnInterval) {
+            spawnZombie();
+            zombieSpawnTimer = 0;
+            if (spawnInterval > 3.0) spawnInterval -= 0.3;
+        }
 
+        // update plants
+        List<Entity> entityList = new ArrayList<>(Zombie);
+        for (Plants p : Plant) {
+            if (!p.isAlive()) continue;
+            //p.act(entityList);
+            List<Bullet> newBullets = p.shoot();
+            bullets.addAll(newBullets);
+        }
+
+        // update bullets
+        for (Bullet b : bullets) {
+            b.update();
+            for (Zombies z : Zombie) {
+                if (b.contact(z)) {
+                    z.takeDamage();
+                    break;
+                }
+            }
+        }
+
+        removeDeadEntities();
+        checkLoseCondition();
     }
 
     /**
@@ -81,7 +125,8 @@ public class Game extends Board
      */
     public void spawnZombie()
     {
-
+        int row = rng.nextInt(ROWS);
+        Zombie.add(new BasicZombie(row, COLS));
     }
 
     /**
@@ -99,13 +144,27 @@ public class Game extends Board
         }
 
         super.placePlant(plant, row, col);
+        plant.setX(colToPixelX(col));
+        plant.setY(rowToPixelY(row));
         Plant.add(plant);
         sun -= plant.getCost();
     }
 
     public void removeDeadEntities()
     {
+        Plant.removeIf(p -> !p.isAlive());
+        Zombie.removeIf(z -> !z.isAlive());
+        bullets.removeIf(b -> !b.onScreen());
 
+        // clean dead plants from the board grid
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                Plants p = getTile(r, c).getPlant();
+                if (p != null && !p.isAlive()) {
+                    removePlant(r, c);
+                }
+            }
+        }
     }
 
     public void checkWinCondition()
@@ -115,7 +174,11 @@ public class Game extends Board
 
     public void checkLoseCondition()
     {
-
+        for (Zombies z : Zombie) {
+            if (z.hasReachedHouse()) {
+                gameRunning = false;
+            }
+        }
     }
 
     /**
