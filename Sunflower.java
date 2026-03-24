@@ -1,5 +1,5 @@
 import java.util.List;
-
+import javafx.scene.canvas.GraphicsContext;
 /**
  * Write a description of class Sunflower here.
  *
@@ -10,7 +10,6 @@ public class Sunflower extends Plants
 {
     private int sunAmount;
     private static final int COOLDOWN = 300;
-    private int timer;
     
     /**
      * Constructor for objects of class Sunflower
@@ -18,22 +17,22 @@ public class Sunflower extends Plants
     public Sunflower(int row, int col)
     {
         super(100, 50, row, col); // 100 -> hp, 50 -> cost
-        this.cooldown = 300;
+        this.cooldown = COOLDOWN;
+        this.sunAmount =25;
     }
 
     @Override
-    public void act(List<Entity> entities){
+    public void act(List<Entity> entities, List<Bullet> bullets, Game game){
         if (!alive) return;
         
         timer++;
         if (timer >= cooldown) {
-            generateSun();
+            game.addSun(sunAmount);
             timer = 0;
         }
     }
     
-    public void generateSun(){
-        System.out.println("Sunflower produced " + sunAmount + " sun");
-        // Game.addSun(sunAmount);
+    public void draw(GraphicsContext gc){
+    // TODO: draw plant sprite
     }
 }
