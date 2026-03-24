@@ -62,7 +62,7 @@ public class Game extends Board
         Zombie = new ArrayList<>();
         Plant = new ArrayList<>();
         bullets = new ArrayList<>();
-        sun = 150;
+        sun = 50;
         score = 0;
         gameRunning = false;
         zombieSpawnTimer = 0;
@@ -79,7 +79,7 @@ public class Game extends Board
         Zombie.clear();
         Plant.clear();
         bullets.clear();
-        sun = 150;
+        sun = 50;
         score = 0;
         zombieSpawnTimer = 0;
         spawnInterval = 6.0;

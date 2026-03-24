@@ -16,7 +16,7 @@ public class Repeater extends Plants
      */
     public Repeater(int row, int col)
     {
-        super(100, 100, row, col);
+        super(100, 200, row, col);
     }
     
     /**
