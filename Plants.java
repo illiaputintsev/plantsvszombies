@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import javafx.scene.canvas.GraphicsContext;
 /**
  * Write a description of class Plants here.
  *
@@ -30,4 +31,6 @@ public abstract class Plants extends Entity
     public int getCost() { return cost; }
     public int getCooldown() { return cooldown; }
     public int getTimer() { return timer; }
+    
+    public abstract void draw(GraphicsContext gc);
 }
