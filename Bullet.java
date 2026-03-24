@@ -11,6 +11,7 @@ public class Bullet
     private double x, y;
     private double dx = 1;
     private double row, col;
+    private boolean hit = false;
     
     /**
      * Constructor for objects of class Bullet
@@ -34,7 +35,7 @@ public class Bullet
      * Returns true if the projectile is on screen
      */
     public boolean onScreen(){
-        return x < Game.WIDTH;
+        return !hit && x < Game.WIDTH;
     }
     
     /**
@@ -46,9 +47,15 @@ public class Bullet
     
     /**
      * Returns true if in contact with the Zombie
+     * 
+     * Mark's Update 24/03: collisions are checked using pixels instead of grid pos
      */
     public boolean contact(Zombies zombie){
-        return x == zombie.getX() && y == zombie.getY();
+        if (Math.abs(x - zombie.getX() - Game.CELL_W * 0.5) < Game.CELL_W * 0.5 && Math.abs(y - zombie.getY()) < Game.CELL_H * 0.4){
+            hit = true;
+            return true;
+        }
+        return false;
     }
     
     /**
