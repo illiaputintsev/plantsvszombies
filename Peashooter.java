@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 /**
  *  Represents a Peashooter plant that shoots a single bullet at zombies
  *  in the same row within a range of 5 columns.
@@ -50,7 +52,12 @@ public class Peashooter extends Plants
         return bullets;
     }
     
+    
     public void draw(GraphicsContext gc){
-    // TODO: draw plant sprite
+        //change this to improve the visual design of the plant
+        gc.setFill(Color.LIGHTGREEN);
+        gc.fillOval(x - 25, y - 30, 50, 60);
+        gc.setFill(Color.DARKGREEN);
+        gc.fillOval(x - 8, y - 8, 16, 16);
     }
 }

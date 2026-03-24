@@ -1,5 +1,7 @@
 import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 /**
  * Write a description of class Sunflower here.
  *
@@ -33,6 +35,10 @@ public class Sunflower extends Plants
     }
     
     public void draw(GraphicsContext gc){
-    // TODO: draw plant sprite
+        //change this to improve the visual design of the plant
+        gc.setFill(Color.YELLOW);
+        gc.fillOval(x - 25, y - 30, 50, 60);
+        gc.setFill(Color.ORANGE);
+        gc.fillOval(x - 12, y - 12, 24, 24);
     }
 }
