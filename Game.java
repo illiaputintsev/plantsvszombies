@@ -106,9 +106,9 @@ public class Game extends Board
         List<Entity> entityList = new ArrayList<>(Zombie);
         for (Plants p : Plant) {
             if (!p.isAlive()) continue;
-            p.act(entityList);
-            List<Bullet> newBullets = p.shoot();
-            bullets.addAll(newBullets);
+            //p.act(entityList);
+            //List<Bullet> newBullets = p.shoot();
+            //bullets.addAll(newBullets);
         }
 
         // update bullets
@@ -198,5 +198,13 @@ public class Game extends Board
     private void checkCollision()
     {
 
+    }
+    
+    /**
+     * Called by SunFlower when it produces sun
+     * Adds the given amount of sun to the player`s total sun count
+     */
+    public void addSun(int amount){
+        sun += amount;
     }
 }

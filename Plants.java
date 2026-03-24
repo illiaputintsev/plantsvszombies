@@ -25,7 +25,7 @@ public abstract class Plants extends Entity
     
     protected List<Bullet> shoot(){ return new ArrayList<>(); }
     
-    abstract public void act(List<Entity> entities);
+    abstract public void act(List<Entity> entities, List<Bullet> bullets, Game game);
     
     public int getCost() { return cost; }
     public int getCooldown() { return cooldown; }

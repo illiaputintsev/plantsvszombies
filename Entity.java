@@ -8,8 +8,7 @@ import java.util.List;
 public abstract class Entity
 {
     protected int hp;
-    protected int row;
-    protected int col;
+    protected int row, col;
     protected boolean alive;
     protected double x;
     protected double y;
@@ -21,6 +20,8 @@ public abstract class Entity
         this.row = row;
         this.col = col;
         this.alive = alive;
+        this.x = col * Game.CELL_W + Game.GRID_X;
+        this.y = row * Game.CELL_H + Game.GRID_Y;
     }
     
     protected void takeDamage(){

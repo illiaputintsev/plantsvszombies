@@ -1,5 +1,5 @@
 import java.util.List;
-
+import javafx.scene.canvas.GraphicsContext;
 /**
  * Write a description of class Wallnut here.
  *
@@ -8,18 +8,21 @@ import java.util.List;
  */
 public class Walnut extends Plants
 {
-    private static final int COOLDOWN = 0;
     
     /**
      * Constructor for objects of class Wallnut
      */
-    public Walnut(int col, int row)
+    public Walnut(int row, int col)
     {
         super(200, 50, row, col);
     }
     
     @Override
-    public void act(List<Entity> entities) {
+    public void act(List<Entity> entities, List<Bullet> bullets, Game game) {
         if (!alive) return;
+    }
+    
+    public void draw(GraphicsContext gc){
+    // TODO: draw plant sprite
     }
 }
