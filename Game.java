@@ -7,7 +7,7 @@ import java.util.Random;
  * Keeps track of all plants, zombies, bullets, and game state.
  *
  * @author Illia
- * @version 1.0
+ * @version 1.1
  */
 public class Game extends Board
 {
@@ -16,6 +16,7 @@ public class Game extends Board
     List<Bullet> bullets;
     int sun;
     boolean gameRunning;
+    boolean gameOver;
     int time;
     int score;
 
@@ -37,11 +38,11 @@ public class Game extends Board
     public static final int SHOVEL_INDEX = 4; // last slot, after 4 plants
 
     public static double colToPixelX(int col) {
-        return GRID_X + col * CELL_W + CELL_W / 2;
+        return GRID_X + col * CELL_W + CELL_W / 2.0;
     }
 
     public static double rowToPixelY(int row) {
-        return GRID_Y + row * CELL_H + CELL_H / 2;
+        return GRID_Y + row * CELL_H + CELL_H / 2.0;
     }
 
     public static int pixelXToCol(double x) {
@@ -51,6 +52,8 @@ public class Game extends Board
     private double zombieSpawnTimer;
     private double spawnInterval;
     private Random rng;
+    private double sunDropTimer;
+    private static final double SUN_DROP_INTERVAL = 10.0;
     int selectedPlant;
 
     /**
@@ -65,6 +68,7 @@ public class Game extends Board
         sun = 50;
         score = 0;
         gameRunning = false;
+        gameOver = false;
         zombieSpawnTimer = 0;
         spawnInterval = 10.0;
         rng = new Random();
@@ -81,10 +85,12 @@ public class Game extends Board
         bullets.clear();
         sun = 50;
         score = 0;
+        sunDropTimer = 0;
         zombieSpawnTimer = 0;
-        spawnInterval = 6.0;
+        spawnInterval = 15.0;
         selectedPlant = -1;
         gameRunning = true;
+        gameOver = false;
         
         ui.launch();
     }
@@ -93,6 +99,12 @@ public class Game extends Board
     {
         if (!gameRunning){
             return;
+        }
+        // passive sun income
+        sunDropTimer += deltaTime;
+        if (sunDropTimer >= SUN_DROP_INTERVAL) {
+            addSun(25);
+            sunDropTimer = 0;
         }
         // spawn zombies on timer
         zombieSpawnTimer += deltaTime;
@@ -106,16 +118,20 @@ public class Game extends Board
         List<Entity> entityList = new ArrayList<>(Zombie);
         for (Plants p : Plant) {
             if (!p.isAlive()) continue;
-            //p.act(entityList);
-            //List<Bullet> newBullets = p.shoot();
-            //bullets.addAll(newBullets);
+            p.act(entityList, bullets, this);
+        }
+
+        // update zombies
+        for (Zombies z : Zombie) {
+            if (!z.isAlive()) continue;
+            z.act(Plant, Zombie);
         }
 
         // update bullets
         for (Bullet b : bullets) {
             b.update();
             for (Zombies z : Zombie) {
-                if (b.contact(z)) {
+                if (z.isAlive() && b.contact(z)) {
                     z.takeDamage();
                     break;
                 }
@@ -156,8 +172,29 @@ public class Game extends Board
         sun -= plant.getCost();
     }
 
+    /**
+     * FIX: Override removePlant to also remove from the active Plant list.
+     * Previously the shovel only cleared the tile, leaving a ghost plant
+     * that kept acting and drawing.
+     */
+    @Override
+    public void removePlant(int row, int col)
+    {
+        Tile tile = getTile(row, col);
+        if (tile != null) {
+            Plants p = tile.getPlant();
+            if (p != null) {
+                Plant.remove(p);
+            }
+        }
+        super.removePlant(row, col);
+    }
+
     public void removeDeadEntities()
     {
+        for (Zombies z : Zombie) {
+            if (!z.isAlive()) score++;
+        }
         Plant.removeIf(p -> !p.isAlive());
         Zombie.removeIf(z -> !z.isAlive());
         bullets.removeIf(b -> !b.onScreen());
@@ -167,7 +204,8 @@ public class Game extends Board
             for (int c = 0; c < COLS; c++) {
                 Plants p = getTile(r, c).getPlant();
                 if (p != null && !p.isAlive()) {
-                    removePlant(r, c);
+                    // Use super to avoid double-removal from list
+                    super.removePlant(r, c);
                 }
             }
         }
@@ -183,6 +221,7 @@ public class Game extends Board
         for (Zombies z : Zombie) {
             if (z.hasReachedHouse()) {
                 gameRunning = false;
+                gameOver = true;
             }
         }
     }
@@ -202,7 +241,7 @@ public class Game extends Board
     
     /**
      * Called by SunFlower when it produces sun
-     * Adds the given amount of sun to the player`s total sun count
+     * Adds the given amount of sun to the player's total sun count
      */
     public void addSun(int amount){
         sun += amount;
