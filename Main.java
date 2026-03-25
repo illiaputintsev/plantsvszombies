@@ -5,9 +5,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        Game game = new Game();
-        GameUI ui = new GameUI(game, stage);
-        game.startGame(ui);
+        MenuUI ui = new MenuUI(stage);
+        ui.show();
     }
 
     public static void main(String[] args) {
