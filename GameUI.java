@@ -5,8 +5,14 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * GameUI class - handles rendering.
+ *
+ * @author Mark Tarnavskyi
+ */
 public class GameUI {
     private Game game;
     private Stage stage;
@@ -48,11 +54,20 @@ public class GameUI {
 
     private void handleClick(double mx, double my) {
     
+        // Don't allow clicks when game is over
+        if (game.gameOver) return;
+    
         // Check if the click is inside the shop bar
         if (my >= Game.SHOP_Y && my <= Game.SHOP_Y + Game.SHOP_CELL_H) {
             int slot = (int) ((mx - Game.SHOP_X) / Game.SHOP_CELL_W);
 
             if (slot < 0 || slot >= SHOP_NAMES.length) {
+                return;
+            }
+
+            // Clicking the already-selected slot deselects it
+            if (slot == game.selectedPlant) {
+                game.selectedPlant = -1;
                 return;
             }
 
@@ -83,6 +98,8 @@ public class GameUI {
             if (game.isTileOccupied(row, col)) {
                 game.removePlant(row, col);
             }
+            // FIX: Reset selection after using the shovel
+            game.selectedPlant = -1;
             return;
         }
 
@@ -117,9 +134,9 @@ public class GameUI {
                 double y = Game.GRID_Y + r * Game.CELL_H;
 
                 if ((r + c) % 2 == 0) {
-                    gc.setFill(Color.LIGHTGREEN);
+                    gc.setFill(Color.PALEGREEN);
                 } else {
-                    gc.setFill(Color.GREEN);
+                    gc.setFill(Color.SEAGREEN);
                 }
                 gc.fillRect(x, y, Game.CELL_W, Game.CELL_H);
             }
@@ -127,21 +144,34 @@ public class GameUI {
 
         for (Plants p : game.Plant) {
             if (p.isAlive()) {
-                //p.draw(gc); <- to be implemented
+                p.draw(gc);
             }
         }
         for (Zombies z : game.Zombie) {
             if (z.isAlive()) {
-                //z.draw(gc); <- to be implemented
+                z.draw(gc);
             }
         }
         for (Bullet b : game.bullets) {
             b.draw(gc);
         }
 
-        // Sun counter
+        // Sun and score counters
         gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(14));
         gc.fillText("Sun: " + game.sun, 10, 30);
+        gc.fillText("Score: " + game.score, 10, 50);
+
+        if (game.gameOver) {
+            gc.setFill(Color.color(0, 0, 0, 0.6));
+            gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+            gc.setFill(Color.RED);
+            gc.setFont(Font.font(48));
+            gc.fillText("GAME OVER", Game.WIDTH / 2.0 - 140, Game.HEIGHT / 2.0 - 10);
+            gc.setFill(Color.WHITE);
+            gc.setFont(Font.font(20));
+            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
+        }
     }
 
     private void drawShop(GraphicsContext gc) {
@@ -149,12 +179,12 @@ public class GameUI {
             double x = Game.SHOP_X + i * Game.SHOP_CELL_W;
             double y = Game.SHOP_Y;
 
-            // Highlighting slots for better GUI experience
+            // Highlighting slots 
             if (i == game.selectedPlant) {
                 //currently selected
                 gc.setFill(Color.GOLD);
             } else if (i == Game.SHOVEL_INDEX) {
-                // always brown for showel
+                // always brown for shovel
                 gc.setFill(Color.SADDLEBROWN);
             } else if (game.sun >= SHOP_COSTS[i]) {
                 // the plants you can buy
@@ -168,6 +198,7 @@ public class GameUI {
 
             // name and cost
             gc.setFill(Color.BLACK);
+            gc.setFont(Font.font(12));
             gc.fillText(SHOP_NAMES[i], x + 10, y + 20);
 
             if (i != Game.SHOVEL_INDEX) {
