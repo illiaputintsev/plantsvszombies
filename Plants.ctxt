@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Plants
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Plants\ here.\r\n\r\n\ @author\ (your\ name)\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=hp\ cost\ row\ col
+comment1.target=Plants(int,\ int,\ int,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Plants\r\n
+comment2.params=
+comment2.target=java.util.List\ shoot()
+comment3.params=entities\ bullets\ game
+comment3.target=void\ act(java.util.List,\ java.util.List,\ Game)
+comment4.params=
+comment4.target=int\ getCost()
+comment5.params=
+comment5.target=int\ getCooldown()
+comment6.params=
+comment6.target=int\ getTimer()
+comment7.params=gc
+comment7.target=void\ draw(javafx.scene.canvas.GraphicsContext)
+numComments=8
