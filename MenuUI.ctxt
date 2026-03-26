@@ -1,0 +1,21 @@
+#BlueJ class context
+comment0.target=MenuUI
+comment1.params=stage
+comment1.target=MenuUI(javafx.stage.Stage)
+comment2.params=
+comment2.target=void\ show()
+comment3.params=gc
+comment3.target=void\ drawBackground(javafx.scene.canvas.GraphicsContext)
+comment4.params=gc
+comment4.target=void\ drawHouse(javafx.scene.canvas.GraphicsContext)
+comment5.params=
+comment5.target=javafx.scene.layout.AnchorPane\ createOverlay()
+comment6.params=text\ fontSize
+comment6.target=javafx.scene.control.Label\ createLabel(java.lang.String,\ double)
+comment7.params=text
+comment7.target=javafx.scene.control.Button\ createButton(java.lang.String)
+comment8.params=node\ top\ left
+comment8.target=void\ anchor(javafx.scene.Node,\ double,\ double)
+comment9.params=
+comment9.target=void\ startGame()
+numComments=10
