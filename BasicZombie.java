@@ -2,21 +2,22 @@ import java.util.List;
 
 public class BasicZombie extends Zombies
 {
-    public static final int HP = 125;
+    public static final int HP = 200;
+
     public BasicZombie(int row, int col)
     {
-        super(HP, row, col);
+        super(HP, row, col, 30); // 30 pixels per second
     }
 
     @Override
-    public void act(List<Plants> plants, List<Zombies> newZombies)
+    public void act(List<Plants> plants, List<Zombies> newZombies, double deltaTime)
     {
         if (!alive) return;
 
-        boolean moved = move(plants);
+        boolean moved = move(deltaTime, plants);
 
         if (!moved) {
-            attack(plants);
+            attack(deltaTime, plants);
         }
     }
 }

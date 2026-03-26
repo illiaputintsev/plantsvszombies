@@ -11,8 +11,8 @@ import javafx.scene.paint.Color;
  */
 public class Repeater extends Plants
 {
-    private static final int COOLDOWN = 300;
-    private static final int BURST_DELAY = 10;
+    private static final int COOLDOWN = 90;
+    private static final int BURST_DELAY = 8;
     private int shootPhase = 0;
 
     /**
@@ -21,35 +21,35 @@ public class Repeater extends Plants
     public Repeater(int row, int col)
     {
         super(100, 200, row, col);
+        this.timer = COOLDOWN - 10;
     }
-    
+
     /**
      * Called every game tick
-     * Only shoots if a zombie is in the range of 5 coloums
+     * Only shoots if a zombie is in the same row
      */
     @Override
     public void act(List<Entity> entities, List<Bullet> bullets, Game game){
-        if (!alive) { return; }
-        
-        timer ++;
-        
+        if (!alive) return;
+
+        timer++;
+
         boolean zombieInRange = false;
         for (Entity entity : entities) {
             if (entity instanceof Zombies) {
                 Zombies zombie = (Zombies) entity;
                 if (zombie.isAlive()
                     && zombie.getRow() == this.getRow()
-                    && zombie.getCol() >= this.getCol()
-                    && zombie.getCol() <= this.getCol() + 5)
+                    && zombie.getX() > this.getX())
                 {
                     zombieInRange = true;
                     break;
                 }
             }
         }
- 
-        if (!zombieInRange) { return; }
- 
+
+        if (!zombieInRange) return;
+
         if (shootPhase == 0 && timer >= COOLDOWN) {
             bullets.addAll(shoot());
             shootPhase = 1;
@@ -59,23 +59,34 @@ public class Repeater extends Plants
             shootPhase = 0;
         }
     }
-    
-    
+
     /**
-     * creates and returns a Bullet at the Repeater`s location
+     * creates and returns a Bullet at the Repeater's location
      */
     public List<Bullet> shoot(){
         List<Bullet> bullets = new ArrayList<>();
-        bullets.add(new Bullet(this.getX(), this.getY()));
+        bullets.add(new Bullet(this.getX() + 20, this.getY() - 5));
         return bullets;
     }
-    
-    public void draw(GraphicsContext gc){
-        //change this to improve the visual design of the plant
+
+    public void draw(GraphicsContext gc) {
+        // stem
+        gc.setFill(Color.GREEN);
+        gc.fillRect(x - 4, y + 5, 8, 22);
+
+        // head (darker than peashooter)
+        gc.setFill(Color.FORESTGREEN);
+        gc.fillOval(x - 16, y - 22, 32, 32);
+
+        // double barrel
         gc.setFill(Color.DARKGREEN);
-        gc.fillOval(x - 25, y - 30, 50, 60);
-        gc.setFill(Color.LIME);
-        gc.fillOval(x - 14, y - 10, 12, 12);
-        gc.fillOval(x + 2, y - 10, 12, 12);
+        gc.fillRoundRect(x + 10, y - 16, 16, 8, 4, 4);
+        gc.fillRoundRect(x + 10, y - 6, 16, 8, 4, 4);
+
+        // eye
+        gc.setFill(Color.WHITE);
+        gc.fillOval(x - 4, y - 16, 12, 12);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x + 1, y - 13, 6, 6);
     }
 }
