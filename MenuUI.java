@@ -1,13 +1,16 @@
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.scene.text.FontWeight;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.AnchorPane;
+import javafx.geometry.Pos;
 
 /**
     (0,0) ────────────────── (1000, 0)
@@ -27,30 +30,67 @@ public class MenuUI{
     }
     
     public void show(){
+        // 1. Create the canvas (background drawing)
         Canvas canvas = new Canvas(Game.WIDTH, Game.HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
-        drawMenu(gc, false);
+        // sky
+        gc.setFill(Color.LIGHTBLUE);
+        gc.fillRect(0, 0, 1000, 500);
         
-        canvas.setOnMouseMoved(e -> {
-            double mx = e.getX();
-            double my = e.getY();
-            boolean hovering = (mx >= 730 && mx <= 870 && my >= 360 && my <= 400);
-            drawMenu(gc, hovering);
-        });
+        // gravestone
+        gc.setFill(Color.LIGHTGRAY);
+        //               x,   y,  w,   h,    arcW, arcH
+        gc.fillRoundRect(705, 350, 200, 400, 80, 60);
         
-        canvas.setOnMouseClicked(e -> {
-            double mx = e.getX();
-            double my = e.getY();
-
-            // Start button bounds
-            if (mx >= 730 && mx <= 870 && my >= 360 && my <= 400) {
-                startGame();
-            }
-        });
+        // 2. Create all your controls
+        Label titleLabel = new Label("Plants vs Zombies");
+        Button btn = new Button("Adventure");
+        Label label1 = new Label("Illia");
+        Label label2 = new Label("Mario");
+        Label label3 = new Label("Mark");
+        Label label4 = new Label("Pranay");
         
-        stage.setScene(new Scene(new StackPane(canvas)));
+        titleLabel.setFont(Font.font("Imperial", 48));
+        btn.setFont(Font.font("Imperial", 26));
+        label1.setFont(Font.font("Imperial", 26));
+        label2.setFont(Font.font("Imperial", 26));
+        label3.setFont(Font.font("Imperial", 26));
+        label4.setFont(Font.font("Imperial", 26));
+        
+        // 3. Create AnchorPane and position everything
+        AnchorPane overlay = new AnchorPane();
+        
+        AnchorPane.setTopAnchor(titleLabel, 50.0);
+        AnchorPane.setLeftAnchor(titleLabel, 350.0);
+        
+        AnchorPane.setTopAnchor(btn, 360.0);
+        AnchorPane.setLeftAnchor(btn, 730.0);
+        
+        AnchorPane.setTopAnchor(label1, 415.0);
+        AnchorPane.setLeftAnchor(label1, 770.0);
+        
+        AnchorPane.setTopAnchor(label2, 458.0);
+        AnchorPane.setLeftAnchor(label2, 768.0);
+        
+        AnchorPane.setTopAnchor(label3, 501.0);
+        AnchorPane.setLeftAnchor(label3, 769.0);
+        
+        AnchorPane.setTopAnchor(label4, 544.0);
+        AnchorPane.setLeftAnchor(label4, 765.0);
+        
+        overlay.getChildren().addAll(titleLabel, btn, label1, label2, label3, label4);
+        
+        // 4. Layer canvas + overlay in a StackPane
+        StackPane root = new StackPane();
+        root.getChildren().addAll(canvas, overlay);
+        
+        btn.setOnAction(e -> startGame());
+        
+        // 5. Build and show the scene
+        Scene scene = new Scene(root, Game.WIDTH, Game.HEIGHT);
         stage.setTitle("Plants vs Zombies");
+        stage.setScene(scene);
         stage.show();
     }
     
@@ -58,55 +98,5 @@ public class MenuUI{
         Game game = new Game();
         GameUI ui = new GameUI(game, stage);
         game.startGame(ui);
-    }
-    
-    private void drawMenu(GraphicsContext gc, boolean hovering){
-        gc.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
-    
-        gc.setFill(Color.DARKGREEN);
-        gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
-        gc.setFill(Color.WHITE);
-        gc.setFont(Font.font(48));
-        gc.fillText("Plants vs Zombies", 250, 200);
-    
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillRoundRect(700, 350, 200, 300, 80, 60);
-    
-        // Adventure button
-        if (hovering) {
-            gc.setEffect(new DropShadow(15, Color.BLACK));
-        }
-        
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(730, 360, 140, 40);
-        gc.setEffect(null);
-        gc.setFont(Font.font("Impact", FontWeight.BOLD, 32));
-        gc.setFill(Color.BLACK);
-        gc.fillText("Adventure", 733, 390);
-
-        // Illia
-        gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(730, 415, 140, 30);
-        gc.setFill(Color.BLACK);
-        gc.fillText("Illia", 733, 438);
-
-        // Mario
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(730, 458, 140, 30);
-        gc.setFill(Color.BLACK);
-        gc.fillText("Mario", 733, 481);
-
-        // Mark
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(730, 501, 140, 30);
-        gc.setFill(Color.BLACK);
-        gc.fillText("Mark", 733, 524);
-
-        // Pranay
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(730, 544, 140, 30);
-        gc.setFill(Color.BLACK);
-        gc.fillText("Pranay", 733, 567);
     }
 }

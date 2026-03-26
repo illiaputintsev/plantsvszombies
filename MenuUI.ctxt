@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=MenuUI
+comment0.text=\r\n\ \ \ \ (0,0)\ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ (1000,\ 0)\r\n\ \ \ \ \u2502\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \u2502\r\n\ \ \ \ \u2502\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \u2502\r\n\ \ \ \ \u2502\ \ \ \ \ \ your\ canvas\ \ \ \ \ \ \ \ \ \u2502\r\n\ \ \ \ \u2502\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \u2502\r\n\ \ \ \ \u2502\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \u2502\r\n\ \ \ \ (0,600)\ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ (1000,\ 600)\r\n
+comment1.params=stage
+comment1.target=MenuUI(javafx.stage.Stage)
+comment2.params=
+comment2.target=void\ show()
+comment3.params=
+comment3.target=void\ startGame()
+numComments=4

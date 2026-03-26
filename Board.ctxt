@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.target=Board
+comment0.text=\r\n\ Manages\ the\ game\ grid\ as\ a\ 2D\ array\ of\ Tiles.\r\n\ Provides\ methods\ to\ place,\ remove,\ and\ query\ plants\ on\ the\ grid.\r\n
+comment1.params=
+comment1.target=Board()
+comment2.params=row\ col
+comment2.target=Tile\ getTile(int,\ int)
+comment2.text=\r\n\ Returns\ the\ tile\ at\ the\ given\ row\ and\ column.\r\n
+comment3.params=plant\ row\ col
+comment3.target=void\ placePlant(Plants,\ int,\ int)
+comment3.text=\r\n\ Places\ a\ plant\ on\ the\ grid\ at\ the\ certain\ position\r\n
+comment4.params=row\ col
+comment4.target=void\ removePlant(int,\ int)
+comment4.text=\r\n\ Removes\ a\ plant\ from\ the\ grid\ at\ the\ certain\ position\r\n
+comment5.params=row\ col
+comment5.target=boolean\ isTileOccupied(int,\ int)
+comment5.text=\r\n\ Checks\ whether\ a\ tile\ is\ occupied\ by\ a\ plant.\r\n
+comment6.params=
+comment6.target=int\ getRows()
+comment7.params=
+comment7.target=int\ getCols()
+numComments=8
