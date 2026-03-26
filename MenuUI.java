@@ -124,7 +124,7 @@ public class MenuUI {
 
     private void startGame() {
         Game game = new Game();
-        GameUI ui = new GameUI(game, stage);
-        game.startGame(ui);
+        LevelUI levelSelect = new LevelUI(game, stage);
+        levelSelect.show();
     }
 }

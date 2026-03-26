@@ -1,5 +1,4 @@
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -23,11 +22,20 @@ public class GameUI {
     };
     private static final int[] SHOP_COSTS = { 100, 50, 50, 200, 0 };
 
+    // button area for "Continue" and "Home"
+    private static final double BUTTON_X = Game.WIDTH / 2.0 - 80;
+    private static final double BUTTON_Y = Game.HEIGHT / 2.0 + 80;
+    private static final double BUTTON_W = 160;
+    private static final double BUTTON_H = 40;
+
     public GameUI(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
     }
 
+    /**
+     * Launches the gameplay screen with the animation loop.
+     */
     public void launch() {
         Canvas canvas = new Canvas(Game.WIDTH, Game.HEIGHT);
         Scene scene = new Scene(new StackPane(canvas));
@@ -46,6 +54,14 @@ public class GameUI {
                 if (lastTime < 0) { lastTime = now; return; }
                 double deltaTime = (now - lastTime) / 1_000_000_000.0;
                 lastTime = now;
+
+                // stop loop if game is no longer running and an end state is reached
+                if (!game.gameRunning && (game.levelComplete || game.gameOver || game.gameWon)) {
+                    render(gc);
+                    stop();
+                    return;
+                }
+
                 game.update(deltaTime);
                 render(gc);
             }
@@ -53,10 +69,19 @@ public class GameUI {
     }
 
     private void handleClick(double mx, double my) {
-    
+
+        // click button to go back to level select
+        if (game.levelComplete || game.gameOver || game.gameWon) {
+            if (mx >= BUTTON_X && mx <= BUTTON_X + BUTTON_W
+                && my >= BUTTON_Y && my <= BUTTON_Y + BUTTON_H) {
+                goToLevelSelect();
+            }
+            return;
+        }
+
         // Don't allow clicks when game is over
         if (game.gameOver) return;
-    
+
         // Check if the click is inside the shop bar
         if (my >= Game.SHOP_Y && my <= Game.SHOP_Y + Game.SHOP_CELL_H) {
             int slot = (int) ((mx - Game.SHOP_X) / Game.SHOP_CELL_W);
@@ -123,34 +148,39 @@ public class GameUI {
         }
     }
 
+    /**
+     * Opens the level selection screen
+     */
+    private void goToLevelSelect() {
+        LevelUI levelSelect = new LevelUI(game, stage);
+        levelSelect.show();
+    }
+
     private void render(GraphicsContext gc) {
         gc.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
         drawShop(gc);
 
+        // draw the grid
         for (int r = 0; r < Game.ROWS; r++) {
             for (int c = 0; c < Game.COLS; c++) {
-                double x = Game.GRID_X + c * Game.CELL_W;
-                double y = Game.GRID_Y + r * Game.CELL_H;
+                double cellX = Game.GRID_X + c * Game.CELL_W;
+                double cellY = Game.GRID_Y + r * Game.CELL_H;
 
                 if ((r + c) % 2 == 0) {
                     gc.setFill(Color.PALEGREEN);
                 } else {
                     gc.setFill(Color.SEAGREEN);
                 }
-                gc.fillRect(x, y, Game.CELL_W, Game.CELL_H);
+                gc.fillRect(cellX, cellY, Game.CELL_W, Game.CELL_H);
             }
         }
 
         for (Plants p : game.Plant) {
-            if (p.isAlive()) {
-                p.draw(gc);
-            }
+            if (p.isAlive()) p.draw(gc);
         }
         for (Zombies z : game.Zombie) {
-            if (z.isAlive()) {
-                z.draw(gc);
-            }
+            if (z.isAlive()) z.draw(gc);
         }
         for (Bullet b : game.bullets) {
             b.draw(gc);
@@ -162,6 +192,64 @@ public class GameUI {
         gc.fillText("Sun: " + game.sun, 10, 30);
         gc.fillText("Score: " + game.score, 10, 50);
 
+        // Level indicator
+        if (game.level > 0) {
+            gc.setFont(Font.font(14));
+            gc.setFill(Color.BLACK);
+            gc.fillText("Level: " + game.level + " / " + Game.TOTAL_LEVELS, Game.WIDTH - 100, 30);
+        }
+
+        // Level progress bar
+        if (game.phase == 1 || game.phase == 3) {
+            double progressBarX = Game.WIDTH - 180;
+            double progressBarY = 45;
+            double progressBarWidth = 150;
+            double progressBarHeight = 10;
+            int totalZombies = game.zombieCount + game.finalWaveZombieAmount;
+            int spawnedSoFar = game.spawnedTotal + game.finalWaveSpawnedCount;
+            double progress = (double) spawnedSoFar / totalZombies;
+
+            gc.setFill(Color.GRAY);
+            gc.fillRect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
+            gc.setFill(game.phase == 3 ? Color.RED : Color.ORANGERED);
+            gc.fillRect(progressBarX, progressBarY, progressBarWidth * progress, progressBarHeight);
+            gc.setStroke(Color.BLACK);
+            gc.strokeRect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
+        }
+
+        // Center message
+        if (game.message != null && !game.message.isEmpty() && game.messageTimer > 0) {
+            double textWidth = game.message.length() * 12;
+            double messageX = Game.WIDTH / 2.0 - textWidth / 2 - 10;
+
+            //final wave warning
+            if (game.phase == 2 || game.phase == 3) {
+                gc.setFill(Color.color(0.8, 0, 0, 0.7));
+            } else {
+                gc.setFill(Color.color(0, 0, 0, 0.5));
+            }
+            gc.fillRoundRect(messageX, Game.GRID_Y - 30, textWidth + 20, 36, 8, 8);
+
+            gc.setFill(Color.WHITE);
+            gc.setFont(Font.font(20));
+            gc.fillText(game.message, messageX + 10, Game.GRID_Y - 4);
+        }
+
+        // Level complete
+        if (game.levelComplete) {
+            gc.setFill(Color.color(0, 0, 0, 0.6));
+            gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+            gc.setFill(Color.LIMEGREEN);
+            gc.setFont(Font.font(48));
+            gc.fillText("LEVEL COMPLETE!", Game.WIDTH / 2.0 - 200, Game.HEIGHT / 2.0 - 10);
+            gc.setFill(Color.WHITE);
+            gc.setFont(Font.font(20));
+            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
+
+            drawButton(gc, "Continue", BUTTON_X, BUTTON_Y, Color.FORESTGREEN);
+        }
+
+        // Game over
         if (game.gameOver) {
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
@@ -171,7 +259,38 @@ public class GameUI {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
             gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("Reached Level " + game.level, Game.WIDTH / 2.0 - 55, Game.HEIGHT / 2.0 + 60);
+
+            drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.DARKRED);
         }
+
+        // Game won
+        if (game.gameWon) {
+            gc.setFill(Color.color(0, 0, 0, 0.6));
+            gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+            gc.setFill(Color.GOLD);
+            gc.setFont(Font.font(48));
+            gc.fillText("YOU WIN!", Game.WIDTH / 2.0 - 120, Game.HEIGHT / 2.0 - 10);
+            gc.setFill(Color.WHITE);
+            gc.setFont(Font.font(20));
+            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("All " + Game.TOTAL_LEVELS + " levels cleared!", Game.WIDTH / 2.0 - 70, Game.HEIGHT / 2.0 + 60);
+
+            drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.GOLDENROD);
+        }
+    }
+
+    /**
+     * Draws a clickable button on the canvas
+     */
+    private void drawButton(GraphicsContext gc, String text, double bx, double by, Color colour) {
+        gc.setFill(colour);
+        gc.fillRoundRect(bx, by, BUTTON_W, BUTTON_H, 10, 10);
+        gc.setStroke(Color.WHITE);
+        gc.strokeRoundRect(bx, by, BUTTON_W, BUTTON_H, 10, 10);
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font(18));
+        gc.fillText(text, bx + 20, by + 26);
     }
 
     private void drawShop(GraphicsContext gc) {
@@ -179,18 +298,14 @@ public class GameUI {
             double x = Game.SHOP_X + i * Game.SHOP_CELL_W;
             double y = Game.SHOP_Y;
 
-            // Highlighting slots 
+            // Highlighting slots
             if (i == game.selectedPlant) {
-                //currently selected
                 gc.setFill(Color.GOLD);
             } else if (i == Game.SHOVEL_INDEX) {
-                // always brown for shovel
                 gc.setFill(Color.SADDLEBROWN);
             } else if (game.sun >= SHOP_COSTS[i]) {
-                // the plants you can buy
                 gc.setFill(Color.LIGHTBLUE);
             } else {
-                // cannot buy
                 gc.setFill(Color.DARKGRAY);
             }
 
