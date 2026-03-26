@@ -10,7 +10,7 @@ public abstract class Entity
     protected boolean alive;
     protected double x;
     protected double y;
-    protected static final int DAMAGE = 25;
+    protected static final int DAMAGE = 19;
     
     public Entity(int hp, int row, int col, boolean alive)
     {
@@ -26,6 +26,13 @@ public abstract class Entity
     
     protected void takeDamage(){
         hp -= DAMAGE;
+        if (hp <= 0){
+            setDead();
+        }
+    }
+
+    protected void takeHit(int damage){
+        hp -= damage;
         if (hp <= 0){
             setDead();
         }

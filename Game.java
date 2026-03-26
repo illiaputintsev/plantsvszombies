@@ -1,13 +1,14 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import javafx.stage.Stage;
 
 /**
  * Game class - controls the main game logic.
  * Keeps track of all plants, zombies, bullets, and game state.
  *
- * @author Illia
- * @version 1.1
+ * @author Illia Putintsev
+ * @version 1.3
  */
 public class Game extends Board
 {
@@ -17,8 +18,22 @@ public class Game extends Board
     int sun;
     boolean gameRunning;
     boolean gameOver;
-    int time;
+    boolean levelComplete;
+    boolean gameWon;
     int score;
+
+    int level;
+    int phase; // 0 = prep, 1 = buildup, 2 =final wave warning, 3 = final wave, 4 =level complete
+    int spawnedTotal; //amount of zombies spawned so far
+    int zombieCount; //amount of zombies before the final wave
+    int finalWaveZombieAmount; //amount of zombies in the final wave
+    int finalWaveSpawnedCount; //amount of zombies in the final wave spawned so far
+    double phaseTimer;
+    String message;
+    double messageTimer;
+
+    // player's progress
+    int maxLevel;
 
     // Grid layout constants
     public static final int WIDTH = 1000;
@@ -29,13 +44,13 @@ public class Game extends Board
     public static final int CELL_H = 100;
     public static final int GRID_X = 120;
     public static final int GRID_Y = 80;
-    
+
     // Shop constants
     public static final int SHOP_X = 120;
     public static final int SHOP_Y = 10;
     public static final int SHOP_CELL_W = 80;
     public static final int SHOP_CELL_H = 60;
-    public static final int SHOVEL_INDEX = 4; // last slot, after 4 plants
+    public static final int SHOVEL_INDEX = 4;
 
     public static double colToPixelX(int col) {
         return GRID_X + col * CELL_W + CELL_W / 2.0;
@@ -53,13 +68,13 @@ public class Game extends Board
     private double spawnInterval;
     private Random rng;
     private double sunDropTimer;
-    private static final double SUN_DROP_INTERVAL = 10.0;
+    private static final double SUN_DROP_INTERVAL = 20.0;
+    static final int TOTAL_LEVELS = 7;
     int selectedPlant;
 
-    /**
-     * Constructor for objects of class Game.
-     * Initialises entity lists, game variables, and the board grid.
-     */
+    // Store reference for switching screens (level/menu/game)
+    private Stage stage;
+
     public Game()
     {
         Zombie = new ArrayList<>();
@@ -69,17 +84,25 @@ public class Game extends Board
         score = 0;
         gameRunning = false;
         gameOver = false;
+        levelComplete = false;
+        gameWon = false;
         zombieSpawnTimer = 0;
         spawnInterval = 10.0;
         rng = new Random();
         selectedPlant = -1;
+        level = 0;
+        phase = 0;
+        maxLevel = 0;
+        message = "";
+        messageTimer = 0;
     }
 
     /**
-     * Resets game state and launches the UI
+     * Starts a specific level from the level select screen.
      */
-    public void startGame(GameUI ui)
+    public void startGame(GameUI ui, Stage stage, int chosenLevel)
     {
+        this.stage = stage;
         Zombie.clear();
         Plant.clear();
         bullets.clear();
@@ -87,31 +110,106 @@ public class Game extends Board
         score = 0;
         sunDropTimer = 0;
         zombieSpawnTimer = 0;
-        spawnInterval = 15.0;
         selectedPlant = -1;
         gameRunning = true;
         gameOver = false;
-        
+        levelComplete = false;
+        gameWon = false;
+        level = chosenLevel - 1; // increments by startLevel()
+        phase = 0;
+        phaseTimer = 10.0; // 10 seconds to plant initial plants
+        message = "The zombies are approaching... Start to plant NOW!";
+        messageTimer = 4.0;
+
         ui.launch();
     }
 
     public void update(double deltaTime)
     {
-        if (!gameRunning){
+        if (!gameRunning) {
             return;
         }
-        // passive sun income
+
+        // 25 sun coints generated every 20 seconds
         sunDropTimer += deltaTime;
         if (sunDropTimer >= SUN_DROP_INTERVAL) {
             addSun(25);
             sunDropTimer = 0;
         }
-        // spawn zombies on timer
-        zombieSpawnTimer += deltaTime;
-        if (zombieSpawnTimer >= spawnInterval) {
-            spawnZombie();
-            zombieSpawnTimer = 0;
-            if (spawnInterval > 3.0) spawnInterval -= 0.3;
+
+        // message display countdown
+        if (messageTimer > 0) {
+            messageTimer -= deltaTime;
+        }
+
+        // game phases logic
+        switch (phase) {
+            case 0: // waiting before zombies spawn (prep phase)
+                phaseTimer -= deltaTime;
+                if (phaseTimer <= 0) {
+                    startLevel();
+                }
+                break;
+
+            case 1: // zombies start spawning
+                zombieSpawnTimer += deltaTime;
+                if (spawnedTotal < zombieCount && zombieSpawnTimer >= spawnInterval) {
+                    spawnZombie();
+                    spawnedTotal++;
+                    zombieSpawnTimer = 0;
+                }
+                //  final wave warning as soon as all first phase zombies spawned
+                if (spawnedTotal >= zombieCount) {
+                    phase = 2;
+                    phaseTimer = 3.0;
+                    message = "A huge wave is approaching!";
+                    messageTimer = 3.0;
+                }
+                break;
+
+            case 2: // final wave warning
+                phaseTimer -= deltaTime;
+                if (phaseTimer <= 0) {
+                    phase = 3;
+                    finalWaveSpawnedCount = 0;
+                    zombieSpawnTimer = 0;
+                    message = "FINAL WAVE!";
+                    messageTimer = 2.0;
+                }
+                break;
+
+            case 3: // final wave, big concetration of zombies
+                zombieSpawnTimer += deltaTime;
+                double rushInterval = 0.4;
+                if (finalWaveSpawnedCount < finalWaveZombieAmount && zombieSpawnTimer >= rushInterval) {
+                    spawnZombie();
+                    finalWaveSpawnedCount++;
+                    zombieSpawnTimer = 0;
+                }
+                // level done if all final wave zombies spawned and all dead
+                if (finalWaveSpawnedCount >= finalWaveZombieAmount && Zombie.isEmpty()) {
+                    phase = 4;
+                    phaseTimer = 2.0;
+                    if (level > maxLevel) {
+                        maxLevel = level;
+                    }
+
+                    if (level >= TOTAL_LEVELS) {
+                        message = "You beat all " + TOTAL_LEVELS + " levels!";
+                        messageTimer = 5.0;
+                        gameRunning = false;
+                        gameWon = true;
+                    } else {
+                        message = "Level " + level + " Complete!";
+                        messageTimer = 3.0;
+                        levelComplete = true;
+                        gameRunning = false;
+                    }
+                }
+                break;
+
+            case 4: // level completed, waiting for player to click Continue
+                break;
         }
 
         // update plants
@@ -124,7 +222,7 @@ public class Game extends Board
         // update zombies
         for (Zombies z : Zombie) {
             if (!z.isAlive()) continue;
-            z.act(Plant, Zombie);
+            z.act(Plant, Zombie, deltaTime);
         }
 
         // update bullets
@@ -143,18 +241,85 @@ public class Game extends Board
     }
 
     /**
-     * Spawns a zombie in a random row
+     * Sets up the current level with zombie counts and spawn speed
+     */
+    private void startLevel()
+    {
+        level++;
+        phase = 1;
+        spawnedTotal = 0;
+        finalWaveSpawnedCount = 0;
+        zombieSpawnTimer = 0;
+        message = "Level " + level;
+        messageTimer = 2.0;
+
+        // more zombies and faster spawns with each level
+        switch (level) {
+            case 1:
+                zombieCount = 4;
+                finalWaveZombieAmount = 3;
+                spawnInterval = 8.0;
+                break;
+            case 2:
+                zombieCount = 6;
+                finalWaveZombieAmount = 5;
+                spawnInterval = 7.0;
+                break;
+            case 3:
+                zombieCount = 8;
+                finalWaveZombieAmount = 6;
+                spawnInterval = 6.0;
+                break;
+            case 4:
+                zombieCount = 10;
+                finalWaveZombieAmount = 8;
+                spawnInterval = 5.5;
+                break;
+            case 5:
+                zombieCount = 12;
+                finalWaveZombieAmount = 10;
+                spawnInterval = 5.0;
+                break;
+            case 6:
+                zombieCount = 14;
+                finalWaveZombieAmount = 13;
+                spawnInterval = 4.7;
+                break;
+            case 7:
+                zombieCount = 16;
+                finalWaveZombieAmount = 16;
+                spawnInterval = 4.3;
+                break;
+            default:
+                zombieCount = 10 + level * 2;
+                finalWaveZombieAmount = 8 + level * 2;
+                spawnInterval = Math.max(2.0, 8.0 - level);
+                break;
+        }
+    }
+
+    /**
+     * Spawns a zombie in a random row.
+     * Stronger zombie spawn chance depends on level and phase
      */
     public void spawnZombie()
     {
         int row = rng.nextInt(ROWS);
-        Zombie.add(new BasicZombie(row, COLS));
+
+        // increased chance of stronger zombie with each level
+        int strongChance = 0;
+        if (level >= 3) strongChance = 20 + (level - 3) * 15;
+
+        // increased chance of strong zombiews in the final wave
+        if (phase == 3) strongChance += 15;
+
+        if (rng.nextInt(100) < strongChance) {
+            Zombie.add(new StrongZombie(row, COLS));
+        } else {
+            Zombie.add(new BasicZombie(row, COLS));
+        }
     }
 
-    /**
-     * Places a plant on the grid if the tile is free and
-     * the player has enough sun. Deducts the sun cost.
-     */
     @Override
     public void placePlant(Plants plant, int row, int col)
     {
@@ -172,11 +337,6 @@ public class Game extends Board
         sun -= plant.getCost();
     }
 
-    /**
-     * FIX: Override removePlant to also remove from the active Plant list.
-     * Previously the shovel only cleared the tile, leaving a ghost plant
-     * that kept acting and drawing.
-     */
     @Override
     public void removePlant(int row, int col)
     {
@@ -199,21 +359,14 @@ public class Game extends Board
         Zombie.removeIf(z -> !z.isAlive());
         bullets.removeIf(b -> !b.onScreen());
 
-        // clean dead plants from the board grid
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 Plants p = getTile(r, c).getPlant();
                 if (p != null && !p.isAlive()) {
-                    // Use super to avoid double-removal from list
                     super.removePlant(r, c);
                 }
             }
         }
-    }
-
-    public void checkWinCondition()
-    {
-
     }
 
     public void checkLoseCondition()
@@ -227,23 +380,42 @@ public class Game extends Board
     }
 
     /**
-     * Generates sun that falls from the sky
+     * Clears all plants, zombies, and bullets.
+     * Resets sun so the player starts fresh each level
      */
-    public void genFallingSun()
+    public void clearBoard()
     {
+        Plant.clear();
+        Zombie.clear();
+        bullets.clear();
+        sun = 50;
 
+        // clear all tiles on the grid
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                Tile tile = getTile(r, c);
+                if (tile != null) {
+                    tile.removePlant();
+                }
+            }
+        }
     }
 
-    private void checkCollision()
-    {
-
-    }
-    
     /**
-     * Called by SunFlower when it produces sun
-     * Adds the given amount of sun to the player's total sun count
+     * Go back to the level select screen.
      */
+    public void returnToLevelSelect()
+    {
+        gameRunning = false;
+        LevelUI levelSelect = new LevelUI(this, stage);
+        levelSelect.show();
+    }
+
     public void addSun(int amount){
         sun += amount;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
