@@ -13,9 +13,11 @@ import javafx.scene.shape.Circle;
 
 public class MenuUI {
     private Stage stage;
+    private Game game;
 
-    public MenuUI(Stage stage) {
+    public MenuUI(Stage stage, Game game) {
         this.stage = stage;
+        this.game = game;
     }
 
     public void show() {
@@ -123,7 +125,6 @@ public class MenuUI {
     }
 
     private void startGame() {
-        Game game = new Game();
         LevelUI levelSelect = new LevelUI(game, stage);
         levelSelect.show();
     }

@@ -53,7 +53,7 @@ public class LevelUI {
             // back button
             if (clickX >= BACK_X && clickX <= BACK_X + BACK_W
                 && clickY >= BACK_Y && clickY <= BACK_Y + BACK_H) {
-                MenuUI menu = new MenuUI(stage);
+                MenuUI menu = new MenuUI(stage, game);
                 menu.show();
                 return;
             }
