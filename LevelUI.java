@@ -30,6 +30,7 @@ public class LevelUI {
     public LevelUI(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
+        SoundManager.stopGameOver();
     }
 
     /**
@@ -55,6 +56,7 @@ public class LevelUI {
                 && clickY >= BACK_Y && clickY <= BACK_Y + BACK_H) {
                 MenuUI menu = new MenuUI(stage, game);
                 menu.show();
+                SoundManager.playMenuBtn();
                 return;
             }
 
@@ -63,6 +65,8 @@ public class LevelUI {
             if (clickedLevel > 0 && clickedLevel <= game.maxLevel + 1) {
                 game.clearBoard();
                 GameUI ui = new GameUI(game, stage);
+                SoundManager.playMenuBtn();
+                SoundManager.stopMenuTheme();
                 game.startGame(ui, stage, clickedLevel);
             }
         });

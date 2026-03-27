@@ -53,10 +53,12 @@ public class Repeater extends Plants
         if (shootPhase == 0 && timer >= COOLDOWN) {
             bullets.addAll(shoot());
             shootPhase = 1;
+            SoundManager.playShoot1();
         } else if (shootPhase == 1 && timer >= COOLDOWN + BURST_DELAY) {
             bullets.addAll(shoot());
             timer = 0;
             shootPhase = 0;
+            SoundManager.playShoot2();
         }
     }
 

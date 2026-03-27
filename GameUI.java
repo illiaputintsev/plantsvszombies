@@ -31,6 +31,7 @@ public class GameUI {
     public GameUI(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
+        SoundManager.playLevelTheme();
     }
 
     /**
@@ -75,6 +76,7 @@ public class GameUI {
             if (mx >= BUTTON_X && mx <= BUTTON_X + BUTTON_W
                 && my >= BUTTON_Y && my <= BUTTON_Y + BUTTON_H) {
                 goToLevelSelect();
+                SoundManager.playMenuBtn();
             }
             return;
         }
@@ -122,8 +124,8 @@ public class GameUI {
         if (game.selectedPlant == Game.SHOVEL_INDEX) {
             if (game.isTileOccupied(row, col)) {
                 game.removePlant(row, col);
+                SoundManager.playShowel();
             }
-            // FIX: Reset selection after using the shovel
             game.selectedPlant = -1;
             return;
         }
@@ -237,6 +239,7 @@ public class GameUI {
 
         // Level complete
         if (game.levelComplete) {
+            SoundManager.stopLevelTheme();
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.LIMEGREEN);
@@ -251,6 +254,8 @@ public class GameUI {
 
         // Game over
         if (game.gameOver) {
+            SoundManager.stopLevelTheme();
+            SoundManager.playGameOver();
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.RED);
@@ -266,6 +271,7 @@ public class GameUI {
 
         // Game won
         if (game.gameWon) {
+            SoundManager.stopLevelTheme();
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.GOLD);
