@@ -5,11 +5,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        MenuUI ui = new MenuUI(stage);
+        Game game = new Game();
+        MenuUI ui = new MenuUI(stage, game);
         ui.show();
     }
 
     public static void main(String[] args) {
-        launch(args); // JavaFX takes over from here
+        launch(args);
     }
 }
