@@ -335,6 +335,7 @@ public class Game extends Board
         plant.setY(rowToPixelY(row));
         Plant.add(plant);
         sun -= plant.getCost();
+        SoundManager.playPlant();
     }
 
     @Override

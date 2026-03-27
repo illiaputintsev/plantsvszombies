@@ -18,6 +18,7 @@ public class MenuUI {
     public MenuUI(Stage stage, Game game) {
         this.stage = stage;
         this.game = game;
+        SoundManager.playMenuTheme();
     }
 
     public void show() {
@@ -126,6 +127,7 @@ public class MenuUI {
 
     private void startGame() {
         LevelUI levelSelect = new LevelUI(game, stage);
+        SoundManager.playMenuBtn();
         levelSelect.show();
     }
 }

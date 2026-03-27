@@ -40,6 +40,7 @@ public class Peashooter extends Plants
                 {
                     bullets.addAll(shoot());
                     timer = 0;
+                    SoundManager.playShoot1();
                     return;
                 }
             }
