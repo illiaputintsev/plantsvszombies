@@ -68,7 +68,7 @@ public class Game extends Board
     private double spawnInterval;
     private Random rng;
     private double sunDropTimer;
-    private static final double SUN_DROP_INTERVAL = 20.0;
+    private static final double SUN_DROP_INTERVAL = 15.0;
     static final int TOTAL_LEVELS = 7;
     int selectedPlant;
 
@@ -218,7 +218,7 @@ public class Game extends Board
         List<Entity> entityList = new ArrayList<>(Zombie);
         for (Plants p : Plant) {
             if (!p.isAlive()) continue;
-            p.act(entityList, bullets, this);
+            p.act(entityList, bullets, this, deltaTime);
         }
 
         // update zombies
@@ -229,7 +229,7 @@ public class Game extends Board
 
         // update bullets
         for (Bullet b : bullets) {
-            b.update();
+            b.update(deltaTime);
             for (Zombies z : Zombie) {
                 if (z.isAlive() && b.contact(z)) {
                     z.takeDamage();
