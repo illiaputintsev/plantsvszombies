@@ -110,7 +110,7 @@ public class SoundManager {
     
     public static void playMenuTheme() {
         if (!(menuTheme.isPlaying())) {
-            menuTheme.play(0.8);
+            menuTheme.play(0.6);
         }
     }
     
@@ -124,7 +124,7 @@ public class SoundManager {
     
     public static void playLevelTheme() {
         if (!(levelTheme.isPlaying())) {
-            levelTheme.play(0.8);
+            levelTheme.play(0.75);
         }
     }
     
