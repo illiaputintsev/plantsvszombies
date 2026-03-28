@@ -42,7 +42,7 @@ public class Game extends Board
     public static final int COLS = 9;
     public static final int CELL_W = 80;
     public static final int CELL_H = 100;
-    public static final int GRID_X = 120;
+    public static final int GRID_X = 200;
     public static final int GRID_Y = 80;
 
     // Shop constants
