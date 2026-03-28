@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 
 public class Main extends Application {
 
@@ -10,8 +11,8 @@ public class Main extends Application {
         MenuUI ui = new MenuUI(stage, game);
         
         stage.setOnCloseRequest(event -> {
-            SoundManager.stopMenuTheme(); 
-            SoundManager.stopLevelTheme();
+            Platform.exit();
+            System.exit(0);
         });
         
         ui.show();

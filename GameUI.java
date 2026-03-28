@@ -237,9 +237,17 @@ public class GameUI {
             gc.fillText(game.message, messageX + 10, Game.GRID_Y - 4);
         }
 
+        
+        if (!(game.levelComplete || game.gameOver || game.gameWon)){
+            if (!(SoundManager.isLevelThemePlaying())){
+                SoundManager.playLevelTheme();
+            }
+        }
+        
         // Level complete
         if (game.levelComplete) {
             SoundManager.stopLevelTheme();
+            SoundManager.playLVLComplete();
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.LIMEGREEN);
