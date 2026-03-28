@@ -162,6 +162,8 @@ public class GameUI {
         gc.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
         drawShop(gc);
+        drawPavement(gc);
+        drawHouse(gc);
 
         // draw the grid
         for (int r = 0; r < Game.ROWS; r++) {
@@ -335,6 +337,134 @@ public class GameUI {
                 gc.fillText("$" + SHOP_COSTS[i], x + 10, y + 40);
             }
         }
+    }
+    
+    private void drawHouse(GraphicsContext gc) {
+        // wall
+        gc.setFill(Color.web("#F5F5DC"));
+        gc.fillPolygon(
+        new double[]{0, 114, 114, 64},  // x  
+        new double[]{525, 525, 175, 110}, // y
+        4);
+        
+        // roof
+        gc.setFill(Color.web("#C4736A"));
+        gc.fillPolygon(
+            new double[]{0, 64, 64, 0},  // x  
+            new double[]{80, 85, 506, 485}, // y
+            4);
+            
+        // door  
+        gc.setFill(Color.web("#8B4513"));
+        gc.fillPolygon(
+        new double[]{114, 90, 90, 114},  // x  
+        new double[]{215, 200, 250, 265}, // y
+        4);
+        
+        //window
+        gc.setFill(Color.web("#87CEEB"));
+        gc.fillPolygon(
+        new double[]{80, 80, 110, 110},  // x  
+        new double[]{315, 415, 425, 325}, // y
+        4);
+        
+        // wall
+        // horizontal line
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 525, 120, 6);
+        
+        // perpendicular line
+        gc.setFill(Color.BLACK);
+        //           x,   y, w,   h
+        gc.fillRect(114, 175, 6, 350);
+        
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        //            x1, y1, x2, y2
+        gc.strokeLine(70, 485, 114, 525);
+        
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        gc.strokeLine(70, 110, 114, 175);
+        
+        // roof
+        // perpendicular base line
+        gc.setFill(Color.BLACK);
+        gc.fillRect(64, 85, 6, 425);     
+        
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        gc.strokeLine(64, 85, 0, 75);
+        
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        gc.strokeLine(0, 485, 64, 506); 
+        
+        //door
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(92, 250, 114, 265);
+        
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(92, 200, 114, 215);
+        
+        // top line
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(90, 200, 90, 250);
+        
+        //window
+        // botton line
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(110, 325, 110, 425);
+        
+        // top line
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(80, 315, 80, 415);
+        
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(110, 425, 80, 415);
+        
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(110, 325, 80, 315);
+    }
+    
+    private void drawPavement(GraphicsContext gc) {
+        // pavement zombie side
+        gc.setFill(Color.DARKGRAY);
+        gc.fillRect(920, 70, 1000, 600); 
+        
+        // strip lines road zombie side
+        gc.setFill(Color.YELLOW);
+        gc.fillRect(950, 70, 7, 530);
+        
+        gc.setFill(Color.YELLOW);
+        gc.fillRect(960, 70, 7, 530);
+        
+        // bottom side wall
+        gc.setFill(Color.web("#8B6914"));
+        gc.fillRect(0, 580, 920, 20);
+        
+        // top side wall
+        gc.setFill(Color.web("#8B6914"));
+        gc.fillRect(0, 70, 920, 10);
+        
+        // pavement house side
+        gc.setFill(Color.web("#A0A0A0"));
+        gc.fillRect(0, 80, 200, 520);
     }
 }
 
