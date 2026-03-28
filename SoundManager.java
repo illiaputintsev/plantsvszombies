@@ -23,6 +23,7 @@ public class SoundManager {
     private static AudioClip levelComplete;
     private static AudioClip eating;
     private static AudioClip swallow;
+    private static AudioClip drums;
 
 
     public static void init() {
@@ -41,6 +42,7 @@ public class SoundManager {
         levelComplete = loadSound("/sounds/level_complete.mp3");
         eating = loadSound("/sounds/eating.wav");
         swallow = loadSound("/sounds/swallow.wav");
+        drums = loadSound("/sounds/drum_threat.wav");
     }
 
     private static AudioClip loadSound(String path) {
@@ -57,7 +59,11 @@ public class SoundManager {
         return null;
     }
 
-    
+    public static void playDrums(){
+        if (!drums.isPlaying()){
+            drums.play(0.75);
+        } 
+    }
     public static void playEating(){
         if (!eating.isPlaying()){
             eating.play(0.5);

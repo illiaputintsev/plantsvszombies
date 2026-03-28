@@ -227,6 +227,7 @@ public class GameUI {
             //final wave warning
             if (game.phase == 2 || game.phase == 3) {
                 gc.setFill(Color.color(0.8, 0, 0, 0.7));
+                SoundManager.playDrums();
             } else {
                 gc.setFill(Color.color(0, 0, 0, 0.5));
             }
