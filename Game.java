@@ -155,6 +155,7 @@ public class Game extends Board
                 zombieSpawnTimer += deltaTime;
                 if (spawnedTotal < zombieCount && zombieSpawnTimer >= spawnInterval) {
                     spawnZombie();
+                    SoundManager.playZombie();
                     spawnedTotal++;
                     zombieSpawnTimer = 0;
                 }
@@ -183,6 +184,7 @@ public class Game extends Board
                 double rushInterval = 0.4;
                 if (finalWaveSpawnedCount < finalWaveZombieAmount && zombieSpawnTimer >= rushInterval) {
                     spawnZombie();
+                    SoundManager.playZombie();
                     finalWaveSpawnedCount++;
                     zombieSpawnTimer = 0;
                 }
@@ -365,6 +367,7 @@ public class Game extends Board
                 Plants p = getTile(r, c).getPlant();
                 if (p != null && !p.isAlive()) {
                     super.removePlant(r, c);
+                    SoundManager.playSwallow();
                 }
             }
         }

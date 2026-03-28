@@ -53,6 +53,7 @@ public class Bullet
     public boolean contact(Zombies zombie){
         if (Math.abs(x - zombie.getX() - Game.CELL_W * 0.5) < Game.CELL_W * 0.5 && Math.abs(y - zombie.getY()) < Game.CELL_H * 0.4){
             hit = true;
+            SoundManager.playHitSound();
             return true;
         }
         return false;

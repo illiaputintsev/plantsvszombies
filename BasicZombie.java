@@ -18,6 +18,7 @@ public class BasicZombie extends Zombies
 
         if (!moved) {
             attack(deltaTime, plants);
+            SoundManager.playEating();
         }
     }
 }
