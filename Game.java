@@ -31,7 +31,7 @@ public class Game extends Board
     double phaseTimer;
     String message;
     double messageTimer;
-
+    
     // player's progress
     int maxLevel;
 
@@ -44,7 +44,11 @@ public class Game extends Board
     public static final int CELL_H = 100;
     public static final int GRID_X = 200;
     public static final int GRID_Y = 80;
-
+    
+    // Sun
+    private List<Sun> suns = new ArrayList<>();
+    private double skySunTimer = 0;
+    
     // Shop constants
     public static final int SHOP_X = 120;
     public static final int SHOP_Y = 10;
@@ -67,7 +71,6 @@ public class Game extends Board
     private double zombieSpawnTimer;
     private double spawnInterval;
     private Random rng;
-    private double sunDropTimer;
     private static final double SUN_DROP_INTERVAL = 15.0;
     static final int TOTAL_LEVELS = 7;
     int selectedPlant;
@@ -106,9 +109,10 @@ public class Game extends Board
         Zombie.clear();
         Plant.clear();
         bullets.clear();
+        suns.clear();
+        skySunTimer = 0;
         sun = 50;
         score = 0;
-        sunDropTimer = 0;
         zombieSpawnTimer = 0;
         selectedPlant = -1;
         gameRunning = true;
@@ -128,13 +132,6 @@ public class Game extends Board
     {
         if (!gameRunning) {
             return;
-        }
-
-        // 25 sun coints generated every 20 seconds
-        sunDropTimer += deltaTime;
-        if (sunDropTimer >= SUN_DROP_INTERVAL) {
-            addSun(25);
-            sunDropTimer = 0;
         }
 
         // message display countdown
@@ -236,6 +233,21 @@ public class Game extends Board
                     break;
                 }
             }
+        }
+        
+        for (Sun sun : suns) {
+            sun.update(deltaTime);
+        }
+        suns.removeIf(s -> !s.isAlive());
+        
+        skySunTimer += deltaTime;
+        
+        skySunTimer += deltaTime;
+        
+        if (skySunTimer >= 10.0) {
+            double x = Game.GRID_X + Math.random() * (Game.COLS * Game.CELL_W);
+            spawnSun(x, 20, 25, true);
+            skySunTimer = 0;
         }
 
         removeDeadEntities();
@@ -392,6 +404,7 @@ public class Game extends Board
         Plant.clear();
         Zombie.clear();
         bullets.clear();
+        suns.clear();
         sun = 50;
 
         // clear all tiles on the grid
@@ -415,11 +428,19 @@ public class Game extends Board
         levelSelect.show();
     }
 
-    public void addSun(int amount){
+    public void addSun(int amount) {
         sun += amount;
     }
 
     public Stage getStage() {
         return stage;
+    }
+    
+    public void spawnSun(double x, double y, int value, boolean falling) {
+        suns.add(new Sun(x, y, value, falling));
+    }
+
+    public List<Sun> getSuns() {
+        return suns;
     }
 }
