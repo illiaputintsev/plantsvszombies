@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Bullet
 {
     public static final Color COLOR = Color.GREEN;
-    public static final int SIZE = 7;
+    public static final int SIZE = 15;
     private double x, y;
     private double dx = 1;
     private double row, col;
@@ -28,7 +28,7 @@ public class Bullet
      */
     public void update(double deltaTime){
         
-        double speed = 400;
+        double speed = 300;
         x = x + (dx * speed * deltaTime);
         
     }
