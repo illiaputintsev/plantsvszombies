@@ -19,7 +19,7 @@ public class Walnut extends Plants
     }
 
     @Override
-    public void act(List<Entity> entities, List<Bullet> bullets, Game game) {
+    public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime) {
         if (!alive) return;
     }
 

@@ -24,10 +24,12 @@ public class Bullet
 
     /**
      *  Modifies the position of the bullet. 
-     * 6 is the speed
+     *  6 is the speed
      */
-    public void update(){
-        x = x + (dx * 6);
+    public void update(double deltaTime){
+        
+        double speed = 400;
+        x = x + (dx * speed * deltaTime);
         
     }
     
