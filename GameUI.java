@@ -45,8 +45,20 @@ public class GameUI {
         stage.show();
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        canvas.setOnMouseClicked(e -> handleClick(e.getX(), e.getY()));
-
+        canvas.setOnMouseClicked(e -> {
+            double mx = e.getX();
+            double my = e.getY();
+        
+            for (Sun sun : game.getSuns()) {
+                if (sun.isClicked(mx, my)) {
+                    game.addSun(sun.collect());
+                    return;
+                }
+            }
+        
+            handleClick(mx, my);
+            }); 
+        
         new AnimationTimer() {
             private long lastTime = -1;
 
@@ -189,7 +201,11 @@ public class GameUI {
         for (Bullet b : game.bullets) {
             b.draw(gc);
         }
-
+        for (Sun s : game.getSuns()) {
+        if (s.isAlive()) {
+            s.draw(gc);
+        }}
+        
         // Sun and score counters
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font(14));
@@ -300,6 +316,7 @@ public class GameUI {
     /**
      * Draws a clickable button on the canvas
      */
+    
     private void drawButton(GraphicsContext gc, String text, double bx, double by, Color colour) {
         gc.setFill(colour);
         gc.fillRoundRect(bx, by, BUTTON_W, BUTTON_H, 10, 10);
