@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 public class Sunflower extends Plants
 {
     private int sunAmount;
-    private static final int COOLDOWN = 360;
+    private static final double COOLDOWN = 6;
 
     /**
      * Constructor for objects of class Sunflower
@@ -21,14 +21,14 @@ public class Sunflower extends Plants
         super(100, 50, row, col);
         this.cooldown = COOLDOWN;
         this.sunAmount = 25;
-        this.timer = COOLDOWN - 60; // produces sun after ~1 second
+        this.timer = COOLDOWN - 1; // produces sun after ~1 second
     }
 
     @Override
-    public void act(List<Entity> entities, List<Bullet> bullets, Game game){
+    public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime){
         if (!alive) return;
 
-        timer++;
+        timer += deltaTime;
         if (timer >= cooldown) {
             game.addSun(sunAmount);
             timer = 0;

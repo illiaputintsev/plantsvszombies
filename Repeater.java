@@ -11,8 +11,8 @@ import javafx.scene.paint.Color;
  */
 public class Repeater extends Plants
 {
-    private static final int COOLDOWN = 90;
-    private static final int BURST_DELAY = 8;
+    private static final double COOLDOWN = 1.4;
+    private static final double BURST_DELAY = 0.15;
     private int shootPhase = 0;
 
     /**
@@ -21,7 +21,7 @@ public class Repeater extends Plants
     public Repeater(int row, int col)
     {
         super(100, 200, row, col);
-        this.timer = COOLDOWN - 10;
+        this.timer = COOLDOWN - 0.2;
     }
 
     /**
@@ -29,10 +29,10 @@ public class Repeater extends Plants
      * Only shoots if a zombie is in the same row
      */
     @Override
-    public void act(List<Entity> entities, List<Bullet> bullets, Game game){
+    public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime){
         if (!alive) return;
 
-        timer++;
+        timer += deltaTime;
 
         boolean zombieInRange = false;
         for (Entity entity : entities) {

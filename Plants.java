@@ -9,9 +9,9 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public abstract class Plants extends Entity
 {
-    protected int cooldown;
+    protected double cooldown;
     protected int cost;
-    protected int timer;
+    protected double timer;
     
     /**
      * Constructor for objects of class Plants
@@ -26,11 +26,11 @@ public abstract class Plants extends Entity
     
     protected List<Bullet> shoot(){ return new ArrayList<>(); }
     
-    abstract public void act(List<Entity> entities, List<Bullet> bullets, Game game);
+    abstract public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime);
     
     public int getCost() { return cost; }
-    public int getCooldown() { return cooldown; }
-    public int getTimer() { return timer; }
+    public double getCooldown() { return cooldown; }
+    public double getTimer() { return timer; }
     
     public abstract void draw(GraphicsContext gc);
 }

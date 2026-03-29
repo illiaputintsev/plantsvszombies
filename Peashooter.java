@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
  */
 public class Peashooter extends Plants
 {
-    private static final int COOLDOWN = 90;
+    private static final double COOLDOWN = 1.4;
 
     /**
      * Constructor for objects of class Peashooter
@@ -17,7 +17,7 @@ public class Peashooter extends Plants
     public Peashooter(int row, int col)
     {
         super(100, 100, row, col);
-        this.timer = COOLDOWN - 10; //FIX: fired straight away after planting
+        this.timer = COOLDOWN - 0.2; //FIX: fired straight away after planting
     }
 
     /**
@@ -25,10 +25,10 @@ public class Peashooter extends Plants
      * Only shoots if a zombie is in the same row
      */
     @Override
-    public void act(List<Entity> entities, List<Bullet> bullets, Game game){
+    public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime){
         if (!alive) return;
 
-        timer++;
+        timer += deltaTime;
         if (timer < COOLDOWN) return;
 
         // check if any zombie is in the same row and ahead of us
