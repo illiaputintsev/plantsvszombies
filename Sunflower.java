@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 public class Sunflower extends Plants
 {
     private int sunAmount;
-    private static final double COOLDOWN = 6;
+    private static final double COOLDOWN = 12;
 
     /**
      * Constructor for objects of class Sunflower
@@ -30,7 +30,7 @@ public class Sunflower extends Plants
 
         timer += deltaTime;
         if (timer >= cooldown) {
-            game.addSun(sunAmount);
+            game.spawnSun(x, y, sunAmount, false);
             timer = 0;
         }
     }
