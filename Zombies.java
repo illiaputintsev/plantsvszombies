@@ -9,6 +9,7 @@ public abstract class Zombies extends Entity
     protected boolean eating;
     protected double eatTimer;
     protected double attackInterval;
+    protected double flashTimer;
 
     public Zombies(int hp, int row, int col, double speed)
     {
@@ -17,6 +18,7 @@ public abstract class Zombies extends Entity
         this.eating = false;
         this.eatTimer = 0;
         this.attackInterval = 1.0;
+        this.flashTimer = 0;
         // start at right edge of screen
         this.x = Game.WIDTH + 20;
         this.y = Game.rowToPixelY(row);
@@ -69,6 +71,14 @@ public abstract class Zombies extends Entity
         return x < Game.GRID_X - 20;
     }
 
+    public void triggerFlash() { flashTimer = 0.01; }
+
+    public void updateFlash(double deltaTime) {
+        if (flashTimer > 0) flashTimer -= deltaTime;
+    }
+
+    public boolean isFlashing() { return flashTimer > 0; }
+
     public boolean isEating() { return eating; }
 
     public int getCurrentCol()
@@ -78,26 +88,28 @@ public abstract class Zombies extends Entity
 
     public void draw(GraphicsContext gc)
     {
+        boolean flash = isFlashing();
+
         // legs
-        gc.setFill(Color.DARKSLATEGRAY);
+        gc.setFill(flash ? Color.WHITE : Color.DARKSLATEGRAY);
         gc.fillRect(x - 8, y + 8, 7, 16);
         gc.fillRect(x + 4, y + 8, 7, 16);
 
         // body
-        gc.setFill(Color.DARKKHAKI);
+        gc.setFill(flash ? Color.WHITE : Color.DARKKHAKI);
         gc.fillRect(x - 10, y - 16, 24, 26);
 
         // arms
-        gc.setFill(Color.DARKSEAGREEN);
+        gc.setFill(flash ? Color.WHITE : Color.DARKSEAGREEN);
         gc.fillRect(x - 18, y - 8, 10, 6);
         gc.fillRect(x + 14, y - 12, 10, 6);
 
         // head
-        gc.setFill(Color.YELLOWGREEN);
+        gc.setFill(flash ? Color.WHITE : Color.YELLOWGREEN);
         gc.fillOval(x - 10, y - 34, 22, 22);
 
         // eyes
-        gc.setFill(Color.RED);
+        gc.setFill(flash ? Color.WHITE : Color.RED);
         gc.fillOval(x - 5, y - 28, 4, 4);
         gc.fillOval(x + 4, y - 28, 4, 4);
 

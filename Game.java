@@ -222,6 +222,7 @@ public class Game extends Board
         for (Zombies z : Zombie) {
             if (!z.isAlive()) continue;
             z.act(Plant, Zombie, deltaTime);
+            z.updateFlash(deltaTime);
         }
 
         // update bullets
@@ -230,6 +231,7 @@ public class Game extends Board
             for (Zombies z : Zombie) {
                 if (z.isAlive() && b.contact(z)) {
                     z.takeDamage();
+                    z.triggerFlash();
                     break;
                 }
             }

@@ -45,19 +45,18 @@ public class GameUI {
         stage.show();
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        canvas.setOnMouseClicked(e -> {
-            double mx = e.getX();
-            double my = e.getY();
-        
+        canvas.setOnMouseMoved(e -> {
             for (Sun sun : game.getSuns()) {
-                if (sun.isClicked(mx, my)) {
+                if (sun.isClicked(e.getX(), e.getY())) {
                     game.addSun(sun.collect());
                     return;
                 }
             }
-        
-            handleClick(mx, my);
-            }); 
+        });
+
+        canvas.setOnMouseClicked(e -> {
+            handleClick(e.getX(), e.getY());
+        }); 
         
         new AnimationTimer() {
             private long lastTime = -1;
