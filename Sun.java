@@ -35,9 +35,17 @@ public class Sun {
         }
     }
 
+    // Inside Sun.java
+
     public void draw(GraphicsContext gc) {
-        double centerRadius = 14;
-        double rayOuter = 22;   // only a bit past the circle
+        // Call the new static method using this sun's coordinates
+        drawSunIcon(gc, this.x, this.y, 1.0);
+    }
+    
+    // New static method that can be called from anywhere
+    public static void drawSunIcon(GraphicsContext gc, double cx, double cy, double scale) {
+        double centerRadius = 14 * scale;
+        double rayOuter = 22 * scale;   // only a bit past the circle
         int rayCount = 12;      // more rays = softer shape
         double spread = 0.32;   // wider triangles = less pointy
     
@@ -47,14 +55,14 @@ public class Sun {
         for (int i = 0; i < rayCount; i++) {
             double angle = 2 * Math.PI * i / rayCount;
     
-            double tipX = x + Math.cos(angle) * rayOuter;
-            double tipY = y + Math.sin(angle) * rayOuter;
+            double tipX = cx + Math.cos(angle) * rayOuter;
+            double tipY = cy + Math.sin(angle) * rayOuter;
     
-            double leftX = x + Math.cos(angle - spread) * centerRadius;
-            double leftY = y + Math.sin(angle - spread) * centerRadius;
+            double leftX = cx + Math.cos(angle - spread) * centerRadius;
+            double leftY = cy + Math.sin(angle - spread) * centerRadius;
     
-            double rightX = x + Math.cos(angle + spread) * centerRadius;
-            double rightY = y + Math.sin(angle + spread) * centerRadius;
+            double rightX = cx + Math.cos(angle + spread) * centerRadius;
+            double rightY = cy + Math.sin(angle + spread) * centerRadius;
     
             gc.fillPolygon(
                 new double[]{tipX, leftX, rightX},
@@ -65,11 +73,11 @@ public class Sun {
     
         // main body
         gc.setFill(Color.GOLD);
-        gc.fillOval(x - centerRadius, y - centerRadius, centerRadius * 2, centerRadius * 2);
+        gc.fillOval(cx - centerRadius, cy - centerRadius, centerRadius * 2, centerRadius * 2);
     
-        // soft inner highlight
-        gc.setFill(Color.GOLD);
-        gc.fillOval(x - 9, y - 9, 18, 18);
+        // Scale the inner highlight too
+        double innerHighlight = 9 * scale;
+        gc.fillOval(cx - innerHighlight, cy - innerHighlight, innerHighlight * 2, innerHighlight * 2);  
     }
 
     public boolean isClicked(double mouseX, double mouseY) {
