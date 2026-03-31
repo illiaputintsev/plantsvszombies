@@ -155,7 +155,7 @@ public class SoundManager {
     }
     
     public static void playLVLComplete() {
-        levelComplete.play();
+        levelComplete.play(0.5);
     }
 
 }
