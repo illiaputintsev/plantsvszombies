@@ -208,8 +208,13 @@ public class GameUI {
         // Sun and score counters
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font(14));
-        gc.fillText("Sun: " + game.sun, 10, 30);
-        gc.fillText("Score: " + game.score, 10, 50);
+        Sun.drawSunIcon(gc, 20, 22, 0.6); 
+        // Draw just the sun amount text next to it
+        gc.setFill(Color.BLACK); // Reset fill to black for text
+        gc.fillText(String.valueOf(game.sun), 55, 25); 
+
+        // Keep the score exactly as it was
+        // gc.fillText("Score: " + game.score, 10, 50);
 
         // Level indicator
         if (game.level > 0) {
@@ -327,6 +332,17 @@ public class GameUI {
     }
 
     private void drawShop(GraphicsContext gc) {
+        gc.setFill(Color.BURLYWOOD);
+        gc.fillRect(0, 0, 1000, 70);
+        
+        gc.setFill(Color.SADDLEBROWN);
+        //gc.fillRect(5, 5, 31, 33);
+        gc.fillRect(5, 5, 89, 33);
+        
+        gc.setFill(Color.MOCCASIN);
+        gc.fillRect(36, 7, 54, 29); 
+        
+        
         for (int i = 0; i < SHOP_NAMES.length; i++) {
             double x = Game.SHOP_X + i * Game.SHOP_CELL_W;
             double y = Game.SHOP_Y;
