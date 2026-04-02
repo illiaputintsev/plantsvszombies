@@ -35,32 +35,44 @@ public class Sunflower extends Plants
         }
     }
 
+    // Sunflower.java
     public void draw(GraphicsContext gc) {
-        // stem
-        gc.setFill(Color.GREEN);
-        gc.fillRect(x - 3, y + 5, 6, 22);
-
-        // petals
-        gc.setFill(Color.YELLOW);
-        for (int i = 0; i < 8; i++) {
-            double angle = i * Math.PI / 4;
-            double px = x + Math.cos(angle) * 14;
-            double py = y - 8 + Math.sin(angle) * 14;
-            gc.fillOval(px - 7, py - 7, 14, 14);
+            // shadow
+            gc.setFill(Color.rgb(0, 0, 0, 0.15));
+            gc.fillOval(x - 18, y + 18, 36, 10);
+        
+            // stem
+            gc.setFill(Color.FORESTGREEN);
+            gc.fillRoundRect(x - 3, y - 1, 6, 28, 6, 6);
+        
+            // leaves
+            gc.setFill(Color.LIMEGREEN);
+            gc.fillOval(x - 18, y + 8, 16, 10);
+            gc.fillOval(x + 2, y + 8, 16, 10);
+        
+            // petals
+        gc.setFill(Color.GOLD);
+        for (int i = 0; i < 12; i++) {
+            double angle = i * (Math.PI * 2 / 12.0);
+            double px = x + Math.cos(angle) * 18;   // was ~15 → wider
+            double py = y - 10 + Math.sin(angle) * 18;
+            gc.fillOval(px - 7, py - 7, 14, 14);    // slightly bigger petals
         }
-
-        // center face
-        gc.setFill(Color.SADDLEBROWN);
-        gc.fillOval(x - 10, y - 18, 20, 20);
-
-        // eyes
+        
+        // face 
+        gc.setFill(Color.rgb(170, 120, 60)); // lighter than SADDLEBROWN
+        gc.fillOval(x - 16, y - 24, 32, 28); // wider than tall
+        
+        // eyes 
         gc.setFill(Color.BLACK);
-        gc.fillOval(x - 6, y - 12, 4, 4);
-        gc.fillOval(x + 2, y - 12, 4, 4);
-
+        gc.fillOval(x - 7, y - 14, 4, 6);
+        gc.fillOval(x + 3, y - 14, 4, 6);
+        
         // smile
         gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1.5);
+        gc.strokeArc(x - 7, y - 8, 14, 8, 180, 180, javafx.scene.shape.ArcType.OPEN);
+        
         gc.setLineWidth(1);
-        gc.strokeArc(x - 4, y - 8, 8, 6, 180, 180, javafx.scene.shape.ArcType.OPEN);
     }
 }
