@@ -394,10 +394,10 @@ private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
     boolean affordable = isShovel || game.getSunAmount() >= SHOP_COSTS[index];
 
         // card background
-    if (isShovel) {
-        gc.setFill(Color.rgb(170, 85, 0));
-    } else if (game.selectedPlant == index) {
+    if (game.selectedPlant == index) {
         gc.setFill(Color.rgb(255, 220, 90)); // selected = yellow
+    } else if (isShovel) {
+        gc.setFill(Color.rgb(170, 85, 0));
     } else if (affordable) {
         gc.setFill(Color.rgb(185, 230, 240)); // normal = blue
     } else {
