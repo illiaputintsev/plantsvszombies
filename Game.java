@@ -51,7 +51,7 @@ public class Game extends Board
     
     // Shop constants
     public static final int SHOP_X = 120;
-    public static final int SHOP_Y = 10;
+    public static final int SHOP_Y = 5;
     public static final int SHOP_CELL_W = 80;
     public static final int SHOP_CELL_H = 60;
     public static final int SHOVEL_INDEX = 4;

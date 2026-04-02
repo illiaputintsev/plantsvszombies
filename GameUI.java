@@ -354,19 +354,31 @@ private void drawShop(GraphicsContext gc) {
         gc.fillRect(0, 0, Game.WIDTH, 80);
 
         // sun counter box
+        double boxX = 10, boxY = 10, boxW = 90, boxH = 40;
         gc.setFill(Color.GOLDENROD);
-        gc.fillRoundRect(10, 10, 90, 40, 8, 8);
+        gc.fillRoundRect(boxX, boxY, boxW, boxH, 8, 8);
 
-        // your sun design
+        // measure text width to center sun icon + text together
+        String sunText = String.valueOf(game.getSunAmount());
+        double iconSize = 16;
+        double gap = 8;
+        double textWidth = sunText.length() * 10;
+        double totalW = iconSize + gap + textWidth;
+        double startX = boxX + (boxW - totalW) / 2.0;
+        double centerY = boxY + boxH / 2.0;
+
+        // sun icon
         gc.save();
-        gc.translate(30, 27);
-        gc.scale(0.6, 0.6);
+        gc.translate(startX + iconSize / 2.0, centerY - 2);
+        gc.scale(0.5, 0.5);
         new Sun(0, 0, 25, false).draw(gc);
         gc.restore();
 
+        // sun amount text
         gc.setFill(Color.BLACK);
-        gc.setFont(Font.font(18));
-        gc.fillText(String.valueOf(game.getSunAmount()), 48, 33);
+        gc.setFont(Font.font(16));
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.fillText(sunText, startX + iconSize + gap, centerY + 5);
 
         // shop slots
         for (int i = 0; i < SHOP_NAMES.length; i++) {
@@ -401,9 +413,7 @@ private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
     gc.strokeRoundRect(x, y, w, h, 8, 8);
 
     if (isShovel) {
-        gc.setFill(Color.BLACK);
-        gc.setFont(Font.font(14));
-        gc.fillText("Shovel", x + 10, y + 24);
+        drawShovelIcon(gc, x + w / 2, y + h / 2);
         return;
     }
 
@@ -411,7 +421,9 @@ private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
 
     gc.setFill(Color.BLACK);
     gc.setFont(Font.font(12));
-    gc.fillText("$" + SHOP_COSTS[index], x + 10, y + 45);
+    gc.setTextAlign(TextAlignment.CENTER);
+    gc.fillText("$" + SHOP_COSTS[index], x + w / 2, y + 50);
+    gc.setTextAlign(TextAlignment.LEFT);
 
     if (!affordable) {
         gc.setFill(Color.rgb(80, 80, 80, 0.35));
@@ -530,6 +542,30 @@ private void drawRepeaterIcon(GraphicsContext gc, double x, double y) {
     gc.fillOval(bx + 0.5, by + 1, 1.4, 2);
 }
     
+private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {
+    gc.save();
+    gc.translate(cx, cy);
+    gc.rotate(30);
+
+    // handle
+    gc.setFill(Color.rgb(180, 120, 60));
+    gc.fillRoundRect(-3, -22, 6, 30, 3, 3);
+
+    // handle grip
+    gc.setFill(Color.rgb(140, 90, 40));
+    gc.fillRoundRect(-5, -24, 10, 6, 3, 3);
+
+    // blade
+    gc.setFill(Color.SILVER);
+    gc.fillRoundRect(-10, 6, 20, 16, 6, 6);
+
+    // blade shine
+    gc.setFill(Color.rgb(220, 220, 220, 0.5));
+    gc.fillRoundRect(-6, 8, 5, 12, 2, 2);
+
+    gc.restore();
+}
+
 private void drawHouse(GraphicsContext gc) {
     // wall
     gc.setFill(Color.web("#F5F5DC"));
