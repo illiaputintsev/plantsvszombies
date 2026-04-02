@@ -147,11 +147,11 @@ public class GameUI {
         if (game.selectedPlant != -1) {
             Plants p = null;
             if (game.selectedPlant == 0) {
-                p = new Peashooter(row, col);
-            } else if (game.selectedPlant == 1) {
                 p = new Sunflower(row, col);
-            } else if (game.selectedPlant == 2) {
+            } else if (game.selectedPlant == 1) {
                 p = new Walnut(row, col);
+            } else if (game.selectedPlant == 2) {
+                p = new Peashooter(row, col);
             } else if (game.selectedPlant == 3) {
                 p = new Repeater(row, col);
             }
@@ -432,13 +432,13 @@ private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
 private void drawShopPlantIcon(GraphicsContext gc, int index, double cx, double cy) {
     switch (index) {
         case 0:
-            drawPeashooterIcon(gc, cx, cy);
-            break;
-        case 1:
             drawSunflowerIcon(gc, cx, cy);
             break;
-        case 2:
+        case 1:
             drawWallnutIcon(gc, cx, cy);
+            break;
+        case 2:
+            drawPeashooterIcon(gc, cx, cy);
             break;
         case 3:
             drawRepeaterIcon(gc, cx, cy);
