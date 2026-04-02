@@ -2,9 +2,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,8 +30,11 @@ public class MenuUI {
 
         AnchorPane overlay = createOverlay();
 
-        StackPane root = new StackPane();
-        root.getChildren().addAll(canvas, overlay);
+        StackPane gameLayer = new StackPane();
+        gameLayer.getChildren().addAll(canvas, overlay);
+
+        VBox root = new VBox();
+        root.getChildren().addAll(Main.createMenuBar(), gameLayer);
 
         Scene scene = new Scene(root, Game.WIDTH, Game.HEIGHT);
         stage.setTitle("Plants vs Zombies");
@@ -44,14 +47,10 @@ public class MenuUI {
         gc.setFill(Color.LIGHTBLUE);
         gc.fillRect(0, 0, 1000, 1000);
 
-        // sun
-        gc.setFill(Color.YELLOW);
-        gc.fillOval(25, 25, 150, 150);
-        
         // gravestone body
         gc.setFill(Color.LIGHTGRAY);
         gc.fillRoundRect(705, 280, 200, 400, 80, 60);
-        
+
         // ground
         gc.setFill(Color.LIGHTGREEN);
         gc.fillOval(-200, 400, 900, 300);
@@ -70,8 +69,8 @@ public class MenuUI {
         // roof
         gc.setFill(Color.web("#8b3a3a"));
         gc.fillPolygon(
-            new double[]{195, 230, 265},    
-            new double[]{360, 330, 360}, 
+            new double[]{195, 230, 265},
+            new double[]{360, 330, 360},
             3);
 
         // door
@@ -93,7 +92,9 @@ public class MenuUI {
         Label label3 = createLabel("Mark", 22);
         Label label4 = createLabel("Pranay", 22);
 
-        Circle sun = new Circle(100, 100, 75, Color.YELLOW);
+        // Draw sun icon on a small canvas
+        Canvas sunCanvas = new Canvas(250, 250);
+        Sun.drawSunIcon(sunCanvas.getGraphicsContext2D(), 125, 125, 5.0);
 
         anchor(titleLabel, 50.0,  350.0);
         anchor(btn,        300.0, 730.0);
@@ -102,7 +103,7 @@ public class MenuUI {
         anchor(label3,     439.0, 769.0);
         anchor(label4,     484.0, 765.0);
 
-        overlay.getChildren().addAll(sun, titleLabel, btn, label1, label2, label3, label4);
+        overlay.getChildren().addAll(sunCanvas, titleLabel, btn, label1, label2, label3, label4);
         return overlay;
     }
 
