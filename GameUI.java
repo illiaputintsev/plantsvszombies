@@ -420,7 +420,7 @@ private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
     gc.setFill(Color.BLACK);
     gc.setFont(Font.font(12));
     gc.setTextAlign(TextAlignment.CENTER);
-    gc.fillText("$" + SHOP_COSTS[index], x + w / 2, y + 50);
+    gc.fillText("☀ " + SHOP_COSTS[index], x + w / 2, y + 50);
     gc.setTextAlign(TextAlignment.LEFT);
 
     if (!affordable) {
