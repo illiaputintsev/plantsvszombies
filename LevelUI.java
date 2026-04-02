@@ -2,9 +2,11 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -71,7 +73,9 @@ public class LevelUI {
             }
         });
 
-        stage.setScene(new Scene(new StackPane(canvas)));
+        VBox root = new VBox();
+        root.getChildren().addAll(Main.createMenuBar(), new StackPane(canvas));
+        stage.setScene(new Scene(root));
         stage.setTitle("Plants vs Zombies - Level Select");
         stage.show();
     }
@@ -105,19 +109,21 @@ public class LevelUI {
         // title
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font("Impact", FontWeight.BOLD, 42));
-        gc.fillText("Select Level", Game.WIDTH / 2.0 - 130, 120);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("Select Level", Game.WIDTH / 2.0, 120);
 
         // subtitle
         gc.setFont(Font.font(16));
         gc.setFill(Color.LIGHTGRAY);
         if (game.maxLevel == 0) {
-            gc.fillText("Start your adventure!", Game.WIDTH / 2.0 - 70, 160);
+            gc.fillText("Start your adventure!", Game.WIDTH / 2.0, 160);
         } else if (game.maxLevel >= Game.TOTAL_LEVELS) {
-            gc.fillText("All levels completed!", Game.WIDTH / 2.0 - 70, 160);
+            gc.fillText("All levels completed!", Game.WIDTH / 2.0, 160);
         } else {
             gc.fillText("Levels completed: " + game.maxLevel + " / " + Game.TOTAL_LEVELS,
-                Game.WIDTH / 2.0 - 80, 160);
+                Game.WIDTH / 2.0, 160);
         }
+        gc.setTextAlign(TextAlignment.LEFT);
 
         // draw level buttons
         for (int i = 0; i < Game.TOTAL_LEVELS; i++) {
