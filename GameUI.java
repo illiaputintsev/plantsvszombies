@@ -221,8 +221,9 @@ public class GameUI {
         }
 
         // Level progress bar
-        if (game.phase == 1 || game.phase == 3) {
+        if (game.phase == 1 || game.phase == 2||game.phase == 3) {
             double progressBarX = Game.WIDTH - 280;
+
             double progressBarY = 45;
             double progressBarWidth = 150;
             double progressBarHeight = 10;
