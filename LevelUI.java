@@ -2,6 +2,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -71,7 +72,9 @@ public class LevelUI {
             }
         });
 
-        stage.setScene(new Scene(new StackPane(canvas)));
+        VBox root = new VBox();
+        root.getChildren().addAll(Main.createMenuBar(), new StackPane(canvas));
+        stage.setScene(new Scene(root));
         stage.setTitle("Plants vs Zombies - Level Select");
         stage.show();
     }

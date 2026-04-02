@@ -292,19 +292,19 @@ public class Game extends Board
                 spawnInterval = 5.5;
                 break;
             case 5:
-                zombieCount = 12;
-                finalWaveZombieAmount = 10;
-                spawnInterval = 5.0;
+                zombieCount = 11;
+                finalWaveZombieAmount = 9;
+                spawnInterval = 5.3;
                 break;
             case 6:
-                zombieCount = 14;
-                finalWaveZombieAmount = 13;
-                spawnInterval = 4.7;
+                zombieCount = 12;
+                finalWaveZombieAmount = 11;
+                spawnInterval = 5.5;
                 break;
             case 7:
-                zombieCount = 16;
-                finalWaveZombieAmount = 16;
-                spawnInterval = 4.3;
+                zombieCount = 13;
+                finalWaveZombieAmount = 13;
+                spawnInterval = 5.7;
                 break;
             default:
                 zombieCount = 10 + level * 2;
