@@ -200,18 +200,15 @@ public class GameUI {
         for (Bullet b : game.bullets) {
             b.draw(gc);
         }
-        for (Sun s : game.getSuns()) {
-        if (s.isAlive()) {
-            s.draw(gc);
-        }}
+        
         
         // Sun and score counters
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font(14));
-        Sun.drawSunIcon(gc, 20, 22, 0.6); 
+        Sun.drawSunIcon(gc, 20, Game.SHOP_Y + 17, 0.6); 
         // Draw just the sun amount text next to it
         gc.setFill(Color.BLACK); // Reset fill to black for text
-        gc.fillText(String.valueOf(game.sun), 55, 25); 
+        gc.fillText(String.valueOf(game.sun), 55, Game.SHOP_Y + 20); 
 
         // Keep the score exactly as it was
         // gc.fillText("Score: " + game.score, 10, 50);
@@ -220,18 +217,20 @@ public class GameUI {
         if (game.level > 0) {
             gc.setFont(Font.font(14));
             gc.setFill(Color.BLACK);
-            gc.fillText("Level: " + game.level + " / " + Game.TOTAL_LEVELS, Game.WIDTH - 100, 30);
+            gc.fillText("Level: " + game.level + " / " + Game.TOTAL_LEVELS, Game.WIDTH - 200, 30);
         }
 
         // Level progress bar
         if (game.phase == 1 || game.phase == 3) {
-            double progressBarX = Game.WIDTH - 180;
+            double progressBarX = Game.WIDTH - 280;
             double progressBarY = 45;
             double progressBarWidth = 150;
             double progressBarHeight = 10;
             int totalZombies = game.zombieCount + game.finalWaveZombieAmount;
             int spawnedSoFar = game.spawnedTotal + game.finalWaveSpawnedCount;
             double progress = (double) spawnedSoFar / totalZombies;
+            double headX = progressBarX + (progressBarWidth * progress);
+            double headY = progressBarY;
 
             gc.setFill(Color.GRAY);
             gc.fillRect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
@@ -239,7 +238,19 @@ public class GameUI {
             gc.fillRect(progressBarX, progressBarY, progressBarWidth * progress, progressBarHeight);
             gc.setStroke(Color.BLACK);
             gc.strokeRect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
+            
+            // head following the progress bar            
+            gc.setFill(Color.YELLOWGREEN);
+            gc.fillOval(headX - 10, headY - 10, 20, 20);
+            gc.setFill(Color.RED);
+            gc.fillOval(headX - 5, headY - 5, 4, 4);
+            gc.fillOval(headX + 3, headY - 5, 4, 4);
         }
+        
+        for (Sun s : game.getSuns()) {
+        if (s.isAlive()) {
+            s.draw(gc);
+        }}
 
         // Center message
         if (game.message != null && !game.message.isEmpty() && game.messageTimer > 0) {
@@ -253,11 +264,11 @@ public class GameUI {
             } else {
                 gc.setFill(Color.color(0, 0, 0, 0.5));
             }
-            gc.fillRoundRect(messageX, Game.GRID_Y - 30, textWidth + 20, 36, 8, 8);
+            gc.fillRoundRect(messageX, Game.GRID_Y + 10, textWidth + 20, 36, 8, 8);
 
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText(game.message, messageX + 10, Game.GRID_Y - 4);
+            gc.fillText(game.message, messageX + 10, Game.GRID_Y + 36);
         }
 
         
@@ -276,9 +287,9 @@ public class GameUI {
             gc.setFill(Color.LIMEGREEN);
             gc.setFont(Font.font(48));
             gc.fillText("LEVEL COMPLETE!", Game.WIDTH / 2.0 - 200, Game.HEIGHT / 2.0 - 10);
-            gc.setFill(Color.WHITE);
-            gc.setFont(Font.font(20));
-            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
+            //gc.setFill(Color.WHITE);
+            //gc.setFont(Font.font(20));
+            //gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
 
             drawButton(gc, "Continue", BUTTON_X, BUTTON_Y, Color.FORESTGREEN);
         }
@@ -315,6 +326,7 @@ public class GameUI {
 
             drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.GOLDENROD);
         }
+        
     }
 
     /**
@@ -335,12 +347,11 @@ public class GameUI {
         gc.setFill(Color.BURLYWOOD);
         gc.fillRect(0, 0, 1000, 70);
         
+        // sun count frame
         gc.setFill(Color.SADDLEBROWN);
-        //gc.fillRect(5, 5, 31, 33);
-        gc.fillRect(5, 5, 89, 33);
-        
+        gc.fillRect(5, Game.SHOP_Y, 89, 33);
         gc.setFill(Color.MOCCASIN);
-        gc.fillRect(36, 7, 54, 29); 
+        gc.fillRect(36, Game.SHOP_Y + 2, 54, 29); 
         
         
         for (int i = 0; i < SHOP_NAMES.length; i++) {
