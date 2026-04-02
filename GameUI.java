@@ -6,7 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
+import javafx.scene.shape.ArcType;
 /**
  * GameUI class - handles rendering.
  *
@@ -16,11 +16,9 @@ public class GameUI {
     private Game game;
     private Stage stage;
 
-    // Shop entries: name, cost (cost = 0 means free / shovel)
-    private static final String[] SHOP_NAMES = {
-        "Pea", "Sun", "Nut", "Rep", "Shovel"
-    };
-    private static final int[] SHOP_COSTS = { 100, 50, 50, 200, 0 };
+    // Shop entries
+    private static final String[] SHOP_NAMES = {"Sunflower", "Walnut", "Peashooter", "Repeater", "Shovel"};
+    private static final int[] SHOP_COSTS = {50, 50, 100, 200, 0};
 
     // button area for "Continue" and "Home"
     private static final double BUTTON_X = Game.WIDTH / 2.0 - 80;
