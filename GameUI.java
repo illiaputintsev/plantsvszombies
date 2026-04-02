@@ -3,8 +3,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -39,7 +41,9 @@ public class GameUI {
      */
     public void launch() {
         Canvas canvas = new Canvas(Game.WIDTH, Game.HEIGHT);
-        Scene scene = new Scene(new StackPane(canvas));
+        VBox root = new VBox();
+        root.getChildren().addAll(Main.createMenuBar(), new StackPane(canvas));
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Plants vs Zombies");
         stage.show();
@@ -268,7 +272,9 @@ public class GameUI {
 
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText(game.message, messageX + 10, Game.GRID_Y + 36);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText(game.message, Game.WIDTH / 2.0, Game.GRID_Y + 36);
+            gc.setTextAlign(TextAlignment.LEFT);
         }
 
         
@@ -286,7 +292,9 @@ public class GameUI {
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.LIMEGREEN);
             gc.setFont(Font.font(48));
-            gc.fillText("LEVEL COMPLETE!", Game.WIDTH / 2.0 - 200, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText("LEVEL COMPLETE!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.LEFT);
             //gc.setFill(Color.WHITE);
             //gc.setFont(Font.font(20));
             //gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
@@ -302,11 +310,13 @@ public class GameUI {
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.RED);
             gc.setFont(Font.font(48));
-            gc.fillText("GAME OVER", Game.WIDTH / 2.0 - 140, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText("GAME OVER", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
-            gc.fillText("Reached Level " + game.level, Game.WIDTH / 2.0 - 55, Game.HEIGHT / 2.0 + 60);
+            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("Reached Level " + game.level, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 60);
+            gc.setTextAlign(TextAlignment.LEFT);
 
             drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.DARKRED);
         }
@@ -318,11 +328,13 @@ public class GameUI {
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.GOLD);
             gc.setFont(Font.font(48));
-            gc.fillText("YOU WIN!", Game.WIDTH / 2.0 - 120, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText("YOU WIN!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
-            gc.fillText("All " + Game.TOTAL_LEVELS + " levels cleared!", Game.WIDTH / 2.0 - 70, Game.HEIGHT / 2.0 + 60);
+            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("All " + Game.TOTAL_LEVELS + " levels completed!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 60);
+            gc.setTextAlign(TextAlignment.LEFT);
 
             drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.GOLDENROD);
         }
@@ -340,7 +352,9 @@ public class GameUI {
         gc.strokeRoundRect(bx, by, BUTTON_W, BUTTON_H, 10, 10);
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(18));
-        gc.fillText(text, bx + 20, by + 26);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText(text, bx + BUTTON_W / 2.0, by + 26);
+        gc.setTextAlign(TextAlignment.LEFT);
     }
 
     private void drawShop(GraphicsContext gc) {
