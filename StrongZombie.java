@@ -12,11 +12,11 @@ public class StrongZombie extends Zombie
     }
 
     @Override
-    public void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime)
+    public void act(List<Plant> plants, List<Zombie> allZombies, double deltaTime)
     {
         if (!alive) return;
 
-        boolean moved = move(deltaTime, plants);
+        boolean moved = move(deltaTime, plants, allZombies);
 
         if (!moved) {
             attack(deltaTime, plants);
@@ -26,16 +26,13 @@ public class StrongZombie extends Zombie
     @Override
     public void draw(GraphicsContext gc)
     {
-        // draw the same body as BasicZombie
         super.draw(gc);
 
-        // draw orange cone on head
         gc.setFill(Color.ORANGE);
         double[] xPoints = {x - 8, x + 2, x + 12};
         double[] yPoints = {y - 32, y - 50, y - 32};
         gc.fillPolygon(xPoints, yPoints, 3);
 
-        // cone stripes
         gc.setStroke(Color.DARKORANGE);
         gc.setLineWidth(1);
         gc.strokeLine(x - 3, y - 36, x + 7, y - 36);

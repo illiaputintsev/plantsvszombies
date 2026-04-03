@@ -10,11 +10,11 @@ public class BasicZombie extends Zombie
     }
 
     @Override
-    public void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime)
+    public void act(List<Plant> plants, List<Zombie> allZombies, double deltaTime)
     {
         if (!alive) return;
 
-        boolean moved = move(deltaTime, plants);
+        boolean moved = move(deltaTime, plants, allZombies);
 
         if (!moved) {
             attack(deltaTime, plants);
