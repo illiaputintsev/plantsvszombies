@@ -55,6 +55,9 @@ public class Game extends Board
     public static final int SHOP_CELL_W = 80;
     public static final int SHOP_CELL_H = 60;
     public static final int SHOVEL_INDEX = 4;
+    
+    // Pause state
+    private boolean paused = false;
 
     public static double colToPixelX(int col) {
         return GRID_X + col * CELL_W + CELL_W / 2.0;
@@ -119,6 +122,7 @@ public class Game extends Board
         gameOver = false;
         levelComplete = false;
         gameWon = false;
+        paused = false;
         level = chosenLevel - 1; // increments by startLevel()
         phase = 0;
         phaseTimer = 10.0; // 10 seconds to plant initial plants
@@ -447,5 +451,26 @@ public class Game extends Board
 
     public List<Sun> getSuns() {
         return suns;
+    }
+
+    /**
+     * Returns true if the game is currently paused.
+     */
+    public boolean isPaused() {
+        return paused;
+    }
+
+    /**
+     * Pauses the game — stops all updates while keeping rendering active.
+     */
+    public void pause() {
+        paused = true;
+    }
+
+    /**
+     * Resumes the game from a paused state.
+     */
+    public void resume() {
+        paused = false;
     }
 }
