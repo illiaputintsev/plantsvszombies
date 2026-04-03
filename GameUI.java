@@ -493,18 +493,10 @@ public class GameUI {
     
     private void drawShopPlantIcon(GraphicsContext gc, int index, double cx, double cy) {
         switch (index) {
-            case 0:
-                drawSunflowerIcon(gc, cx, cy);
-                break;
-            case 1:
-                drawWallnutIcon(gc, cx, cy);
-                break;
-            case 2:
-                drawPeashooterIcon(gc, cx, cy);
-                break;
-            case 3:
-                drawRepeaterIcon(gc, cx, cy);
-                break;
+            case 0: Sunflower.drawIcon(gc, cx, cy + 4, 0.6, true); break;
+            case 1: Walnut.drawIcon(gc, cx, cy, 0.6, true); break;
+            case 2: Peashooter.drawIcon(gc, cx, cy + 4, 0.7, true); break;
+            case 3: Repeater.drawIcon(gc, cx, cy, 0.7, true); break;
         }
     }
     
@@ -582,85 +574,6 @@ public class GameUI {
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
         gc.fillText(label, x + OVERLAY_BTN_W / 2, y + OVERLAY_BTN_H / 2);
-    }
-    
-    private void drawPeashooterIcon(GraphicsContext gc, double x, double y) {
-    
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(x - 12, y - 8, 20, 20);
-    
-        gc.fillRoundRect(x + 2, y - 3, 10, 7, 4, 4);
-        gc.fillOval(x + 9, y - 5, 7, 10);
-    
-        gc.setFill(Color.BLACK);
-        gc.fillOval(x + 12, y - 2, 3, 5);
-    
-        gc.setFill(Color.WHITE);
-        gc.fillOval(x - 4, y - 3, 5, 6);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(x - 1.5, y, 2, 3);
-    }
-
-    private void drawSunflowerIcon(GraphicsContext gc, double x, double y) {
-        gc.setFill(Color.GOLD);
-        for (int i = 0; i < 10; i++) {
-            double a = i * (Math.PI * 2 / 10.0);
-            double px = x + Math.cos(a) * 10;
-            double py = y + Math.sin(a) * 10;
-            gc.fillOval(px - 4, py - 4, 8, 8);
-    
-        }
-        gc.setFill(Color.rgb(170, 120, 60));
-        gc.fillOval(x - 9, y - 9, 18, 18);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(x - 4, y - 2, 2, 3);
-        gc.fillOval(x + 2, y - 2, 2, 3);
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1);
-        gc.strokeArc(x - 3, y + 1, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
-    }
-
-    private void drawWallnutIcon(GraphicsContext gc, double x, double y) {
-        gc.setFill(Color.rgb(190, 150, 70));
-        gc.fillOval(x - 10, y - 12, 20, 26);
-        gc.setFill(Color.rgb(250, 245, 220));
-        gc.fillOval(x - 6, y - 3, 5, 7);
-        gc.fillOval(x + 1, y - 3, 5, 7);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(x - 4, y, 1.8, 2);
-        gc.fillOval(x + 3, y, 1.8, 2);
-        gc.setStroke(Color.rgb(90, 70, 30));
-        gc.setLineWidth(1);
-        gc.strokeArc(x - 3, y + 4, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
-    }
-    
-    private void drawRepeaterIcon(GraphicsContext gc, double x, double y) {
-        double bx = x - 5;
-        double by = y - 4;
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(bx - 9, by - 6, 14, 14);
-        gc.fillRoundRect(bx + 1, by - 1, 7, 5, 4, 4);
-        gc.fillOval(bx + 6, by - 2, 5, 8);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(bx + 8.5, by, 2, 3.5);
-        double fx = x + 4;
-        double fy = y + 1;
-        gc.setFill(Color.rgb(140, 180, 70));
-        gc.fillOval(fx - 10, fy - 7, 16, 16);
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(fx - 9, fy - 6, 14, 14);
-        gc.fillRoundRect(fx + 1, fy - 1, 7, 5, 4, 4);
-        gc.fillOval(fx + 6, fy - 2, 5, 8);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(fx + 8.5, fy, 2, 3.5);
-        gc.setFill(Color.WHITE);
-        gc.fillOval(fx - 1, fy - 1, 3.5, 4.5);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(fx + 0.5, fy + 1, 1.4, 2);
-        gc.setFill(Color.WHITE);
-        gc.fillOval(bx - 1, by - 1, 3.5, 4.5);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(bx + 0.5, by + 1, 1.4, 2);
     }
     
     private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {

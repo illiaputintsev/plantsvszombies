@@ -98,4 +98,40 @@ public class Peashooter extends Plant
         gc.setFill(Color.rgb(255, 255, 255, 0.28));
         gc.fillOval(x - 10, y - 20, 8, 6);
     }
+    
+    public static void drawIcon(GraphicsContext gc, double cx, double cy, double scale, boolean headOnly) {
+        gc.save();
+        gc.translate(cx, cy);
+        gc.scale(scale, scale);
+    
+        if (!headOnly) {
+            gc.setFill(Color.rgb(0, 0, 0, 0.15));
+            gc.fillOval(-18, 18, 36, 10);
+            gc.setFill(Color.FORESTGREEN);
+            gc.fillRoundRect(-4, -2, 8, 30, 6, 6);
+            gc.setFill(Color.LIMEGREEN);
+            gc.fillOval(-18, 8, 16, 10);
+            gc.fillOval(2, 8, 16, 10);
+        }
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(-18, -24, 30, 30);
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillRoundRect(4, -16, 16, 12, 6, 6);
+        gc.fillOval(15, -18, 10, 14);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(19, -16, 6, 11);
+    
+        gc.setFill(Color.WHITE);
+        gc.fillOval(-7, -17, 10, 12);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(-2, -12, 4, 6);
+    
+        gc.setFill(Color.rgb(255, 255, 255, 0.28));
+        gc.fillOval(-10, -20, 8, 6);
+    
+        gc.restore();
+    }
 }
