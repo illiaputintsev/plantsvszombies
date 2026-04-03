@@ -168,6 +168,7 @@ public class Game
                     phaseTimer = 3.0;
                     message = "A huge wave is approaching!";
                     messageTimer = 3.0;
+                    SoundManager.playDrums();
                 }
                 break;
 
@@ -204,11 +205,14 @@ public class Game
                         messageTimer = 5.0;
                         gameRunning = false;
                         gameWon = true;
+                        SoundManager.stopLevelTheme();
                     } else {
                         message = "Level " + level + " Complete!";
                         messageTimer = 3.0;
                         levelComplete = true;
                         gameRunning = false;
+                        SoundManager.stopLevelTheme();
+                        SoundManager.playLVLComplete();
                     }
                 }
                 break;
@@ -256,6 +260,9 @@ public class Game
             skySunTimer = 0;
         }
 
+        if (!(SoundManager.isLevelThemePlaying())){
+            SoundManager.playLevelTheme();
+        }
         removeDeadEntities();
         checkLoseCondition();
     }
@@ -393,6 +400,10 @@ public class Game
     {
         for (Zombies z : Zombie) {
             if (z.hasReachedHouse()) {
+                if (!gameOver) {
+                    SoundManager.stopLevelTheme();
+                    SoundManager.playGameOver();
+                }
                 gameRunning = false;
                 gameOver = true;
             }
