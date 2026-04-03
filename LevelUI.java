@@ -29,6 +29,11 @@ public class LevelUI {
     private static final double BACK_W = 120;
     private static final double BACK_H = 40;
 
+    /**
+     * Creates the level selection screen.
+     * @param game the game state (used to check progress)
+     * @param stage the JavaFX stage
+     */
     public LevelUI(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
@@ -82,8 +87,10 @@ public class LevelUI {
     }
 
     /**
-     * Figures out which level button the mouse is over.
-     * Returns -1 if not hovering over any
+     * Determines which level button the mouse is hovering over.
+     * @param mouseX the mouse x coordinate
+     * @param mouseY the mouse y coordinate
+     * @return the level number (1-based), or -1 if not over any button
      */
     private int getLevelAtPosition(double mouseX, double mouseY) {
         for (int i = 0; i < Game.TOTAL_LEVELS; i++) {
@@ -98,7 +105,9 @@ public class LevelUI {
     }
 
     /**
-     * Draws the level select screen with all buttons.
+     * Draws the full level select screen with buttons and labels.
+     * @param gc the graphics context
+     * @param hoveredLevel the currently hovered level number, or -1
      */
     private void drawLevelSelect(GraphicsContext gc, int hoveredLevel) {
         gc.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);

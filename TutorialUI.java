@@ -8,7 +8,6 @@ import javafx.scene.shape.ArcType;
 
 /**
  * TutorialUI - renders a slideshow overlay teaching the player how to play.
- * @author - Mark
  */
 public class TutorialUI {
 
@@ -27,22 +26,40 @@ public class TutorialUI {
     private static final double ARROW_SIZE = 36;
     private static final double CLOSE_SIZE = 28;
 
+    /**
+     * Creates the tutorial overlay centred on the screen.
+     * @param screenW the screen width for centring
+     * @param screenH the screen height for centring
+     * @param onClose callback to run when the tutorial is closed
+     */
     public TutorialUI(double screenW, double screenH, Runnable onClose) {
         this.popX = (screenW - POP_W) / 2.0;
         this.popY = (screenH - POP_H) / 2.0;
         this.onClose = onClose;
     }
 
+    /**
+     * Opens the tutorial at the first slide.
+     */
     public void open() {
         currentSlide = 0;
         visible = true;
     }
 
+    /**
+     * Checks whether the tutorial overlay is currently visible.
+     * @return true if the tutorial is showing
+     */
     public boolean isVisible() {
         return visible;
     }
 
-    // returns true if the click was consumed by the tutorial overlay
+    /**
+     * Handles a click within the tutorial overlay (navigation or close).
+     * @param mx click x coordinate
+     * @param my click y coordinate
+     * @return true if the click was consumed by the overlay
+     */
     public boolean handleClick(double mx, double my) {
         if (!visible) return false;
 
@@ -80,6 +97,10 @@ public class TutorialUI {
         return true; // consume all clicks when overlay is open
     }
 
+    /**
+     * Draws the tutorial popup, navigation, and current slide content.
+     * @param gc the graphics context to draw on
+     */
     public void draw(GraphicsContext gc) {
         if (!visible) return;
 
@@ -134,6 +155,13 @@ public class TutorialUI {
         gc.setLineWidth(1);
     }
 
+    /**
+     * Draws a left or right navigation arrow button.
+     * @param gc the graphics context
+     * @param ax left x position
+     * @param ay top y position
+     * @param left true for left arrow, false for right
+     */
     private void drawArrow(GraphicsContext gc, double ax, double ay, boolean left) {
         gc.setFill(Color.rgb(80, 80, 80, 0.7));
         gc.fillRoundRect(ax, ay, ARROW_SIZE, ARROW_SIZE, 8, 8);
@@ -143,6 +171,11 @@ public class TutorialUI {
         gc.fillText(left ? "<" : ">", ax + ARROW_SIZE / 2.0, ay + 26);
     }
 
+    /**
+     * Draws word-wrapped slide text at the top of the popup.
+     * @param gc the graphics context
+     * @param text the text to display
+     */
     private void drawSlideText(GraphicsContext gc, String text) {
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font("Arial", FontWeight.BOLD, 18));
@@ -315,6 +348,14 @@ public class TutorialUI {
         }
     }
 
+    /**
+     * Draws a five-pointed star at the given position.
+     * @param gc the graphics context
+     * @param cx centre x
+     * @param cy centre y
+     * @param r outer radius
+     * @param color fill colour
+     */
     private void drawStar(GraphicsContext gc, double cx, double cy, double r, Color color) {
         gc.setFill(color);
         double[] xs = new double[10];
@@ -328,6 +369,12 @@ public class TutorialUI {
         gc.fillPolygon(xs, ys, 10);
     }
 
+    /**
+     * Draws a mini house for the tutorial slides.
+     * @param gc the graphics context
+     * @param bx left x position
+     * @param by top y position
+     */
     private void drawMiniHouse(GraphicsContext gc, double bx, double by) {
         // main wall 
         gc.setFill(Color.web("#F5F5DC"));
@@ -371,6 +418,12 @@ public class TutorialUI {
         gc.fillRect(bx - 2, by + 158, 134, 6);
     }
 
+    /**
+     * Draws a small bullet circle for the tutorial slides.
+     * @param gc the graphics context
+     * @param bx centre x
+     * @param by centre y
+     */
     private void drawMiniBullet(GraphicsContext gc, double bx, double by) {
         gc.setFill(Color.GREEN);
         gc.fillOval(bx - 5, by - 5, 10, 10);
