@@ -19,9 +19,9 @@ public abstract class Zombies extends Entity
         this.eatTimer = 0;
         this.attackInterval = 1.0;
         this.flashTimer = 0;
-        // start at right edge of screen
-        this.x = Game.WIDTH + 20;
-        this.y = Game.rowToPixelY(row);
+        // start at right edge of screen with small random offset so they don't overlap
+        this.x = Game.WIDTH + 20 + Math.random() * 30;
+        this.y = Game.rowToPixelY(row) + (Math.random() * 16 - 8);
     }
 
     protected boolean move(double deltaTime, List<Plants> plants)
