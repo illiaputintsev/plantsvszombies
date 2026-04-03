@@ -10,6 +10,7 @@ public abstract class Zombie extends Entity
     protected double eatTimer;
     protected double attackInterval;
     protected double flashTimer;
+    private static final double ZOMBIE_SPACING = 20; // min gap between zombies in same row
 
     public Zombie(int hp, int row, int col, double speed)
     {
@@ -19,27 +20,38 @@ public abstract class Zombie extends Entity
         this.eatTimer = 0;
         this.attackInterval = 1.0;
         this.flashTimer = 0;
-        // start at right edge of screen with small random offset so they don't overlap
         this.x = Game.WIDTH + 20 + Math.random() * 30;
     }
 
-    protected boolean move(double deltaTime, List<Plant> plants)
+    protected boolean move(double deltaTime, List<Plant> plants, List<Zombie> allZombies)
     {
         if (!alive) return false;
 
-        // If there is a plant on the zombie's current cell, stay and eat it
         for (Plant p : plants) {
             if (p.isAlive() && p.getRow() == row
                 && Math.abs(x - p.getX()) < Game.CELL_W * 0.5)
             {
                 eating = true;
-                return false; // blocked — will attack this cell
+                return false;
             }
         }
 
         eating = false;
         eatTimer = 0;
-        x -= speed * deltaTime;
+
+        double newX = x - speed * deltaTime;
+        for (Zombie other : allZombies) {
+            if (other != this && other.isAlive() && other.row == this.row
+                && other.x < this.x)
+            {
+                double minX = other.x + ZOMBIE_SPACING;
+                if (newX < minX) {
+                    newX = minX;
+                }
+            }
+        }
+
+        x = newX;
         col = Game.pixelXToCol(x);
         return true;
     }
@@ -87,7 +99,7 @@ public abstract class Zombie extends Entity
 
     public void draw(GraphicsContext gc) {
         Zombie.drawBody(gc, x, y, 1.0, isFlashing());
-    
+
         double barW = 28;
         gc.setFill(Color.DARKRED);
         gc.fillRect(x - barW / 2, y - 40, barW, 4);
