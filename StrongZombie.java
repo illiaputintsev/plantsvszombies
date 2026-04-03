@@ -8,7 +8,7 @@ public class StrongZombie extends Zombies
 
     public StrongZombie(int row, int col)
     {
-        super(HP, row, col, 28); // slightly slower than basic
+        super(HP, row, col, 22); // slightly slower than basic
     }
 
     @Override

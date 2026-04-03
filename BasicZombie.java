@@ -6,7 +6,7 @@ public class BasicZombie extends Zombies
 
     public BasicZombie(int row, int col)
     {
-        super(HP, row, col, 30); // 30 pixels per second
+        super(HP, row, col, 24); // 30 pixels per second
     }
 
     @Override
