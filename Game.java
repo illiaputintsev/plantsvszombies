@@ -177,6 +177,7 @@ public class Game
                     zombieSpawnTimer = 0;
                     message = "FINAL WAVE!";
                     messageTimer = 2.0;
+                    SoundManager.playDrums();
                 }
                 break;
 
