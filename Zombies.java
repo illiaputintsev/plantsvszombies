@@ -21,7 +21,6 @@ public abstract class Zombies extends Entity
         this.flashTimer = 0;
         // start at right edge of screen with small random offset so they don't overlap
         this.x = Game.WIDTH + 20 + Math.random() * 30;
-        this.y = Game.rowToPixelY(row) + (Math.random() * 16 - 8);
     }
 
     protected boolean move(double deltaTime, List<Plants> plants)
