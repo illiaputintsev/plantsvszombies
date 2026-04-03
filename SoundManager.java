@@ -116,7 +116,7 @@ public class SoundManager {
     
     public static void playMenuTheme() {
         if (!(menuTheme.isPlaying())) {
-            menuTheme.play(0.6);
+            menuTheme.play(0.5);
         }
     }
     
