@@ -327,6 +327,13 @@ public class GameUI {
             gc.fillText(game.getMessage(), Game.WIDTH / 2.0, Game.GRID_Y + 36);
             gc.setTextAlign(TextAlignment.LEFT);
         }
+
+        
+        if (!(game.isLevelComplete() || game.isGameOver() || game.isGameWon())){
+            if (!(SoundManager.isLevelThemePlaying())){
+                SoundManager.playLevelTheme();
+            }
+        }
         
         // pausing checks
         if (game.isGameRunning()) {
@@ -349,7 +356,6 @@ public class GameUI {
         }
 
         // Game over
-
         if (game.isGameOver()) {
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
@@ -368,7 +374,6 @@ public class GameUI {
 
         // Game won
         if (game.isGameWon()) {
-
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.GOLD);
