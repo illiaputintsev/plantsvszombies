@@ -316,7 +316,6 @@ public class GameUI {
             //final wave warning
             if (game.phase == 2 || game.phase == 3) {
                 gc.setFill(Color.color(0.8, 0, 0, 0.7));
-                SoundManager.playDrums();
             } else {
                 gc.setFill(Color.color(0, 0, 0, 0.5));
             }
@@ -327,13 +326,6 @@ public class GameUI {
             gc.setTextAlign(TextAlignment.CENTER);
             gc.fillText(game.message, Game.WIDTH / 2.0, Game.GRID_Y + 36);
             gc.setTextAlign(TextAlignment.LEFT);
-        }
-
-        
-        if (!(game.levelComplete || game.gameOver || game.gameWon)){
-            if (!(SoundManager.isLevelThemePlaying())){
-                SoundManager.playLevelTheme();
-            }
         }
         
         // pausing checks
@@ -346,8 +338,6 @@ public class GameUI {
         
         // Level complete
         if (game.levelComplete) {
-            SoundManager.stopLevelTheme();
-            SoundManager.playLVLComplete();
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.LIMEGREEN);
@@ -360,8 +350,6 @@ public class GameUI {
 
         // Game over
         if (game.gameOver) {
-            SoundManager.stopLevelTheme();
-            SoundManager.playGameOver();
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.RED);
@@ -379,7 +367,6 @@ public class GameUI {
 
         // Game won
         if (game.gameWon) {
-            SoundManager.stopLevelTheme();
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.GOLD);
