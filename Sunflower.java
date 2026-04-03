@@ -75,4 +75,42 @@ public class Sunflower extends Plant
         
         gc.setLineWidth(1);
     }
+    
+    public static void drawIcon(GraphicsContext gc, double cx, double cy, double scale, boolean headOnly) {
+        gc.save();
+        gc.translate(cx, cy);
+        gc.scale(scale, scale);
+    
+        if (!headOnly) {
+            gc.setFill(Color.rgb(0, 0, 0, 0.15));
+            gc.fillOval(-18, 18, 36, 10);
+            gc.setFill(Color.FORESTGREEN);
+            gc.fillRoundRect(-3, -1, 6, 28, 6, 6);
+            gc.setFill(Color.LIMEGREEN);
+            gc.fillOval(-18, 8, 16, 10);
+            gc.fillOval(2, 8, 16, 10);
+        }
+    
+        gc.setFill(Color.GOLD);
+        for (int i = 0; i < 12; i++) {
+            double a = i * (Math.PI * 2 / 12.0);
+            double px = Math.cos(a) * 18;
+            double py = -10 + Math.sin(a) * 18;
+            gc.fillOval(px - 7, py - 7, 14, 14);
+        }
+    
+        gc.setFill(Color.rgb(170, 120, 60));
+        gc.fillOval(-16, -24, 32, 28);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(-7, -14, 4, 6);
+        gc.fillOval(3, -14, 4, 6);
+    
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1.5);
+        gc.strokeArc(-7, -8, 14, 8, 180, 180, javafx.scene.shape.ArcType.OPEN);
+        gc.setLineWidth(1);
+    
+        gc.restore();
+    }
 }

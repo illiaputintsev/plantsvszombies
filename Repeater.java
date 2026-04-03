@@ -156,4 +156,46 @@ public class Repeater extends Plant
         gc.setFill(Color.BLACK);
         gc.fillOval(bx - 2, by - 12, 4, 6);
     }
+    
+    public static void drawIcon(GraphicsContext gc, double cx, double cy, double scale, boolean headOnly) {
+        gc.save();
+        gc.translate(cx, cy);
+        gc.scale(scale, scale);
+    
+        if (!headOnly) {
+            gc.setFill(Color.rgb(0, 0, 0, 0.15));
+            gc.fillOval(-20, 18, 40, 10);
+            gc.setFill(Color.FORESTGREEN);
+            gc.fillRoundRect(-3, 4, 6, 20, 6, 6);
+            gc.setFill(Color.LIMEGREEN);
+            gc.fillOval(-18, 10, 16, 10);
+            gc.fillOval(2, 10, 16, 10);
+        }
+    
+        double bx = -5, by = -8;
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(bx - 11, by - 14, 20, 20);
+        gc.fillRoundRect(bx + 3, by - 8, 10, 7, 4, 4);
+        gc.fillOval(bx + 10, by - 10, 6, 9);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(bx + 13, by - 8, 3, 6);
+        gc.setFill(Color.WHITE);
+        gc.fillOval(bx - 4, by - 9, 6, 7);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(bx - 1, by - 6, 2, 3);
+    
+        double fx = 4, fy = 1;
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(fx - 11, fy - 14, 20, 20);
+        gc.fillRoundRect(fx + 3, fy - 8, 10, 7, 4, 4);
+        gc.fillOval(fx + 10, fy - 10, 6, 9);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx + 13, fy - 8, 3, 6);
+        gc.setFill(Color.WHITE);
+        gc.fillOval(fx - 4, fy - 9, 6, 7);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx - 1, fy - 6, 2, 3);
+    
+        gc.restore();
+    }
 }

@@ -182,34 +182,7 @@ public class MenuUI {
     }
 
     private void drawBackgroundZombie(GraphicsContext gc, double x, double y) {
-        gc.save();
-        gc.translate(x, y);
-        gc.scale(0.3, 0.3);
-
-        // legs
-        gc.setFill(Color.DARKSLATEGRAY);
-        gc.fillRect(-8, 8, 7, 16);
-        gc.fillRect(4, 8, 7, 16);
-
-        // body
-        gc.setFill(Color.DARKKHAKI);
-        gc.fillRect(-10, -16, 24, 26);
-
-        // arms
-        gc.setFill(Color.DARKSEAGREEN);
-        gc.fillRect(-18, -8, 10, 6);
-        gc.fillRect(14, -12, 10, 6);
-
-        // head
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(-10, -34, 22, 22);
-
-        // eyes
-        gc.setFill(Color.RED);
-        gc.fillOval(-5, -28, 4, 4);
-        gc.fillOval(4, -28, 4, 4);
-
-        gc.restore();
+        Zombie.drawBody(gc, x, y, 0.3, false);
     }
 
     private AnchorPane createOverlay(Canvas tutorialCanvas, GraphicsContext tgc) {

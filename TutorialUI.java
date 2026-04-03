@@ -371,144 +371,28 @@ public class TutorialUI {
         gc.fillRect(bx - 2, by + 158, 134, 6);
     }
 
-
-    private void drawMiniZombie(GraphicsContext gc, double zx, double zy) {
-        // legs
-        gc.setFill(Color.DARKSLATEGRAY);
-        gc.fillRect(zx - 7.2, zy + 7.2, 6.3, 14.4);
-        gc.fillRect(zx + 3.6, zy + 7.2, 6.3, 14.4);
-    
-        // body
-        gc.setFill(Color.DARKKHAKI);
-        gc.fillRect(zx - 9.0, zy - 14.4, 21.6, 23.4);
-    
-        // arms
-        gc.setFill(Color.DARKSEAGREEN);
-        gc.fillRect(zx - 16.2, zy - 7.2, 9.0, 5.4);
-        gc.fillRect(zx + 12.6, zy - 10.8, 9.0, 5.4);
-    
-        // head
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(zx - 9.0, zy - 30.6, 19.8, 19.8);
-    
-        // eyes
-        gc.setFill(Color.RED);
-        gc.fillOval(zx - 4.5, zy - 25.2, 3.6, 3.6);
-        gc.fillOval(zx + 3.6, zy - 25.2, 3.6, 3.6);
-    }
-
-    private void drawMiniSunflower(GraphicsContext gc, double sx, double sy) {
-        // stem
-        gc.setFill(Color.FORESTGREEN);
-        gc.fillRoundRect(sx - 2, sy + 4, 5, 20, 4, 4);
-        // leaves
-        gc.setFill(Color.LIMEGREEN);
-        gc.fillOval(sx - 12, sy + 10, 12, 7);
-        gc.fillOval(sx + 1, sy + 10, 12, 7);
-        // petals
-        gc.setFill(Color.GOLD);
-        for (int i = 0; i < 10; i++) {
-            double a = i * (Math.PI * 2 / 10.0);
-            double px = sx + Math.cos(a) * 14;
-            double py = sy - 6 + Math.sin(a) * 14;
-            gc.fillOval(px - 5, py - 5, 10, 10);
-        }
-        // face
-        gc.setFill(Color.rgb(170, 120, 60));
-        gc.fillOval(sx - 11, sy - 16, 22, 20);
-        // eyes
-        gc.setFill(Color.BLACK);
-        gc.fillOval(sx - 5, sy - 8, 3, 4);
-        gc.fillOval(sx + 2, sy - 8, 3, 4);
-        // smile
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1);
-        gc.strokeArc(sx - 5, sy - 3, 10, 5, 180, 180, ArcType.OPEN);
-    }
-
-    private void drawMiniPeashooter(GraphicsContext gc, double px, double py) {
-        // stem
-        gc.setFill(Color.FORESTGREEN);
-        gc.fillRoundRect(px - 3, py + 2, 6, 20, 4, 4);
-        // leaves
-        gc.setFill(Color.LIMEGREEN);
-        gc.fillOval(px - 12, py + 8, 12, 7);
-        gc.fillOval(px + 1, py + 8, 12, 7);
-        // head
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(px - 13, py - 18, 22, 22);
-        // snout
-        gc.fillRoundRect(px + 3, py - 12, 12, 9, 4, 4);
-        gc.fillOval(px + 11, py - 13, 7, 10);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(px + 14, py - 11, 4, 7);
-        // eye
-        gc.setFill(Color.WHITE);
-        gc.fillOval(px - 5, py - 13, 7, 9);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(px - 2, py - 9, 3, 4);
-    }
-
-    private void drawMiniRepeater(GraphicsContext gc, double rx, double ry) {
-        // stem
-        gc.setFill(Color.FORESTGREEN);
-        gc.fillRoundRect(rx - 2, ry + 6, 5, 16, 4, 4);
-        // leaves
-        gc.setFill(Color.LIMEGREEN);
-        gc.fillOval(rx - 12, ry + 10, 12, 7);
-        gc.fillOval(rx + 1, ry + 10, 12, 7);
-
-        // back head
-        double bx = rx - 5, by = ry - 8;
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(bx - 11, by - 14, 20, 20);
-        gc.fillRoundRect(bx + 3, by - 8, 10, 7, 4, 4);
-        gc.fillOval(bx + 10, by - 10, 6, 9);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(bx + 13, by - 8, 3, 6);
-        gc.setFill(Color.WHITE);
-        gc.fillOval(bx - 4, by - 9, 6, 7);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(bx - 1, by - 6, 2, 3);
-
-        // front head
-        double fx = rx + 4, fy = ry + 1;
-        gc.setFill(Color.YELLOWGREEN);
-        gc.fillOval(fx - 11, fy - 14, 20, 20);
-        gc.fillRoundRect(fx + 3, fy - 8, 10, 7, 4, 4);
-        gc.fillOval(fx + 10, fy - 10, 6, 9);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(fx + 13, fy - 8, 3, 6);
-        gc.setFill(Color.WHITE);
-        gc.fillOval(fx - 4, fy - 9, 6, 7);
-        gc.setFill(Color.BLACK);
-        gc.fillOval(fx - 1, fy - 6, 2, 3);
-    }
-
     private void drawMiniBullet(GraphicsContext gc, double bx, double by) {
         gc.setFill(Color.GREEN);
         gc.fillOval(bx - 5, by - 5, 10, 10);
     }
-
+    
+    private void drawMiniZombie(GraphicsContext gc, double zx, double zy) {
+        Zombie.drawBody(gc, zx, zy, 0.9, false);
+    }
+    
+    private void drawMiniSunflower(GraphicsContext gc, double sx, double sy) {
+        Sunflower.drawIcon(gc, sx, sy, 0.85, false);
+    }
+    
+    private void drawMiniPeashooter(GraphicsContext gc, double px, double py) {
+        Peashooter.drawIcon(gc, px, py, 0.85, false);
+    }
+    
+    private void drawMiniRepeater(GraphicsContext gc, double rx, double ry) {
+        Repeater.drawIcon(gc, rx, ry, 1, false);
+    }
+    
     private void drawMiniWalnut(GraphicsContext gc, double wx, double wy) {
-        // body
-        gc.setFill(Color.rgb(190, 150, 70));
-        gc.fillOval(wx - 16, wy - 24, 32, 44);
-        // inner face
-        gc.setFill(Color.rgb(210, 170, 90));
-        gc.fillOval(wx - 10, wy - 10, 20, 24);
-        // eyes
-        gc.setFill(Color.rgb(250, 245, 220));
-        gc.fillOval(wx - 9, wy - 10, 9, 12);
-        gc.fillOval(wx + 1, wy - 10, 9, 12);
-        // pupils
-        gc.setFill(Color.BLACK);
-        gc.fillOval(wx - 4, wy - 6, 4, 4);
-        gc.fillOval(wx + 5, wy - 6, 4, 4);
-        // determined expression
-        gc.setStroke(Color.rgb(90, 70, 30));
-        gc.setLineWidth(1.2);
-        gc.strokeLine(wx - 3, wy + 5, wx + 3, wy + 5);
-        gc.setLineWidth(1);
+        Walnut.drawIcon(gc, wx, wy, 0.85, false);
     }
 }
