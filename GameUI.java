@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -10,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.geometry.VPos;
+import javafx.scene.shape.ArcType;
 
 /**
  * GameUI class - handles rendering.
@@ -20,11 +22,9 @@ public class GameUI {
     private Game game;
     private Stage stage;
 
-    // Shop entries: name, cost (cost = 0 means free / shovel)
-    private static final String[] SHOP_NAMES = {
-        "Pea", "Sun", "Nut", "Rep", "Shovel"
-    };
-    private static final int[] SHOP_COSTS = { 100, 50, 50, 200, 0 };
+    // Shop entries
+    private static final String[] SHOP_NAMES = {"Sunflower", "Walnut", "Peashooter", "Repeater", "Shovel"};
+    private static final int[] SHOP_COSTS = {50, 50, 100, 200, 0};
 
     // button area for "Continue" and "Home"
     private static final double BUTTON_X = Game.WIDTH / 2.0 - 80;
@@ -38,8 +38,8 @@ public class GameUI {
     private static final double PAUSE_BTN_SIZE = 32;
     
     // Pause overlay buttons
-    private static final double OVERLAY_BTN_W = 50;
-    private static final double OVERLAY_BTN_H = 20;
+    private static final double OVERLAY_BTN_W = 200;
+    private static final double OVERLAY_BTN_H = 50;
     private static final double OVERLAY_BTN_GAP = 20;
 
     public GameUI(Game game, Stage stage) {
@@ -53,7 +53,9 @@ public class GameUI {
      */
     public void launch() {
         Canvas canvas = new Canvas(Game.WIDTH, Game.HEIGHT);
-        Scene scene = new Scene(new StackPane(canvas));
+        VBox root = new VBox();
+        root.getChildren().addAll(Main.createMenuBar(), new StackPane(canvas));
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Plants vs Zombies");
         stage.show();
@@ -74,29 +76,42 @@ public class GameUI {
         
         new AnimationTimer() {
             private long lastTime = -1;
-
+            private boolean wasPaused = false;
+        
             @Override
             public void handle(long now) {
                 if (lastTime < 0) { lastTime = now; return; }
+        
+                // After unpausing, skip one frame's delta so nothing jumps
+                if (wasPaused && !game.isPaused()) {
+                    lastTime = now;
+                    wasPaused = false;
+                }
+                if (game.isPaused()) {
+                    wasPaused = true;
+                }
+        
                 double deltaTime = (now - lastTime) / 1_000_000_000.0;
                 lastTime = now;
-
-                // stop loop if game is no longer running and an end state is reached
+        
                 if (!game.gameRunning && (game.levelComplete || game.gameOver || game.gameWon)) {
                     render(gc);
                     stop();
                     return;
                 }
-
-                // Skip update when paused, but keep rendering (overlay draws on top)
+        
                 if (!game.isPaused()) {
                     game.update(deltaTime);
                 }
                 render(gc);
             }
-        }.start();
+        }.start();  
     }
 
+    /**
+     * 
+     * 
+     */
     private void handleClick(double mx, double my) {
         // Pause overlay clicks | checked first, swallows all input
         if (game.isPaused()) {
@@ -191,11 +206,11 @@ public class GameUI {
         if (game.selectedPlant != -1) {
             Plants p = null;
             if (game.selectedPlant == 0) {
-                p = new Peashooter(row, col);
-            } else if (game.selectedPlant == 1) {
                 p = new Sunflower(row, col);
-            } else if (game.selectedPlant == 2) {
+            } else if (game.selectedPlant == 1) {
                 p = new Walnut(row, col);
+            } else if (game.selectedPlant == 2) {
+                p = new Peashooter(row, col);
             } else if (game.selectedPlant == 3) {
                 p = new Repeater(row, col);
             }
@@ -226,7 +241,6 @@ public class GameUI {
         drawShop(gc);
         drawPavement(gc);
         drawHouse(gc);
-        drawOverlayButton(gc, 800, 50, "Menu");
 
         // draw the grid
         for (int r = 0; r < Game.ROWS; r++) {
@@ -252,18 +266,6 @@ public class GameUI {
         for (Bullet b : game.bullets) {
             b.draw(gc);
         }
-        
-        
-        // Sun and score counters
-        gc.setFill(Color.BLACK);
-        gc.setFont(Font.font(14));
-        Sun.drawSunIcon(gc, 20, Game.SHOP_Y + 17, 0.6); 
-        // Draw just the sun amount text next to it
-        gc.setFill(Color.BLACK); // Reset fill to black for text
-        gc.fillText(String.valueOf(game.sun), 55, Game.SHOP_Y + 20); 
-
-        // Keep the score exactly as it was
-        // gc.fillText("Score: " + game.score, 10, 50);
 
         // Level indicator
         if (game.level > 0) {
@@ -321,7 +323,9 @@ public class GameUI {
 
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText(game.message, messageX + 10, Game.GRID_Y + 36);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText(game.message, Game.WIDTH / 2.0, Game.GRID_Y + 36);
+            gc.setTextAlign(TextAlignment.LEFT);
         }
 
         
@@ -329,6 +333,14 @@ public class GameUI {
             if (!(SoundManager.isLevelThemePlaying())){
                 SoundManager.playLevelTheme();
             }
+        }
+        
+        // pausing checks
+        if (game.gameRunning) {
+            drawPauseButton(gc);
+        }
+        if (game.isPaused()) {
+            drawPauseOverlay(gc);
         }
         
         // Level complete
@@ -339,7 +351,9 @@ public class GameUI {
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.LIMEGREEN);
             gc.setFont(Font.font(48));
-            gc.fillText("LEVEL COMPLETE!", Game.WIDTH / 2.0 - 200, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText("LEVEL COMPLETE!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.LEFT);
             //gc.setFill(Color.WHITE);
             //gc.setFont(Font.font(20));
             //gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
@@ -355,11 +369,13 @@ public class GameUI {
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.RED);
             gc.setFont(Font.font(48));
-            gc.fillText("GAME OVER", Game.WIDTH / 2.0 - 140, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText("GAME OVER", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
-            gc.fillText("Reached Level " + game.level, Game.WIDTH / 2.0 - 55, Game.HEIGHT / 2.0 + 60);
+            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("Reached Level " + game.level, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 60);
+            gc.setTextAlign(TextAlignment.LEFT);
 
             drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.DARKRED);
         }
@@ -371,11 +387,13 @@ public class GameUI {
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.GOLD);
             gc.setFont(Font.font(48));
-            gc.fillText("YOU WIN!", Game.WIDTH / 2.0 - 120, Game.HEIGHT / 2.0 - 10);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.fillText("YOU WIN!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
-            gc.fillText("All " + Game.TOTAL_LEVELS + " levels cleared!", Game.WIDTH / 2.0 - 70, Game.HEIGHT / 2.0 + 60);
+            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("All " + Game.TOTAL_LEVELS + " levels completed!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 60);
+            gc.setTextAlign(TextAlignment.LEFT);
 
             drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.GOLDENROD);
         }
@@ -393,45 +411,48 @@ public class GameUI {
         gc.strokeRoundRect(bx, by, BUTTON_W, BUTTON_H, 10, 10);
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(18));
-        gc.fillText(text, bx + 20, by + 26);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText(text, bx + BUTTON_W / 2.0, by + 26);
+        gc.setTextAlign(TextAlignment.LEFT);
     }
 
     private void drawShop(GraphicsContext gc) {
-        gc.setFill(Color.BURLYWOOD);
-        gc.fillRect(0, 0, 1000, 70);
-        
-        // sun count frame
-        gc.setFill(Color.SADDLEBROWN);
-        gc.fillRect(5, Game.SHOP_Y, 89, 33);
-        gc.setFill(Color.MOCCASIN);
-        gc.fillRect(36, Game.SHOP_Y + 2, 54, 29); 
-        
-        
+        // top bar background
+        gc.setFill(Color.rgb(222, 184, 135));
+        gc.fillRect(0, 0, Game.WIDTH, 80);
+
+        // sun counter box
+        double boxX = 10, boxY = 10, boxW = 90, boxH = 40;
+        gc.setFill(Color.GOLDENROD);
+        gc.fillRoundRect(boxX, boxY, boxW, boxH, 8, 8);
+
+        // measure text width to center sun icon + text together
+        String sunText = String.valueOf(game.getSunAmount());
+        double iconSize = 16;
+        double gap = 8;
+        double textWidth = sunText.length() * 10;
+        double totalW = iconSize + gap + textWidth;
+        double startX = boxX + (boxW - totalW) / 2.0;
+        double centerY = boxY + boxH / 2.0;
+
+        // sun icon
+        gc.save();
+        gc.translate(startX + iconSize / 2.0, centerY - 2);
+        gc.scale(0.5, 0.5);
+        new Sun(0, 0, 25, false).draw(gc);
+        gc.restore();
+
+        // sun amount text
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(16));
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.fillText(sunText, startX + iconSize + gap, centerY + 5);
+
+        // shop slots
         for (int i = 0; i < SHOP_NAMES.length; i++) {
             double x = Game.SHOP_X + i * Game.SHOP_CELL_W;
             double y = Game.SHOP_Y;
-
-            // Highlighting slots
-            if (i == game.selectedPlant) {
-                gc.setFill(Color.GOLD);
-            } else if (i == Game.SHOVEL_INDEX) {
-                gc.setFill(Color.SADDLEBROWN);
-            } else if (game.sun >= SHOP_COSTS[i]) {
-                gc.setFill(Color.LIGHTBLUE);
-            } else {
-                gc.setFill(Color.DARKGRAY);
-            }
-
-            gc.fillRect(x, y, Game.SHOP_CELL_W - 5, Game.SHOP_CELL_H - 5);
-
-            // name and cost
-            gc.setFill(Color.BLACK);
-            gc.setFont(Font.font(12));
-            gc.fillText(SHOP_NAMES[i], x + 10, y + 20);
-
-            if (i != Game.SHOVEL_INDEX) {
-                gc.fillText("$" + SHOP_COSTS[i], x + 10, y + 40);
-            }
+            drawSeedPacket(gc, i, x, y);
         }
     }
 
@@ -538,29 +559,64 @@ public class GameUI {
         gc.strokeLine(110, 325, 80, 315);
     }
     
-    private void drawPavement(GraphicsContext gc) {
-        // pavement zombie side
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(920, 70, 1000, 600); 
-        
-        // strip lines road zombie side
-        gc.setFill(Color.YELLOW);
-        gc.fillRect(950, 70, 7, 530);
-        
-        gc.setFill(Color.YELLOW);
-        gc.fillRect(960, 70, 7, 530);
-        
-        // bottom side wall
-        gc.setFill(Color.web("#8B6914"));
-        gc.fillRect(0, 580, 920, 20);
-        
-        // top side wall
-        gc.setFill(Color.web("#8B6914"));
-        gc.fillRect(0, 70, 920, 10);
-        
-        // pavement house side
-        gc.setFill(Color.web("#A0A0A0"));
-        gc.fillRect(0, 80, 200, 520);
+    private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
+        double w = Game.SHOP_CELL_W - 10;
+        double h = Game.SHOP_CELL_H;
+    
+        boolean isShovel = (index == Game.SHOVEL_INDEX);
+        boolean affordable = isShovel || game.getSunAmount() >= SHOP_COSTS[index];
+    
+            // card background
+        if (game.selectedPlant == index) {
+            gc.setFill(Color.rgb(255, 220, 90)); // selected = yellow
+        } else if (isShovel) {
+            gc.setFill(Color.rgb(170, 85, 0));
+        } else if (affordable) {
+            gc.setFill(Color.rgb(185, 230, 240)); // normal = blue
+        } else {
+            gc.setFill(Color.rgb(160, 160, 160));
+        }
+        gc.fillRoundRect(x, y, w, h, 8, 8);
+    
+            // border
+        gc.setStroke(Color.rgb(110, 80, 40));
+        gc.setLineWidth(2);
+        gc.strokeRoundRect(x, y, w, h, 8, 8);
+    
+        if (isShovel) {
+            drawShovelIcon(gc, x + w / 2, y + h / 2);
+            return;
+        }
+    
+        drawShopPlantIcon(gc, index, x + w / 2, y + 23);
+    
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(12));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("☀ " + SHOP_COSTS[index], x + w / 2, y + 50);
+        gc.setTextAlign(TextAlignment.LEFT);
+    
+        if (!affordable) {
+            gc.setFill(Color.rgb(80, 80, 80, 0.35));
+            gc.fillRoundRect(x, y, w, h, 8, 8);
+        }
+    }
+    
+    private void drawShopPlantIcon(GraphicsContext gc, int index, double cx, double cy) {
+        switch (index) {
+            case 0:
+                drawSunflowerIcon(gc, cx, cy);
+                break;
+            case 1:
+                drawWallnutIcon(gc, cx, cy);
+                break;
+            case 2:
+                drawPeashooterIcon(gc, cx, cy);
+                break;
+            case 3:
+                drawRepeaterIcon(gc, cx, cy);
+                break;
+        }
     }
     
     private void drawPauseButton(GraphicsContext gc) {
@@ -624,7 +680,7 @@ public class GameUI {
     private void drawOverlayButton(GraphicsContext gc, double x, double y, String label) {
         // Button background (PvZ-style green)
         gc.setFill(Color.DARKGREY);
-        gc.fillRoundRect(800, 50, OVERLAY_BTN_W, OVERLAY_BTN_H, 12, 12);
+        gc.fillRoundRect(x, y, OVERLAY_BTN_W, OVERLAY_BTN_H, 12, 12);
 
         // Border
         gc.setStroke(Color.rgb(50, 100, 25));
@@ -638,5 +694,148 @@ public class GameUI {
         gc.setTextBaseline(VPos.CENTER);
         gc.fillText(label, x + OVERLAY_BTN_W / 2, y + OVERLAY_BTN_H / 2);
     }
-}
+    
 
+    private void drawPeashooterIcon(GraphicsContext gc, double x, double y) {
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(x - 12, y - 8, 20, 20);
+    
+        gc.fillRoundRect(x + 2, y - 3, 10, 7, 4, 4);
+        gc.fillOval(x + 9, y - 5, 7, 10);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x + 12, y - 2, 3, 5);
+    
+        gc.setFill(Color.WHITE);
+        gc.fillOval(x - 4, y - 3, 5, 6);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x - 1.5, y, 2, 3);
+    }
+    
+    private void drawSunflowerIcon(GraphicsContext gc, double x, double y) {
+    
+        gc.setFill(Color.GOLD);
+        for (int i = 0; i < 10; i++) {
+            double a = i * (Math.PI * 2 / 10.0);
+            double px = x + Math.cos(a) * 10;
+            double py = y + Math.sin(a) * 10;
+            gc.fillOval(px - 4, py - 4, 8, 8);
+        }
+    
+        gc.setFill(Color.rgb(170, 120, 60));
+        gc.fillOval(x - 9, y - 9, 18, 18);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x - 4, y - 2, 2, 3);
+        gc.fillOval(x + 2, y - 2, 2, 3);
+    
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1);
+        gc.strokeArc(x - 3, y + 1, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
+    }
+    
+    private void drawWallnutIcon(GraphicsContext gc, double x, double y) {
+        gc.setFill(Color.rgb(190, 150, 70));
+        gc.fillOval(x - 10, y - 12, 20, 26);
+    
+        gc.setFill(Color.rgb(250, 245, 220));
+        gc.fillOval(x - 6, y - 3, 5, 7);
+        gc.fillOval(x + 1, y - 3, 5, 7);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x - 4, y, 1.8, 2);
+        gc.fillOval(x + 3, y, 1.8, 2);
+    
+        gc.setStroke(Color.rgb(90, 70, 30));
+        gc.setLineWidth(1);
+        gc.strokeArc(x - 3, y + 4, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
+    }
+    
+    private void drawRepeaterIcon(GraphicsContext gc, double x, double y) {
+    
+        double bx = x - 5;
+        double by = y - 4;
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(bx - 9, by - 6, 14, 14);
+        gc.fillRoundRect(bx + 1, by - 1, 7, 5, 4, 4);
+        gc.fillOval(bx + 6, by - 2, 5, 8);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(bx + 8.5, by, 2, 3.5);
+    
+        double fx = x + 4;
+        double fy = y + 1;
+    
+        gc.setFill(Color.rgb(140, 180, 70));
+        gc.fillOval(fx - 10, fy - 7, 16, 16);
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(fx - 9, fy - 6, 14, 14);
+        gc.fillRoundRect(fx + 1, fy - 1, 7, 5, 4, 4);
+        gc.fillOval(fx + 6, fy - 2, 5, 8);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx + 8.5, fy, 2, 3.5);
+    
+        gc.setFill(Color.WHITE);
+        gc.fillOval(fx - 1, fy - 1, 3.5, 4.5);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx + 0.5, fy + 1, 1.4, 2);
+        
+        gc.setFill(Color.WHITE);
+        gc.fillOval(bx - 1, by - 1, 3.5, 4.5);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(bx + 0.5, by + 1, 1.4, 2);
+    }
+        
+    private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {
+        gc.save();
+        gc.translate(cx, cy);
+        gc.rotate(30);
+    
+        // handle
+        gc.setFill(Color.rgb(180, 120, 60));
+        gc.fillRoundRect(-3, -22, 6, 30, 3, 3);
+    
+        // handle grip
+        gc.setFill(Color.rgb(140, 90, 40));
+        gc.fillRoundRect(-5, -24, 10, 6, 3, 3);
+    
+        // blade
+        gc.setFill(Color.SILVER);
+        gc.fillRoundRect(-10, 6, 20, 16, 6, 6);
+    
+        // blade shine
+        gc.setFill(Color.rgb(220, 220, 220, 0.5));
+        gc.fillRoundRect(-6, 8, 5, 12, 2, 2);
+    
+        gc.restore();
+    }
+        
+    private void drawPavement(GraphicsContext gc) {
+        // pavement zombie side
+        gc.setFill(Color.DARKGRAY);
+        gc.fillRect(920, 70, 1000, 600); 
+            
+        // strip lines road zombie side
+        gc.setFill(Color.YELLOW);
+        gc.fillRect(950, 70, 7, 530);
+            
+        gc.setFill(Color.YELLOW);
+        gc.fillRect(960, 70, 7, 530);
+            
+        // bottom side wall
+        gc.setFill(Color.web("#8B6914"));
+        gc.fillRect(0, 580, 920, 20);
+            
+        // top side wall
+        gc.setFill(Color.web("#8B6914"));
+        gc.fillRect(0, 70, 920, 10);
+            
+        // pavement house side
+        gc.setFill(Color.web("#A0A0A0"));
+        gc.fillRect(0, 80, 200, 520);
+    }
+}

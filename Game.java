@@ -23,11 +23,11 @@ public class Game extends Board
     int score;
 
     int level;
-    int phase; // 0 = prep, 1 = buildup, 2 =final wave warning, 3 = final wave, 4 =level complete
-    int spawnedTotal; //amount of zombies spawned so far
-    int zombieCount; //amount of zombies before the final wave
-    int finalWaveZombieAmount; //amount of zombies in the final wave
-    int finalWaveSpawnedCount; //amount of zombies in the final wave spawned so far
+    int phase; // 0 = prep, 1 = buildup, 2 = final wave warning, 3 = final wave, 4 = level complete
+    int spawnedTotal; // amount of zombies spawned so far
+    int zombieCount; // amount of zombies before the final wave
+    int finalWaveZombieAmount; // amount of zombies in the final wave
+    int finalWaveSpawnedCount; // amount of zombies in the final wave spawned so far
     double phaseTimer;
     String message;
     double messageTimer;
@@ -51,7 +51,7 @@ public class Game extends Board
     
     // Shop constants
     public static final int SHOP_X = 120;
-    public static final int SHOP_Y = 10;
+    public static final int SHOP_Y = 5;
     public static final int SHOP_CELL_W = 80;
     public static final int SHOP_CELL_H = 60;
     public static final int SHOVEL_INDEX = 4;
@@ -160,7 +160,7 @@ public class Game extends Board
                     spawnedTotal++;
                     zombieSpawnTimer = 0;
                 }
-                //  final wave warning as soon as all first phase zombies spawned
+                // final wave warning as soon as all first phase zombies spawned
                 if (spawnedTotal >= zombieCount) {
                     phase = 2;
                     phaseTimer = 3.0;
@@ -180,7 +180,7 @@ public class Game extends Board
                 }
                 break;
 
-            case 3: // final wave, big concetration of zombies
+            case 3: // final wave, big concentration of zombies
                 zombieSpawnTimer += deltaTime;
                 double rushInterval = 0.4;
                 if (finalWaveSpawnedCount < finalWaveZombieAmount && zombieSpawnTimer >= rushInterval) {
@@ -245,9 +245,7 @@ public class Game extends Board
             sun.update(deltaTime);
         }
         suns.removeIf(s -> !s.isAlive());
-        
-        skySunTimer += deltaTime;
-        
+                
         skySunTimer += deltaTime;
         
         if (skySunTimer >= 10.0) {
@@ -296,19 +294,19 @@ public class Game extends Board
                 spawnInterval = 5.5;
                 break;
             case 5:
-                zombieCount = 12;
-                finalWaveZombieAmount = 10;
-                spawnInterval = 5.0;
+                zombieCount = 11;
+                finalWaveZombieAmount = 9;
+                spawnInterval = 5.3;
                 break;
             case 6:
-                zombieCount = 14;
-                finalWaveZombieAmount = 13;
-                spawnInterval = 4.7;
+                zombieCount = 12;
+                finalWaveZombieAmount = 11;
+                spawnInterval = 5.5;
                 break;
             case 7:
-                zombieCount = 16;
-                finalWaveZombieAmount = 16;
-                spawnInterval = 4.3;
+                zombieCount = 13;
+                finalWaveZombieAmount = 13;
+                spawnInterval = 5.7;
                 break;
             default:
                 zombieCount = 10 + level * 2;
@@ -330,7 +328,7 @@ public class Game extends Board
         int strongChance = 0;
         if (level >= 3) strongChance = 20 + (level - 3) * 15;
 
-        // increased chance of strong zombiews in the final wave
+        // increased chance of strong zombies in the final wave
         if (phase == 3) strongChance += 15;
 
         if (rng.nextInt(100) < strongChance) {
@@ -435,7 +433,12 @@ public class Game extends Board
     }
 
     public void addSun(int amount) {
+        SoundManager.playSunPicked();
         sun += amount;
+    }
+
+    public int getSunAmount() {
+        return sun;
     }
 
     public Stage getStage() {
@@ -449,7 +452,7 @@ public class Game extends Board
     public List<Sun> getSuns() {
         return suns;
     }
-    
+
     /**
      * Returns true if the game is currently paused.
      */
