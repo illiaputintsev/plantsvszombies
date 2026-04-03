@@ -34,7 +34,7 @@ public class Board
     /**
      * Places a plant on the grid at the certain position
      */
-    public void placePlant(Plants plant, int row, int col)
+    public void placePlant(Plant plant, int row, int col)
     {
         if (row >= 0 && row < rows && col >= 0 && col < cols
             && !grid[row][col].hasPlant()) {

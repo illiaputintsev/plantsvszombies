@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Walnut extends Plants
+public class Walnut extends Plant
 {
     /**
      * Constructor for objects of class Wallnut
