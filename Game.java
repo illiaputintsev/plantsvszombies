@@ -12,28 +12,26 @@ import javafx.stage.Stage;
  */
 public class Game
 {
-    List<Zombie> zombies;
-    List<Plant> plants;
-    List<Bullet> bullets;
-    int sun;
-    boolean gameRunning;
-    boolean gameOver;
-    boolean levelComplete;
-    boolean gameWon;
-    int score;
-
-    int level;
-    int phase; // 0 = prep, 1 = buildup, 2 = final wave warning, 3 = final wave, 4 = level complete
-    int spawnedTotal; // amount of zombies spawned so far
-    int zombieCount; // amount of zombies before the final wave
-    int finalWaveZombieAmount; // amount of zombies in the final wave
-    int finalWaveSpawnedCount; // amount of zombies in the final wave spawned so far
-    double phaseTimer;
-    String message;
-    double messageTimer;
-    
-    // player's progress
-    int maxLevel;
+    private List<Zombie> zombies;
+    private List<Plant> plants;
+    private List<Bullet> bullets;
+    private int sun;
+    private boolean gameRunning;
+    private boolean gameOver;
+    private boolean levelComplete;
+    private boolean gameWon;        
+    private int score;
+    private int level;
+    private int phase;
+    private int spawnedTotal;
+    private int zombieCount;
+    private int finalWaveZombieAmount;
+    private int finalWaveSpawnedCount;
+    private double phaseTimer;
+    private String message;
+    private double messageTimer;
+    private int maxLevel;
+    private int selectedPlant;
 
     // Grid layout constants
     public static final int WIDTH = 1000;
@@ -76,7 +74,6 @@ public class Game
     private Random rng;
     private static final double SUN_DROP_INTERVAL = 15.0;
     static final int TOTAL_LEVELS = 7;
-    int selectedPlant;
     private Board board;
 
     // Store reference for switching screens (level/menu/game)
@@ -478,4 +475,25 @@ public class Game
     public boolean isTileOccupied(int row, int col) {
     return board.isTileOccupied(row, col);
     }
+    
+    // Getters for GameUI rendering
+    public List<Zombie> getZombies()       { return zombies; }
+    public List<Plant> getPlants()         { return plants; }
+    public List<Bullet> getBullets()        { return bullets; }
+    public int getScore()                   { return score; }
+    public int getLevel()                   { return level; }
+    public int getPhase()                   { return phase; }
+    public int getSpawnedTotal()            { return spawnedTotal; }
+    public int getZombieCount()             { return zombieCount; }
+    public int getFinalWaveZombieAmount()   { return finalWaveZombieAmount; }
+    public int getFinalWaveSpawnedCount()   { return finalWaveSpawnedCount; }
+    public String getMessage()              { return message; }
+    public double getMessageTimer()         { return messageTimer; }
+    public int getMaxLevel()                { return maxLevel; }
+    public boolean isGameRunning()          { return gameRunning; }
+    public boolean isGameOver()             { return gameOver; }
+    public boolean isLevelComplete()        { return levelComplete; }
+    public boolean isGameWon()              { return gameWon; }
+    public int getSelectedPlant()           { return selectedPlant; }
+    public void setSelectedPlant(int s)     { selectedPlant = s; }
 }
