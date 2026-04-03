@@ -63,7 +63,7 @@ public class SoundManager {
 
     public static void playDrums(){
         if (!drums.isPlaying()){
-            drums.play(0.75);
+            drums.play();
         } 
     }
     
@@ -73,7 +73,7 @@ public class SoundManager {
     
     public static void playEating(){
         if (!eating.isPlaying()){
-            eating.play(0.5);
+            eating.play(0.95);
         }
     }
     

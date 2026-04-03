@@ -26,20 +26,16 @@ public class StrongZombie extends Zombie
     @Override
     public void draw(GraphicsContext gc)
     {
-        // draw the same body as BasicZombie
         super.draw(gc);
 
-        double dx = x;
-        double dy = y;
         gc.setFill(Color.ORANGE);
-        double[] xPoints = {dx - 8, dx + 2, dx + 12};
-        double[] yPoints = {dy - 32, dy - 50, dy - 32};
+        double[] xPoints = {x - 8, x + 2, x + 12};
+        double[] yPoints = {y - 32, y - 50, y - 32};
         gc.fillPolygon(xPoints, yPoints, 3);
 
-        // cone stripes
         gc.setStroke(Color.DARKORANGE);
         gc.setLineWidth(1);
-        gc.strokeLine(dx - 3, dy - 36, dx + 7, dy - 36);
-        gc.strokeLine(dx - 1, dy - 42, dx + 5, dy - 42);
+        gc.strokeLine(x - 3, y - 36, x + 7, y - 36);
+        gc.strokeLine(x - 1, y - 42, x + 5, y - 42);
     }
 }

@@ -97,42 +97,44 @@ public abstract class Zombie extends Entity
         return Game.pixelXToCol(x);
     }
 
-    public void draw(GraphicsContext gc)
-    {
-        boolean flash = isFlashing();
-        double dx = x;
-        double dy = y;
+    public void draw(GraphicsContext gc) {
+        Zombie.drawBody(gc, x, y, 1.0, isFlashing());
 
-        // legs
-        gc.setFill(flash ? Color.WHITE : Color.DARKSLATEGRAY);
-        gc.fillRect(dx - 8, dy + 8, 7, 16);
-        gc.fillRect(dx + 4, dy + 8, 7, 16);
-
-        // body
-        gc.setFill(flash ? Color.WHITE : Color.DARKKHAKI);
-        gc.fillRect(dx - 10, dy - 16, 24, 26);
-
-        // arms
-        gc.setFill(flash ? Color.WHITE : Color.DARKSEAGREEN);
-        gc.fillRect(dx - 18, dy - 8, 10, 6);
-        gc.fillRect(dx + 14, dy - 12, 10, 6);
-
-        // head
-        gc.setFill(flash ? Color.WHITE : Color.YELLOWGREEN);
-        gc.fillOval(dx - 10, dy - 34, 22, 22);
-
-        // eyes
-        gc.setFill(flash ? Color.WHITE : Color.RED);
-        gc.fillOval(dx - 5, dy - 28, 4, 4);
-        gc.fillOval(dx + 4, dy - 28, 4, 4);
-
-        // HP bar background
         double barW = 28;
         gc.setFill(Color.DARKRED);
-        gc.fillRect(dx - barW / 2, dy - 40, barW, 4);
-        // HP bar fill
+        gc.fillRect(x - barW / 2, y - 40, barW, 4);
         gc.setFill(Color.RED);
-        gc.fillRect(dx - barW / 2, dy - 40, barW * hp / maxHp, 4);
+        gc.fillRect(x - barW / 2, y - 40, barW * hp / maxHp, 4);
+    }
+    
+    /**
+     * Draws a zombie body at a given position and scale (reusable across screens).
+     * Use scale 1.0 for gameplay, smaller for menu/tutorial.
+     */
+    public static void drawBody(GraphicsContext gc, double cx, double cy, double scale, boolean flash) {
+        gc.save();
+        gc.translate(cx, cy);
+        gc.scale(scale, scale);
+    
+        gc.setFill(flash ? Color.WHITE : Color.DARKSLATEGRAY);
+        gc.fillRect(-8, 8, 7, 16);
+        gc.fillRect(4, 8, 7, 16);
+    
+        gc.setFill(flash ? Color.WHITE : Color.DARKKHAKI);
+        gc.fillRect(-10, -16, 24, 26);
+    
+        gc.setFill(flash ? Color.WHITE : Color.DARKSEAGREEN);
+        gc.fillRect(-18, -8, 10, 6);
+        gc.fillRect(14, -12, 10, 6);
+    
+        gc.setFill(flash ? Color.WHITE : Color.YELLOWGREEN);
+        gc.fillOval(-10, -34, 22, 22);
+    
+        gc.setFill(flash ? Color.WHITE : Color.RED);
+        gc.fillOval(-5, -28, 4, 4);
+        gc.fillOval(4, -28, 4, 4);
+    
+        gc.restore();
     }
 
     public abstract void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime);
