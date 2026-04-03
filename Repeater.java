@@ -65,30 +65,95 @@ public class Repeater extends Plants
     /**
      * creates and returns a Bullet at the Repeater's location
      */
-    public List<Bullet> shoot(){
+    public List<Bullet> shoot() {
         List<Bullet> bullets = new ArrayList<>();
-        bullets.add(new Bullet(this.getX() + 20, this.getY() - 5));
+        
+        if (shootPhase == 0) {
+        // first shot from back head
+        bullets.add(new Bullet(x + 18, y - 21));        
+        } 
+        else {
+            // second shot from front head
+        bullets.add(new Bullet(x + 30, y));        
+        }
+    
         return bullets;
     }
 
     public void draw(GraphicsContext gc) {
-        // stem
-        gc.setFill(Color.GREEN);
-        gc.fillRect(x - 4, y + 5, 8, 22);
-
-        // head (darker than peashooter)
+        // shadow
+        gc.setFill(Color.rgb(0, 0, 0, 0.15));
+        gc.fillOval(x - 20, y + 18, 40, 10);
+    
+        // main stem
         gc.setFill(Color.FORESTGREEN);
-        gc.fillOval(x - 16, y - 22, 32, 32);
+        gc.fillRoundRect(x - 3, y + 4, 6, 20, 6, 6);
+    
+        // leaves
+        gc.setFill(Color.LIMEGREEN);
+        gc.fillOval(x - 18, y + 10, 16, 10);
+        gc.fillOval(x + 2, y + 10, 16, 10);
+    
+        // -------------------------
+        // SINGLE CURVED STEM (connected)
+        // -------------------------
+        gc.setStroke(Color.FORESTGREEN);
+        gc.setLineWidth(4);
+        
+        // start lower + slightly right → connects to stem center
+        gc.strokeArc(x - 14, y - 12, 30, 20, 165, 85, javafx.scene.shape.ArcType.OPEN);
 
-        // double barrel
-        gc.setFill(Color.DARKGREEN);
-        gc.fillRoundRect(x + 10, y - 16, 16, 8, 4, 4);
-        gc.fillRoundRect(x + 10, y - 6, 16, 8, 4, 4);
-
-        // eye
-        gc.setFill(Color.WHITE);
-        gc.fillOval(x - 4, y - 16, 12, 12);
+        gc.setLineWidth(1);
+    
+        // -------------------------
+        // HEAD POSITIONS (along same stem)
+        // -------------------------
+        double bx = x - 6;
+        double by = y - 10;
+    
+        double fx = x + 6;
+        double fy = y - 0;
+    
+        // -------------------------
+        // BACK HEAD
+        // -------------------------
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(bx - 18, by - 24, 30, 30);
+    
+        gc.fillRoundRect(bx + 4, by - 16, 16, 12, 6, 6);
+        gc.fillOval(bx + 15, by - 18, 10, 14);
+    
         gc.setFill(Color.BLACK);
-        gc.fillOval(x + 1, y - 13, 6, 6);
+        gc.fillOval(bx + 19, by - 16, 6, 11);
+    
+        gc.setFill(Color.rgb(255, 255, 255, 0.20));
+        gc.fillOval(bx - 10, by - 20, 8, 6);
+    
+        // -------------------------
+        // FRONT HEAD
+        // -------------------------
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(fx - 18, fy - 24, 30, 30);
+    
+        gc.fillRoundRect(fx + 4, fy - 16, 16, 12, 6, 6);
+        gc.fillOval(fx + 15, fy - 18, 10, 14);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx + 19, fy - 16, 6, 11);
+    
+        gc.setFill(Color.WHITE);
+        gc.fillOval(fx - 7, fy - 17, 10, 12);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx - 2, fy - 12, 4, 6);
+    
+        gc.setFill(Color.rgb(255, 255, 255, 0.28));
+        gc.fillOval(fx - 10, fy - 20, 8, 6);
+        
+        // Back Head Eyes
+        gc.setFill(Color.WHITE);
+        gc.fillOval(bx - 7, by - 17, 10, 12);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(bx - 2, by - 12, 4, 6);
     }
 }
