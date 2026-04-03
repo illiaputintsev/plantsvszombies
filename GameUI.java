@@ -94,7 +94,7 @@ public class GameUI {
                 double deltaTime = (now - lastTime) / 1_000_000_000.0;
                 lastTime = now;
         
-                if (!game.gameRunning && (game.levelComplete || game.gameOver || game.gameWon)) {
+                if (!game.gameRunning) {
                     render(gc);
                     stop();
                     return;
@@ -125,7 +125,7 @@ public class GameUI {
             } else if (isInsideRect(mx, my, btnX, levelsY, OVERLAY_BTN_W, OVERLAY_BTN_H)) {
                 game.resume();
                 SoundManager.playMenuBtn();
-                goToLevelSelect();
+                game.returnToLevelSelect();
             }
             return; // nothing else responds while paused
         }
