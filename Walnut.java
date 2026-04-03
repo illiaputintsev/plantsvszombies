@@ -84,4 +84,36 @@ public class Walnut extends Plant
     
         gc.setLineWidth(1);
     }
+    
+    public static void drawIcon(GraphicsContext gc, double cx, double cy, double scale, boolean headOnly) {
+        gc.save();
+        gc.translate(cx, cy);
+        gc.scale(scale, scale);
+    
+        if (!headOnly) {
+            gc.setFill(Color.rgb(0, 0, 0, 0.12));
+            gc.fillOval(-20, 20, 40, 10);
+        }
+    
+        gc.setFill(Color.rgb(190, 150, 70));
+        gc.fillOval(-21, -30, 42, 56);
+    
+        gc.setFill(Color.rgb(210, 170, 90));
+        gc.fillOval(-13, -14, 26, 30);
+    
+        gc.setFill(Color.rgb(250, 245, 220));
+        gc.fillOval(-12, -14, 12, 16);
+        gc.fillOval(2, -14, 12, 16);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(-6, -10, 5, 5);
+        gc.fillOval(8, -10, 5, 5);
+    
+        gc.setStroke(Color.rgb(90, 70, 30));
+        gc.setLineWidth(1.3);
+        gc.strokeArc(-4, 3, 8, 4, 180, 180, javafx.scene.shape.ArcType.OPEN);
+        gc.setLineWidth(1);
+    
+        gc.restore();
+    }
 }
