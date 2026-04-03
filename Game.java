@@ -10,7 +10,7 @@ import javafx.stage.Stage;
  * @author Illia Putintsev
  * @version 1.3
  */
-public class Game extends Board
+public class Game
 {
     List<Zombies> Zombie;
     List<Plants> Plant;
@@ -77,6 +77,7 @@ public class Game extends Board
     private static final double SUN_DROP_INTERVAL = 15.0;
     static final int TOTAL_LEVELS = 7;
     int selectedPlant;
+    private Board board;
 
     // Store reference for switching screens (level/menu/game)
     private Stage stage;
@@ -101,6 +102,7 @@ public class Game extends Board
         maxLevel = 0;
         message = "";
         messageTimer = 0;
+        board = new Board();
     }
 
     /**
@@ -338,17 +340,16 @@ public class Game extends Board
         }
     }
 
-    @Override
     public void placePlant(Plants plant, int row, int col)
     {
-        if (isTileOccupied(row, col)) {
+        if (board.isTileOccupied(row, col)) {
             return;
         }
         if (sun < plant.getCost()) {
             return;
         }
 
-        super.placePlant(plant, row, col);
+        board.placePlant(plant, row, col);
         plant.setX(colToPixelX(col));
         plant.setY(rowToPixelY(row));
         Plant.add(plant);
@@ -356,17 +357,16 @@ public class Game extends Board
         SoundManager.playPlant();
     }
 
-    @Override
     public void removePlant(int row, int col)
     {
-        Tile tile = getTile(row, col);
+        Tile tile = board.getTile(row, col);
         if (tile != null) {
             Plants p = tile.getPlant();
             if (p != null) {
                 Plant.remove(p);
             }
         }
-        super.removePlant(row, col);
+        board.removePlant(row, col);
     }
 
     public void removeDeadEntities()
@@ -380,9 +380,9 @@ public class Game extends Board
 
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
-                Plants p = getTile(r, c).getPlant();
+                Plants p = board.getTile(r, c).getPlant();
                 if (p != null && !p.isAlive()) {
-                    super.removePlant(r, c);
+                    board.removePlant(r, c);
                     SoundManager.playSwallow();
                 }
             }
@@ -414,7 +414,7 @@ public class Game extends Board
         // clear all tiles on the grid
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
-                Tile tile = getTile(r, c);
+                Tile tile = board.getTile(r, c);
                 if (tile != null) {
                     tile.removePlant();
                 }
@@ -473,5 +473,9 @@ public class Game extends Board
      */
     public void resume() {
         paused = false;
+    }
+    
+    public boolean isTileOccupied(int row, int col) {
+    return board.isTileOccupied(row, col);
     }
 }
