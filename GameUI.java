@@ -457,109 +457,6 @@ public class GameUI {
         }
     }
 
-    private void drawHouse(GraphicsContext gc) {
-        // wall
-        gc.setFill(Color.web("#F5F5DC"));
-        gc.fillPolygon(
-        new double[]{0, 114, 114, 64},  // x  
-        new double[]{525, 525, 175, 110}, // y
-        4);
-        
-        // roof
-        gc.setFill(Color.web("#C4736A"));
-        gc.fillPolygon(
-            new double[]{0, 64, 64, 0},  // x  
-            new double[]{80, 85, 506, 485}, // y
-            4);
-            
-        // door  
-        gc.setFill(Color.web("#8B4513"));
-        gc.fillPolygon(
-        new double[]{114, 90, 90, 114},  // x  
-        new double[]{215, 200, 250, 265}, // y
-        4);
-        
-        //window
-        gc.setFill(Color.web("#87CEEB"));
-        gc.fillPolygon(
-        new double[]{80, 80, 110, 110},  // x  
-        new double[]{315, 415, 425, 325}, // y
-        4);
-        
-        // wall
-        // horizontal line
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 525, 120, 6);
-        
-        // perpendicular line
-        gc.setFill(Color.BLACK);
-        //           x,   y, w,   h
-        gc.fillRect(114, 175, 6, 350);
-        
-        // first diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(6);
-        //            x1, y1, x2, y2
-        gc.strokeLine(70, 485, 114, 525);
-        
-        // second diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(6);
-        gc.strokeLine(70, 110, 114, 175);
-        
-        // roof
-        // perpendicular base line
-        gc.setFill(Color.BLACK);
-        gc.fillRect(64, 85, 6, 425);     
-        
-        // first diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(6);
-        gc.strokeLine(64, 85, 0, 75);
-        
-        // second diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(6);
-        gc.strokeLine(0, 485, 64, 506); 
-        
-        //door
-        // first diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(92, 250, 114, 265);
-        
-        // second diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(92, 200, 114, 215);
-        
-        // top line
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(90, 200, 90, 250);
-        
-        //window
-        // botton line
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(110, 325, 110, 425);
-        
-        // top line
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(80, 315, 80, 415);
-        
-        // first diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(110, 425, 80, 415);
-        
-        // second diagonal
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(110, 325, 80, 315);
-    }
-    
     private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
         double w = Game.SHOP_CELL_W - 10;
         double h = Game.SHOP_CELL_H;
@@ -697,14 +594,32 @@ public class GameUI {
     }
     
 
-<<<<<<< HEAD
+private void drawPeashooterIcon(GraphicsContext gc, double x, double y) {
+    gc.setFill(Color.YELLOWGREEN);
+    gc.fillOval(x - 12, y - 8, 20, 20);
+    gc.fillRoundRect(x + 2, y - 3, 10, 7, 4, 4);
+    gc.fillOval(x + 9, y - 5, 7, 10);
+    gc.setFill(Color.BLACK);
+    gc.fillOval(x + 12, y - 2, 3, 5);
+    gc.setFill(Color.WHITE);
+    gc.fillOval(x - 4, y - 3, 5, 6);
+    gc.setFill(Color.BLACK);
+    gc.fillOval(x - 1.5, y, 2, 3);
+}
+
+private void drawSunflowerIcon(GraphicsContext gc, double x, double y) {
+    gc.setFill(Color.GOLD);
+    for (int i = 0; i < 10; i++) {
+        double a = i * (Math.PI * 2 / 10.0);
+        double px = x + Math.cos(a) * 10;
+        double py = y + Math.sin(a) * 10;
+        gc.fillOval(px - 4, py - 4, 8, 8);
+    }
     gc.setFill(Color.rgb(170, 120, 60));
     gc.fillOval(x - 9, y - 9, 18, 18);
-
     gc.setFill(Color.BLACK);
     gc.fillOval(x - 4, y - 2, 2, 3);
     gc.fillOval(x + 2, y - 2, 2, 3);
-
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
     gc.strokeArc(x - 3, y + 1, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
@@ -713,79 +628,58 @@ public class GameUI {
 private void drawWallnutIcon(GraphicsContext gc, double x, double y) {
     gc.setFill(Color.rgb(190, 150, 70));
     gc.fillOval(x - 10, y - 12, 20, 26);
-
     gc.setFill(Color.rgb(250, 245, 220));
     gc.fillOval(x - 6, y - 3, 5, 7);
     gc.fillOval(x + 1, y - 3, 5, 7);
-
     gc.setFill(Color.BLACK);
     gc.fillOval(x - 4, y, 1.8, 2);
     gc.fillOval(x + 3, y, 1.8, 2);
-
     gc.setStroke(Color.rgb(90, 70, 30));
     gc.setLineWidth(1);
     gc.strokeArc(x - 3, y + 4, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
 }
 
 private void drawRepeaterIcon(GraphicsContext gc, double x, double y) {
-
     double bx = x - 5;
     double by = y - 4;
-
     gc.setFill(Color.YELLOWGREEN);
     gc.fillOval(bx - 9, by - 6, 14, 14);
     gc.fillRoundRect(bx + 1, by - 1, 7, 5, 4, 4);
     gc.fillOval(bx + 6, by - 2, 5, 8);
-
     gc.setFill(Color.BLACK);
     gc.fillOval(bx + 8.5, by, 2, 3.5);
-
     double fx = x + 4;
     double fy = y + 1;
-
     gc.setFill(Color.rgb(140, 180, 70));
     gc.fillOval(fx - 10, fy - 7, 16, 16);
-
     gc.setFill(Color.YELLOWGREEN);
     gc.fillOval(fx - 9, fy - 6, 14, 14);
     gc.fillRoundRect(fx + 1, fy - 1, 7, 5, 4, 4);
     gc.fillOval(fx + 6, fy - 2, 5, 8);
-
     gc.setFill(Color.BLACK);
     gc.fillOval(fx + 8.5, fy, 2, 3.5);
-
     gc.setFill(Color.WHITE);
     gc.fillOval(fx - 1, fy - 1, 3.5, 4.5);
     gc.setFill(Color.BLACK);
     gc.fillOval(fx + 0.5, fy + 1, 1.4, 2);
-    
     gc.setFill(Color.WHITE);
     gc.fillOval(bx - 1, by - 1, 3.5, 4.5);
     gc.setFill(Color.BLACK);
     gc.fillOval(bx + 0.5, by + 1, 1.4, 2);
 }
-    
+
 private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {
     gc.save();
     gc.translate(cx, cy);
     gc.rotate(30);
-
-    // handle
     gc.setFill(Color.rgb(180, 120, 60));
     gc.fillRoundRect(-3, -22, 6, 30, 3, 3);
-
-    // handle grip
     gc.setFill(Color.rgb(140, 90, 40));
     gc.fillRoundRect(-5, -24, 10, 6, 3, 3);
-
-    // blade
     gc.setFill(Color.SILVER);
     gc.fillRoundRect(-10, 6, 20, 16, 6, 6);
-
-    // blade shine
     gc.setFill(Color.rgb(220, 220, 220, 0.5));
     gc.fillRoundRect(-6, 8, 5, 12, 2, 2);
-
     gc.restore();
 }
 
