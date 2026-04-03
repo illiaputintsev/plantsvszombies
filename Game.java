@@ -430,6 +430,7 @@ public class Game extends Board
         gameRunning = false;
         LevelUI levelSelect = new LevelUI(this, stage);
         levelSelect.show();
+        SoundManager.stopLevelTheme();
     }
 
     public void addSun(int amount) {

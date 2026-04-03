@@ -39,6 +39,7 @@ public class LevelUI {
      * Shows the level select screen on the stage.
      */
     public void show() {
+        SoundManager.stopLevelTheme();
         Canvas canvas = new Canvas(Game.WIDTH, Game.HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
