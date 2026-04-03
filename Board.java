@@ -8,6 +8,9 @@ public class Board
     private int cols;
     private Tile[][] grid;
 
+    /**
+     * Creates a 5x9 grid of empty tiles.
+     */
     public Board()
     {
         this.rows = 5;
@@ -21,7 +24,10 @@ public class Board
     }
 
     /**
-     * Returns the tile at the given row and column.
+     * Returns the tile at the given position, or null if out of bounds.
+     * @param row the row index
+     * @param col the column index
+     * @return the Tile at that position, or null
      */
     public Tile getTile(int row, int col)
     {
@@ -32,7 +38,10 @@ public class Board
     }
 
     /**
-     * Places a plant on the grid at the certain position
+     * Places a plant on an empty tile at the given position.
+     * @param plant the plant to place
+     * @param row the row index
+     * @param col the column index
      */
     public void placePlant(Plant plant, int row, int col)
     {
@@ -43,7 +52,9 @@ public class Board
     }
 
     /**
-     * Removes a plant from the grid at the certain position
+     * Removes any plant from the tile at the given position.
+     * @param row the row index
+     * @param col the column index
      */
     public void removePlant(int row, int col)
     {
@@ -53,7 +64,10 @@ public class Board
     }
 
     /**
-     * Checks whether a tile is occupied by a plant.
+     * Checks whether a tile already has a living plant on it.
+     * @param row the row index
+     * @param col the column index
+     * @return true if the tile contains an active plant
      */
     public boolean isTileOccupied(int row, int col)
     {
