@@ -10,7 +10,7 @@ public abstract class Entity
     protected boolean alive;
     protected double x;
     protected double y;
-    protected static final int DAMAGE = 19;
+    protected static final int DAMAGE = 25;
     
     public Entity(int hp, int row, int col, boolean alive)
     {

@@ -204,10 +204,11 @@ public class GameUI {
         }
 
         // Level indicator
-        if (game.level > 0) {
+        int displayLevel = (game.phase == 0) ? game.level + 1 : game.level;
+        if (displayLevel > 0) {
             gc.setFont(Font.font(14));
             gc.setFill(Color.BLACK);
-            gc.fillText("Level: " + game.level + " / " + Game.TOTAL_LEVELS, Game.WIDTH - 200, 30);
+            gc.fillText("Level: " + displayLevel + " / " + Game.TOTAL_LEVELS, Game.WIDTH - 200, 30);
         }
 
         // Level progress bar
@@ -562,106 +563,88 @@ private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {
 }
 
 private void drawHouse(GraphicsContext gc) {
-    // wall
+    // === WALL (front face — full area behind roof) ===
+    // extends from roof ridge down to ground, covers everything
+    double[] wallX = {0, 114, 114, 64, 0};
+    double[] wallY = {525, 525, 175, 110, 80};
     gc.setFill(Color.web("#F5F5DC"));
-    gc.fillPolygon(
-    new double[]{0, 114, 114, 64},  // x  
-    new double[]{525, 525, 175, 110}, // y
-    4);
-        
-    // roof
+    gc.fillPolygon(wallX, wallY, 5);
+    // subtle horizontal lines for siding
+    gc.setStroke(Color.web("#E8E0C8"));
+    gc.setLineWidth(1);
+    for (int i = 1; i <= 12; i++) {
+        double t = i / 13.0;
+        double yRight = 175 + (525 - 175) * t;
+        double yLeft = 80 + (525 - 80) * t;
+        double xLeft = 0 + (0) * t;
+        gc.strokeLine(xLeft, yLeft, 114, yRight);
+    }
+    // wall outline (only the visible edges: right side + bottom + top diagonal)
+    gc.setStroke(Color.web("#3B3B3B"));
+    gc.setLineWidth(4);
+    gc.strokeLine(114, 175, 114, 525); // right edge
+    gc.strokeLine(0, 525, 114, 525);   // bottom edge
+    gc.strokeLine(64, 110, 114, 175);  // top diagonal
+
+    // === ROOF (side strip — drawn on top of wall) ===
+    double[] roofX = {0, 64, 64, 0};
+    double[] roofY = {80, 85, 545, 525};
     gc.setFill(Color.web("#C4736A"));
-    gc.fillPolygon(
-        new double[]{0, 64, 64, 0},  // x  
-        new double[]{80, 85, 506, 485}, // y
-        4);
-            
-    // door  
-    gc.setFill(Color.web("#8B4513"));
-    gc.fillPolygon(
-    new double[]{114, 90, 90, 114},  // x  
-    new double[]{215, 200, 250, 265}, // y
-    4);
-        
-    //window
-    gc.setFill(Color.web("#87CEEB"));
-    gc.fillPolygon(
-    new double[]{80, 80, 110, 110},  // x  
-    new double[]{315, 415, 425, 325}, // y
-    4);
-        
-    // wall
-    // horizontal line
-    gc.setFill(Color.BLACK);
-    gc.fillRect(0, 525, 120, 6);
-        
-    // perpendicular line
-    gc.setFill(Color.BLACK);
-    //           x,   y, w,   h
-    gc.fillRect(114, 175, 6, 350);
-        
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    //            x1, y1, x2, y2
-    gc.strokeLine(70, 485, 114, 525);
-        
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    gc.strokeLine(70, 110, 114, 175);
-        
-    // roof
-    // perpendicular base line
-    gc.setFill(Color.BLACK);
-    gc.fillRect(64, 85, 6, 425);     
-        
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    gc.strokeLine(64, 85, 0, 75);
-        
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    gc.strokeLine(0, 485, 64, 506); 
-        
+    gc.fillPolygon(roofX, roofY, 4);
+    // roof tile lines
+    gc.setStroke(Color.web("#A85A50"));
+    gc.setLineWidth(1.5);
+    for (int i = 1; i < 14; i++) {
+        double t = i / 14.0;
+        double ly = 80 + (525 - 80) * t;
+        double ry = 85 + (545 - 85) * t;
+        gc.strokeLine(0, ly, 64, ry);
+    }
+    gc.setStroke(Color.web("#3B3B3B"));
+    gc.setLineWidth(4);
+    gc.strokePolygon(roofX, roofY, 4);
+
     //door
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(92, 250, 114, 265);
-        
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(92, 200, 114, 215);
-        
-    // top line
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(90, 200, 90, 250);
-        
-    //window
-    // botton line
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(110, 325, 110, 425);
-        
-    // top line
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(80, 315, 80, 415);
-        
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(110, 425, 80, 415);
-        
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(110, 325, 80, 315);
+    double[] doorX = {114, 90, 90, 114};
+    double[] doorY = {215, 200, 260, 275};
+    gc.setFill(Color.web("#8B4513"));
+    gc.fillPolygon(doorX, doorY, 4);
+    // door panel detail
+    gc.setStroke(Color.web("#6B3410"));
+    gc.setLineWidth(1.5);
+    gc.strokePolygon(
+        new double[]{110, 93, 93, 110},
+        new double[]{225, 213, 250, 262}, 4);
+    // door handle
+    gc.setFill(Color.web("#DAA520"));
+    gc.fillOval(107, 243, 5, 5);
+    // door outline
+    gc.setStroke(Color.web("#3B3B3B"));
+    gc.setLineWidth(3);
+    gc.strokePolygon(doorX, doorY, 4);
+
+    // window
+    double[] winX = {80, 80, 110, 110};
+    double[] winY = {315, 415, 425, 325};
+    gc.setFill(Color.web("#87CEEB"));
+    gc.fillPolygon(winX, winY, 4);
+    // window reflection
+    gc.setFill(Color.web("#ADDFFF"));
+    gc.fillPolygon(
+        new double[]{82, 82, 93, 93},
+        new double[]{320, 370, 375, 328}, 4);
+    // window cross frame
+    gc.setStroke(Color.web("#F5F5DC"));
+    gc.setLineWidth(3);
+    double midWinY = (315 + 425) / 2.0;
+    double midWinY2 = (325 + 415) / 2.0;
+    gc.strokeLine(80, midWinY, 110, midWinY2);
+    double midWinX = 95;
+    gc.strokeLine(midWinX, (315 + 325) / 2.0, midWinX, (415 + 425) / 2.0);
+    // window outline
+    gc.setStroke(Color.web("#3B3B3B"));
+    gc.setLineWidth(3);
+    gc.strokePolygon(winX, winY, 4);
 }
     
 private void drawPavement(GraphicsContext gc) {
