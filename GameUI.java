@@ -203,9 +203,6 @@ public class GameUI {
             b.draw(gc);
         }
 
-        // Keep the score exactly as it was
-        // gc.fillText("Score: " + game.score, 10, 50);
-
         // Level indicator
         if (game.level > 0) {
             gc.setFont(Font.font(14));
