@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Sunflower extends Plants
+public class Sunflower extends Plant
 {
     private int sunAmount;
     private static final double COOLDOWN = 12;

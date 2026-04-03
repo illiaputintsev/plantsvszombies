@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Repeater extends Plants
+public class Repeater extends Plant
 {
     private static final double COOLDOWN = 1.4;
     private static final double BURST_DELAY = 0.15;
@@ -36,8 +36,8 @@ public class Repeater extends Plants
 
         boolean zombieInRange = false;
         for (Entity entity : entities) {
-            if (entity instanceof Zombies) {
-                Zombies zombie = (Zombies) entity;
+            if (entity instanceof Zombie) {
+                Zombie zombie = (Zombie) entity;
                 if (zombie.isAlive()
                     && zombie.getRow() == this.getRow()
                     && zombie.getX() > this.getX())
