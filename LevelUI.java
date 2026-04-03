@@ -65,7 +65,7 @@ public class LevelUI {
 
             // check if a level button was clicked
             int clickedLevel = getLevelAtPosition(clickX, clickY);
-            if (clickedLevel > 0 && clickedLevel <= game.maxLevel + 1) {
+            if (clickedLevel > 0 && clickedLevel <= game.getMaxLevel() + 1) {
                 game.clearBoard();
                 GameUI ui = new GameUI(game, stage);
                 SoundManager.playMenuBtn();
@@ -116,12 +116,12 @@ public class LevelUI {
         // subtitle
         gc.setFont(Font.font(16));
         gc.setFill(Color.LIGHTGRAY);
-        if (game.maxLevel == 0) {
+        if (game.getMaxLevel() == 0) {
             gc.fillText("Start your adventure!", Game.WIDTH / 2.0, 160);
-        } else if (game.maxLevel >= Game.TOTAL_LEVELS) {
+        } else if (game.getMaxLevel() >= Game.TOTAL_LEVELS) {
             gc.fillText("All levels completed!", Game.WIDTH / 2.0, 160);
         } else {
-            gc.fillText("Levels completed: " + game.maxLevel + " / " + Game.TOTAL_LEVELS,
+            gc.fillText("Levels completed: " + game.getMaxLevel() + " / " + Game.TOTAL_LEVELS,
                 Game.WIDTH / 2.0, 160);
         }
         gc.setTextAlign(TextAlignment.LEFT);
@@ -132,9 +132,9 @@ public class LevelUI {
             double btnX = LEVEL_START_X + i * (LEVEL_BTN_SIZE + LEVEL_BTN_GAP);
             double btnY = LEVEL_START_Y;
 
-            boolean isCompleted = levelNum <= game.maxLevel;
-            boolean isAvailable = levelNum == game.maxLevel + 1;
-            boolean isLocked = levelNum > game.maxLevel + 1;
+            boolean isCompleted = levelNum <= game.getMaxLevel();
+            boolean isAvailable = levelNum == game.getMaxLevel() + 1;
+            boolean isLocked = levelNum > game.getMaxLevel() + 1;
             boolean isHovered = levelNum == hoveredLevel;
 
             // button background colour

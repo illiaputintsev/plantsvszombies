@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
  *  Represents a Peashooter plant that shoots a single bullet at zombies
  *  in the same row within a range of 5 columns.
  */
-public class Peashooter extends Plants
+public class Peashooter extends Plant
 {
     private static final double COOLDOWN = 1.4;
 
@@ -33,8 +33,8 @@ public class Peashooter extends Plants
 
         // check if any zombie is in the same row and ahead of us
         for (Entity entity : entities) {
-            if (entity instanceof Zombies) {
-                Zombies zombie = (Zombies) entity;
+            if (entity instanceof Zombie) {
+                Zombie zombie = (Zombie) entity;
                 if (zombie.isAlive() && zombie.getRow() == this.getRow()
                     && zombie.getX() > this.getX())
                 {
