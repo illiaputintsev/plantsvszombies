@@ -61,6 +61,7 @@ public class GameUI {
         stage.show();
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        // Collect suns by hovering over them
         canvas.setOnMouseMoved(e -> {
             for (Sun sun : game.getSuns()) {
                 if (sun.isClicked(e.getX(), e.getY())) {
