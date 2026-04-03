@@ -2,7 +2,7 @@
  * Manages the game grid as a 2D array of Tiles.
  * Provides methods to place, remove, and query plants on the grid.
  */
-public class Board extends Tile
+public class Board
 {
     private int rows;
     private int cols;
