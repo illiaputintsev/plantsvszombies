@@ -6,6 +6,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+import javafx.geometry.VPos;
 
 /**
  * GameUI class - handles rendering.
@@ -27,6 +31,16 @@ public class GameUI {
     private static final double BUTTON_Y = Game.HEIGHT / 2.0 + 80;
     private static final double BUTTON_W = 160;
     private static final double BUTTON_H = 40;
+    
+    // Pause button 
+    private static final double PAUSE_BTN_X = Game.WIDTH - 50;
+    private static final double PAUSE_BTN_Y = 20;
+    private static final double PAUSE_BTN_SIZE = 32;
+    
+    // Pause overlay buttons
+    private static final double OVERLAY_BTN_W = 50;
+    private static final double OVERLAY_BTN_H = 20;
+    private static final double OVERLAY_BTN_GAP = 20;
 
     public GameUI(Game game, Stage stage) {
         this.game = game;
@@ -74,14 +88,46 @@ public class GameUI {
                     return;
                 }
 
-                game.update(deltaTime);
+                // Skip update when paused, but keep rendering (overlay draws on top)
+                if (!game.isPaused()) {
+                    game.update(deltaTime);
+                }
                 render(gc);
             }
         }.start();
     }
 
     private void handleClick(double mx, double my) {
+        // Pause overlay clicks | checked first, swallows all input
+        if (game.isPaused()) {
+            double btnX = Game.WIDTH / 2.0 - OVERLAY_BTN_W / 2;
+            double resumeY = Game.HEIGHT / 2.0 - 10;
+            double levelsY = resumeY + OVERLAY_BTN_H + OVERLAY_BTN_GAP;
 
+            if (isInsideRect(mx, my, btnX, resumeY, OVERLAY_BTN_W, OVERLAY_BTN_H)) {
+                game.resume();
+                SoundManager.playMenuBtn();
+            } else if (isInsideRect(mx, my, btnX, levelsY, OVERLAY_BTN_W, OVERLAY_BTN_H)) {
+                game.resume();
+                SoundManager.playMenuBtn();
+                goToLevelSelect();
+            }
+            return; // nothing else responds while paused
+        }
+        
+        // Pause button click
+        if (game.gameRunning) {
+            double cx = PAUSE_BTN_X + PAUSE_BTN_SIZE / 2;
+            double cy = PAUSE_BTN_Y + PAUSE_BTN_SIZE / 2;
+            double dx = mx - cx;
+            double dy = my - cy;
+            if (dx * dx + dy * dy <= (PAUSE_BTN_SIZE / 2) * (PAUSE_BTN_SIZE / 2)) {
+                game.pause();
+                SoundManager.playMenuBtn();
+                return;
+            }
+        }
+        
         // click button to go back to level select
         if (game.levelComplete || game.gameOver || game.gameWon) {
             if (mx >= BUTTON_X && mx <= BUTTON_X + BUTTON_W
@@ -168,6 +214,11 @@ public class GameUI {
         LevelUI levelSelect = new LevelUI(game, stage);
         levelSelect.show();
     }
+    
+    private boolean isInsideRect(double mx, double my,
+                                  double rx, double ry, double rw, double rh) {
+        return mx >= rx && mx <= rx + rw && my >= ry && my <= ry + rh;
+    }
 
     private void render(GraphicsContext gc) {
         gc.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
@@ -175,6 +226,7 @@ public class GameUI {
         drawShop(gc);
         drawPavement(gc);
         drawHouse(gc);
+        drawOverlayButton(gc, 800, 50, "Menu");
 
         // draw the grid
         for (int r = 0; r < Game.ROWS; r++) {
@@ -382,7 +434,7 @@ public class GameUI {
             }
         }
     }
-    
+
     private void drawHouse(GraphicsContext gc) {
         // wall
         gc.setFill(Color.web("#F5F5DC"));
@@ -509,6 +561,82 @@ public class GameUI {
         // pavement house side
         gc.setFill(Color.web("#A0A0A0"));
         gc.fillRect(0, 80, 200, 520);
+    }
+    
+    private void drawPauseButton(GraphicsContext gc) {
+        double x = PAUSE_BTN_X;
+        double y = PAUSE_BTN_Y;
+        double s = PAUSE_BTN_SIZE;
+
+        // Circle background
+        gc.setFill(Color.rgb(60, 60, 60, 0.85));
+        gc.fillOval(x, y, s, s);
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(1.5);
+        gc.strokeOval(x, y, s, s);
+
+        // Two vertical bars (standard pause icon)
+        double barW = s * 0.12;
+        double barH = s * 0.40;
+        double cx = x + s / 2;
+        double cy = y + s / 2;
+        double gap = s * 0.10;
+
+        gc.setFill(Color.WHITE);
+        gc.fillRoundRect(cx - gap - barW, cy - barH / 2, barW, barH, 2, 2);
+        gc.fillRoundRect(cx + gap,        cy - barH / 2, barW, barH, 2, 2);
+    }
+
+    /**
+     * Draws the full-screen pause overlay with Resume and Back to Levels buttons.
+     */
+    private void drawPauseOverlay(GraphicsContext gc) {
+        double w = Game.WIDTH;
+        double h = Game.HEIGHT;
+
+        // Dim background
+        gc.setFill(Color.rgb(0, 0, 0, 0.55));
+        gc.fillRect(0, 0, w, h);
+
+        // "PAUSED" title
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 52));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText("PAUSED", w / 2, h / 2 - 80);
+
+        // Buttons
+        double btnX = w / 2 - OVERLAY_BTN_W / 2;
+        double resumeY = h / 2 - 10;
+        double levelsY = resumeY + OVERLAY_BTN_H + OVERLAY_BTN_GAP;
+
+        drawOverlayButton(gc, btnX, resumeY, "Resume");
+        drawOverlayButton(gc, btnX, levelsY, "Back to Levels");
+
+        // Reset text alignment so other drawing isn't affected next frame
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setTextBaseline(VPos.BASELINE);
+    }
+
+    /**
+     * Draws a single styled button for the pause overlay.
+     */
+    private void drawOverlayButton(GraphicsContext gc, double x, double y, String label) {
+        // Button background (PvZ-style green)
+        gc.setFill(Color.DARKGREY);
+        gc.fillRoundRect(800, 50, OVERLAY_BTN_W, OVERLAY_BTN_H, 12, 12);
+
+        // Border
+        gc.setStroke(Color.rgb(50, 100, 25));
+        gc.setLineWidth(2);
+        gc.strokeRoundRect(x, y, OVERLAY_BTN_W, OVERLAY_BTN_H, 12, 12);
+
+        // Label
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText(label, x + OVERLAY_BTN_W / 2, y + OVERLAY_BTN_H / 2);
     }
 }
 
