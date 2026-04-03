@@ -4,8 +4,6 @@ import java.util.Random;
 
 /**
  * Handles loading and playing sound effects.
- * 
- * @author Mark Tarnavskyi
  */
 public class SoundManager {
     private static Random random;
@@ -27,6 +25,9 @@ public class SoundManager {
     private static AudioClip sunPicked;
 
 
+    /**
+     * Loads all sound effects from the resources folder.
+     */
     public static void init() {
         random = new Random();
         shovelSound = loadSound("/sounds/showelOut.wav");
@@ -47,6 +48,11 @@ public class SoundManager {
         sunPicked = loadSound("/sounds/sun_pick_up.wav");
     }
 
+    /**
+     * Loads a single audio clip from the given resource path.
+     * @param path the classpath resource path
+     * @return the loaded AudioClip, or null if not found
+     */
     private static AudioClip loadSound(String path) {
         try {
             URL resource = SoundManager.class.getResource(path);

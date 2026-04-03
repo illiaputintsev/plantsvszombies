@@ -6,9 +6,6 @@ import javafx.stage.Stage;
 /**
  * Game class - controls the main game logic.
  * Keeps track of all plants, zombies, bullets, and game state.
- *
- * @author Illia Putintsev
- * @version 1.3
  */
 public class Game
 {
