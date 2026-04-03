@@ -12,7 +12,9 @@ public class Peashooter extends Plant
     private static final double COOLDOWN = 1.4;
 
     /**
-     * Constructor for objects of class Peashooter
+     * Creates a Peashooter at the given grid position.
+     * @param row the grid row
+     * @param col the grid column
      */
     public Peashooter(int row, int col)
     {
@@ -21,8 +23,7 @@ public class Peashooter extends Plant
     }
 
     /**
-     * Called every game tick
-     * Only shoots if a zombie is in the same row
+     * Fires a single pea if a zombie is ahead in the same row.
      */
     @Override
     public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime){
@@ -48,7 +49,8 @@ public class Peashooter extends Plant
     }
 
     /**
-     * creates and returns a Bullet at the Peashooter's location
+     * Creates a single bullet at the Peashooter's snout position.
+     * @return list containing one bullet
      */
     public List<Bullet> shoot(){
         List<Bullet> bullets = new ArrayList<>();
@@ -56,7 +58,10 @@ public class Peashooter extends Plant
         return bullets;
     }
 
-    // Peashooter.java
+    /**
+     * Draws the peashooter with head, snout, stem, and leaves.
+     * @param gc the graphics context to draw on
+     */
     public void draw(GraphicsContext gc) {
         // shadow
         gc.setFill(Color.rgb(0, 0, 0, 0.15));
@@ -99,6 +104,14 @@ public class Peashooter extends Plant
         gc.fillOval(x - 10, y - 20, 8, 6);
     }
     
+    /**
+     * Draws a reusable peashooter icon at the given position and scale.
+     * @param gc the graphics context to draw on
+     * @param cx centre x position
+     * @param cy centre y position
+     * @param scale size multiplier (1.0 = full size)
+     * @param headOnly true to skip stem, leaves, and shadow
+     */
     public static void drawIcon(GraphicsContext gc, double cx, double cy, double scale, boolean headOnly) {
         gc.save();
         gc.translate(cx, cy);

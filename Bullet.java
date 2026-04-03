@@ -14,7 +14,9 @@ public class Bullet
     private boolean hit = false;
     
     /**
-     * Constructor for objects of class Bullet
+     * Creates a bullet at the given pixel position.
+     * @param x starting x coordinate
+     * @param y starting y coordinate
      */
     public Bullet(double x, double y)
     {
@@ -23,8 +25,8 @@ public class Bullet
     }
 
     /**
-     *  Modifies the position of the bullet. 
-     *  6 is the speed
+     * Moves the bullet to the right each frame.
+     * @param deltaTime seconds since last frame
      */
     public void update(double deltaTime){
         
@@ -34,23 +36,25 @@ public class Bullet
     }
     
     /**
-     * Returns true if the projectile is on screen
+     * Checks whether the bullet is still active and on screen.
+     * @return true if the bullet has not hit anything and is within bounds
      */
     public boolean onScreen(){
         return !hit && x < Game.WIDTH;
     }
     
     /**
-     * Get the projectile coordinates
+     * Returns the bullet's current pixel coordinates.
+     * @return array of [x, y]
      */
     public double[] getPos(){
         return new double[]{x, y};
     }
     
     /**
-     * Returns true if in contact with the Zombie
-     * 
-     * Mark's Update 24/03: collisions are checked using pixels instead of grid pos
+     * Checks for collision with a zombie using pixel distance.
+     * @param zombie the zombie to test against
+     * @return true if the bullet hit the zombie
      */
     public boolean contact(Zombie zombie){
         if (Math.abs(x - zombie.getX() - Game.CELL_W * 0.5) < Game.CELL_W * 0.5 && Math.abs(y - zombie.getY()) < Game.CELL_H * 0.4){
@@ -62,7 +66,8 @@ public class Bullet
     }
     
     /**
-     * Draw the bullet
+     * Draws the bullet as a green circle.
+     * @param gc the graphics context to draw on
      */
     public void draw(GraphicsContext gc){
         gc.setFill(COLOR);

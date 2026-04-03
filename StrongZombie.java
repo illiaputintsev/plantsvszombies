@@ -6,11 +6,19 @@ public class StrongZombie extends Zombie
 {
     public static final int HP = 400;
 
+    /**
+     * Creates a cone-headed zombie in the given row.
+     * @param row the lane row
+     * @param col starting grid column
+     */
     public StrongZombie(int row, int col)
     {
         super(HP, row, col, 22); // slightly slower than basic
     }
 
+    /**
+     * Moves forward and eats any plant in its path.
+     */
     @Override
     public void act(List<Plant> plants, List<Zombie> allZombies, double deltaTime)
     {
@@ -23,6 +31,10 @@ public class StrongZombie extends Zombie
         }
     }
 
+    /**
+     * Draws the base zombie body plus an orange traffic cone on top.
+     * @param gc the graphics context to draw on
+     */
     @Override
     public void draw(GraphicsContext gc)
     {
