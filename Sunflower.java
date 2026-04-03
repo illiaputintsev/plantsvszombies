@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 public class Sunflower extends Plants
 {
     private int sunAmount;
-    private static final double COOLDOWN = 12;
+    private static final double COOLDOWN = 7;
 
     /**
      * Constructor for objects of class Sunflower

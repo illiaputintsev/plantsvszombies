@@ -2,7 +2,7 @@ import java.util.List;
 
 public class BasicZombie extends Zombies
 {
-    public static final int HP = 200;
+    public static final int HP = 150;
 
     public BasicZombie(int row, int col)
     {

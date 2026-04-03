@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 public class StrongZombie extends Zombies
 {
-    public static final int HP = 400;
+    public static final int HP = 300;
 
     public StrongZombie(int row, int col)
     {
