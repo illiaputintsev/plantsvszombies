@@ -86,7 +86,7 @@ public class Game extends Board
         Zombie = new ArrayList<>();
         Plant = new ArrayList<>();
         bullets = new ArrayList<>();
-        sun = 50;
+        sun = 75;
         score = 0;
         gameRunning = false;
         gameOver = false;
@@ -114,7 +114,7 @@ public class Game extends Board
         bullets.clear();
         suns.clear();
         skySunTimer = 0;
-        sun = 50;
+        sun = 75;
         score = 0;
         zombieSpawnTimer = 0;
         selectedPlant = -1;
@@ -125,7 +125,7 @@ public class Game extends Board
         paused = false;
         level = chosenLevel - 1; // increments by startLevel()
         phase = 0;
-        phaseTimer = 10.0; // 10 seconds to plant initial plants
+        phaseTimer = 13.0; // 13 seconds to plant initial plants
         message = "The zombies are approaching... Start to plant NOW!";
         messageTimer = 4.0;
 
@@ -409,7 +409,7 @@ public class Game extends Board
         Zombie.clear();
         bullets.clear();
         suns.clear();
-        sun = 50;
+        sun = 75;
 
         // clear all tiles on the grid
         for (int r = 0; r < ROWS; r++) {
