@@ -4,10 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * Write a description of class Repeater here.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * An upgraded Peashooter that fires two peas in quick succession.
+ * Costs more sun but deals double damage per cycle, making it
+ * effective against stronger zombies in later levels.
  */
 public class Repeater extends Plant
 {
@@ -16,7 +15,9 @@ public class Repeater extends Plant
     private int shootPhase = 0;
 
     /**
-     * Constructor for objects of class Repeater
+     * Creates a Repeater at the given grid position.
+     * @param row the grid row
+     * @param col the grid column
      */
     public Repeater(int row, int col)
     {
@@ -25,8 +26,7 @@ public class Repeater extends Plant
     }
 
     /**
-     * Called every game tick
-     * Only shoots if a zombie is in the same row
+     * Fires two peas in quick succession if a zombie is ahead in the same row.
      */
     @Override
     public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime){
@@ -63,7 +63,8 @@ public class Repeater extends Plant
     }
 
     /**
-     * creates and returns a Bullet at the Repeater's location
+     * Creates a bullet from either the back or front head depending on shoot phase.
+     * @return list containing one bullet
      */
     public List<Bullet> shoot() {
         List<Bullet> bullets = new ArrayList<>();
@@ -80,6 +81,10 @@ public class Repeater extends Plant
         return bullets;
     }
 
+    /**
+     * Draws the repeater with two heads, curved stem, and leaves.
+     * @param gc the graphics context to draw on
+     */ 
     public void draw(GraphicsContext gc) {
         // shadow
         gc.setFill(Color.rgb(0, 0, 0, 0.15));
@@ -94,9 +99,7 @@ public class Repeater extends Plant
         gc.fillOval(x - 18, y + 10, 16, 10);
         gc.fillOval(x + 2, y + 10, 16, 10);
     
-        // -------------------------
         // SINGLE CURVED STEM (connected)
-        // -------------------------
         gc.setStroke(Color.FORESTGREEN);
         gc.setLineWidth(4);
         
@@ -105,18 +108,14 @@ public class Repeater extends Plant
 
         gc.setLineWidth(1);
     
-        // -------------------------
         // HEAD POSITIONS (along same stem)
-        // -------------------------
         double bx = x - 6;
         double by = y - 10;
     
         double fx = x + 6;
         double fy = y - 0;
     
-        // -------------------------
         // BACK HEAD
-        // -------------------------
         gc.setFill(Color.YELLOWGREEN);
         gc.fillOval(bx - 18, by - 24, 30, 30);
     
@@ -129,10 +128,8 @@ public class Repeater extends Plant
         gc.setFill(Color.rgb(255, 255, 255, 0.20));
         gc.fillOval(bx - 10, by - 20, 8, 6);
     
-        // -------------------------
+        
         // FRONT HEAD
-        // -------------------------
-    
         gc.setFill(Color.YELLOWGREEN);
         gc.fillOval(fx - 18, fy - 24, 30, 30);
     
@@ -157,6 +154,14 @@ public class Repeater extends Plant
         gc.fillOval(bx - 2, by - 12, 4, 6);
     }
     
+    /**
+     * Draws a reusable repeater icon at the given position and scale.
+     * @param gc the graphics context to draw on
+     * @param cx centre x position
+     * @param cy centre y position
+     * @param scale size multiplier (1.0 = full size)
+     * @param headOnly true to skip stem, leaves, and shadow
+     */
     public static void drawIcon(GraphicsContext gc, double cx, double cy, double scale, boolean headOnly) {
         gc.save();
         gc.translate(cx, cy);

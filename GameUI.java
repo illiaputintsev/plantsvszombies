@@ -15,8 +15,6 @@ import javafx.scene.shape.ArcType;
 
 /**
  * GameUI class - handles rendering.
- *
- * @author Mark Tarnavskyi
  */
 public class GameUI {
     private Game game;
@@ -110,8 +108,9 @@ public class GameUI {
     }
 
     /**
-     * 
-     * 
+     * Processes all mouse clicks on the game canvas.
+     * Priority order: pause overlay, pause button, end-state buttons,
+     * shop bar selection, then grid placement or shovel removal.
      */
     private void handleClick(double mx, double my) {
         // Pause overlay clicks | checked first, swallows all input
