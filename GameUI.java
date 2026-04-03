@@ -196,7 +196,7 @@ public class GameUI {
         if (game.selectedPlant == Game.SHOVEL_INDEX) {
             if (game.isTileOccupied(row, col)) {
                 game.removePlant(row, col);
-                SoundManager.playShowel();
+                SoundManager.playShovel();
             }
             game.selectedPlant = -1;
             return;
@@ -204,7 +204,7 @@ public class GameUI {
 
         // Plant selected: place it if the tile is empty
         if (game.selectedPlant != -1) {
-            Plants p = null;
+            Plant p = null;
             if (game.selectedPlant == 0) {
                 p = new Sunflower(row, col);
             } else if (game.selectedPlant == 1) {
@@ -257,10 +257,10 @@ public class GameUI {
             }
         }
 
-        for (Plants p : game.Plant) {
+        for (Plant p : game.plants) {
             if (p.isAlive()) p.draw(gc);
         }
-        for (Zombies z : game.Zombie) {
+        for (Zombie z : game.zombies) {
             if (z.isAlive()) z.draw(gc);
         }
         for (Bullet b : game.bullets) {

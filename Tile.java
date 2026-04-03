@@ -6,7 +6,7 @@ public class Tile
 {
     private int row;
     private int col;
-    private Plants plant;
+    private Plant plant;
 
     public Tile()
     {
@@ -22,7 +22,7 @@ public class Tile
         this.plant = null;
     }
 
-    public void setPlant(Plants plant)
+    public void setPlant(Plant plant)
     {
         this.plant = plant;
     }
@@ -37,7 +37,7 @@ public class Tile
         return plant != null && plant.isAlive();
     }
 
-    public Plants getPlant()
+    public Plant getPlant()
     {
         return plant;
     }

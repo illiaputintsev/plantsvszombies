@@ -12,8 +12,8 @@ import javafx.stage.Stage;
  */
 public class Game
 {
-    List<Zombies> Zombie;
-    List<Plants> Plant;
+    List<Zombie> zombies;
+    List<Plant> plants;
     List<Bullet> bullets;
     int sun;
     boolean gameRunning;
@@ -84,8 +84,8 @@ public class Game
 
     public Game()
     {
-        Zombie = new ArrayList<>();
-        Plant = new ArrayList<>();
+        zombies = new ArrayList<>();
+        plants = new ArrayList<>();
         bullets = new ArrayList<>();
         sun = 75;
         score = 0;
@@ -111,8 +111,8 @@ public class Game
     public void startGame(GameUI ui, Stage stage, int chosenLevel)
     {
         this.stage = stage;
-        Zombie.clear();
-        Plant.clear();
+        zombies.clear();
+        plants.clear();
         bullets.clear();
         suns.clear();
         skySunTimer = 0;
@@ -192,7 +192,7 @@ public class Game
                     zombieSpawnTimer = 0;
                 }
                 // level done if all final wave zombies spawned and all dead
-                if (finalWaveSpawnedCount >= finalWaveZombieAmount && Zombie.isEmpty()) {
+                if (finalWaveSpawnedCount >= finalWaveZombieAmount && zombies.isEmpty()) {
                     phase = 4;
                     phaseTimer = 2.0;
                     if (level > maxLevel) {
@@ -218,23 +218,23 @@ public class Game
         }
 
         // update plants
-        List<Entity> entityList = new ArrayList<>(Zombie);
-        for (Plants p : Plant) {
+        List<Entity> entityList = new ArrayList<>(zombies);
+        for (Plant p : plants) {
             if (!p.isAlive()) continue;
             p.act(entityList, bullets, this, deltaTime);
         }
 
         // update zombies
-        for (Zombies z : Zombie) {
+        for (Zombie z : zombies) {
             if (!z.isAlive()) continue;
-            z.act(Plant, Zombie, deltaTime);
+            z.act(plants, zombies, deltaTime);
             z.updateFlash(deltaTime);
         }
 
         // update bullets
         for (Bullet b : bullets) {
             b.update(deltaTime);
-            for (Zombies z : Zombie) {
+            for (Zombie z : zombies) {
                 if (z.isAlive() && b.contact(z)) {
                     z.takeDamage();
                     z.triggerFlash();
@@ -334,13 +334,13 @@ public class Game
         if (phase == 3) strongChance += 15;
 
         if (rng.nextInt(100) < strongChance) {
-            Zombie.add(new StrongZombie(row, COLS));
+            zombies.add(new StrongZombie(row, COLS));
         } else {
-            Zombie.add(new BasicZombie(row, COLS));
+            zombies.add(new BasicZombie(row, COLS));
         }
     }
 
-    public void placePlant(Plants plant, int row, int col)
+    public void placePlant(Plant plant, int row, int col)
     {
         if (board.isTileOccupied(row, col)) {
             return;
@@ -352,7 +352,7 @@ public class Game
         board.placePlant(plant, row, col);
         plant.setX(colToPixelX(col));
         plant.setY(rowToPixelY(row));
-        Plant.add(plant);
+        plants.add(plant);
         sun -= plant.getCost();
         SoundManager.playPlant();
     }
@@ -361,9 +361,9 @@ public class Game
     {
         Tile tile = board.getTile(row, col);
         if (tile != null) {
-            Plants p = tile.getPlant();
+            Plant p = tile.getPlant();
             if (p != null) {
-                Plant.remove(p);
+                plants.remove(p);
             }
         }
         board.removePlant(row, col);
@@ -371,16 +371,16 @@ public class Game
 
     public void removeDeadEntities()
     {
-        for (Zombies z : Zombie) {
+        for (Zombie z : zombies) {
             if (!z.isAlive()) score++;
         }
-        Plant.removeIf(p -> !p.isAlive());
-        Zombie.removeIf(z -> !z.isAlive());
+        plants.removeIf(p -> !p.isAlive());
+        zombies.removeIf(z -> !z.isAlive());
         bullets.removeIf(b -> !b.onScreen());
 
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
-                Plants p = board.getTile(r, c).getPlant();
+                Plant p = board.getTile(r, c).getPlant();
                 if (p != null && !p.isAlive()) {
                     board.removePlant(r, c);
                     SoundManager.playSwallow();
@@ -391,7 +391,7 @@ public class Game
 
     public void checkLoseCondition()
     {
-        for (Zombies z : Zombie) {
+        for (Zombie z : zombies) {
             if (z.hasReachedHouse()) {
                 gameRunning = false;
                 gameOver = true;
@@ -405,8 +405,8 @@ public class Game
      */
     public void clearBoard()
     {
-        Plant.clear();
-        Zombie.clear();
+        plants.clear();
+        zombies.clear();
         bullets.clear();
         suns.clear();
         sun = 75;

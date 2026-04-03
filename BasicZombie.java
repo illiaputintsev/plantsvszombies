@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class BasicZombie extends Zombies
+public class BasicZombie extends Zombie
 {
     public static final int HP = 200;
 
@@ -10,7 +10,7 @@ public class BasicZombie extends Zombies
     }
 
     @Override
-    public void act(List<Plants> plants, List<Zombies> newZombies, double deltaTime)
+    public void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime)
     {
         if (!alive) return;
 
