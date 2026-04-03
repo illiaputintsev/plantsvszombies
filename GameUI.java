@@ -354,10 +354,6 @@ public class GameUI {
             gc.setTextAlign(TextAlignment.CENTER);
             gc.fillText("LEVEL COMPLETE!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
             gc.setTextAlign(TextAlignment.LEFT);
-            //gc.setFill(Color.WHITE);
-            //gc.setFont(Font.font(20));
-            //gc.fillText("Score: " + game.score, Game.WIDTH / 2.0 - 40, Game.HEIGHT / 2.0 + 30);
-
             drawButton(gc, "Continue", BUTTON_X, BUTTON_Y, Color.FORESTGREEN);
         }
 
@@ -695,7 +691,6 @@ public class GameUI {
         gc.fillText(label, x + OVERLAY_BTN_W / 2, y + OVERLAY_BTN_H / 2);
     }
     
-
     private void drawPeashooterIcon(GraphicsContext gc, double x, double y) {
     
         gc.setFill(Color.YELLOWGREEN);
