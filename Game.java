@@ -429,6 +429,7 @@ public class Game extends Board
     }
 
     public void addSun(int amount) {
+        SoundManager.playSunPicked();
         sun += amount;
     }
 

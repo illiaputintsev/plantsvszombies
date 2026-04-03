@@ -24,6 +24,7 @@ public class SoundManager {
     private static AudioClip eating;
     private static AudioClip swallow;
     private static AudioClip drums;
+    private static AudioClip sunPicked;
 
 
     public static void init() {
@@ -43,6 +44,7 @@ public class SoundManager {
         eating = loadSound("/sounds/eating.wav");
         swallow = loadSound("/sounds/swallow.wav");
         drums = loadSound("/sounds/drum_threat.wav");
+        sunPicked = loadSound("/sounds/sun_pick_up.wav");
     }
 
     private static AudioClip loadSound(String path) {
@@ -64,6 +66,11 @@ public class SoundManager {
             drums.play(0.75);
         } 
     }
+    
+    public static void playSunPicked(){
+        sunPicked.play(0.8);
+    }
+    
     public static void playEating(){
         if (!eating.isPlaying()){
             eating.play(0.5);
