@@ -24,6 +24,9 @@ public abstract class Entity
         this.y = Game.rowToPixelY(row);
     }
     
+    /**
+     * Reduces HP by the standard damage amount. Kills the entity if HP reaches zero.
+     */ 
     protected void takeDamage(){
         hp -= DAMAGE;
         if (hp <= 0){
@@ -31,6 +34,10 @@ public abstract class Entity
         }
     }
 
+    /**
+     * Reduces HP by a specified amount. Kills the entity if HP reaches zero.
+     * @param damage the amount of HP to subtract
+     */
     protected void takeHit(int damage){
         hp -= damage;
         if (hp <= 0){
@@ -38,8 +45,15 @@ public abstract class Entity
         }
     }
     
+    /**
+     * Checks whether this entity is still alive.
+     * @return true if the entity has not been killed
+     */
     protected boolean isAlive(){ return alive; }
     
+    /**
+     * Marks this entity as dead.
+     */
     protected void setDead(){ alive = false; }
     
     public int getHp()       { 
