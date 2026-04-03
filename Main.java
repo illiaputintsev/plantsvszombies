@@ -24,7 +24,11 @@ public class Main extends Application {
 
     public static MenuBar createMenuBar() {
         MenuItem quit = new MenuItem("Quit");
-        quit.setOnAction(e -> System.exit(0));
+        quit.setOnAction(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        
         Menu fileMenu = new Menu("File");
         fileMenu.getItems().add(quit);
 
