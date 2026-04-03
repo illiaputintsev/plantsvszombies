@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
  * @author (your name)
  * @version (a version number or a date)
  */
-public abstract class Plants extends Entity
+public abstract class Plant extends Entity
 {
     protected double cooldown;
     protected int cost;
@@ -16,7 +16,7 @@ public abstract class Plants extends Entity
     /**
      * Constructor for objects of class Plants
      */
-    public Plants(int hp, int cost, int row, int col)
+    public Plant(int hp, int cost, int row, int col)
     {
         super(hp, row, col, true);
         this.cost = cost;

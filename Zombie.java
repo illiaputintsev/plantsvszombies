@@ -2,7 +2,7 @@ import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public abstract class Zombies extends Entity
+public abstract class Zombie extends Entity
 {
     public static final int ATTACK_DAMAGE = 25;
     protected double speed;
@@ -11,7 +11,7 @@ public abstract class Zombies extends Entity
     protected double attackInterval;
     protected double flashTimer;
 
-    public Zombies(int hp, int row, int col, double speed)
+    public Zombie(int hp, int row, int col, double speed)
     {
         super(hp, row, col, true);
         this.speed = speed;
@@ -23,12 +23,12 @@ public abstract class Zombies extends Entity
         this.x = Game.WIDTH + 20 + Math.random() * 30;
     }
 
-    protected boolean move(double deltaTime, List<Plants> plants)
+    protected boolean move(double deltaTime, List<Plant> plants)
     {
         if (!alive) return false;
 
         // If there is a plant on the zombie's current cell, stay and eat it
-        for (Plants p : plants) {
+        for (Plant p : plants) {
             if (p.isAlive() && p.getRow() == row
                 && Math.abs(x - p.getX()) < Game.CELL_W * 0.5)
             {
@@ -47,7 +47,7 @@ public abstract class Zombies extends Entity
     /**
      * Attacks the plant on the zombie's current cell.
      */
-    protected void attack(double deltaTime, List<Plants> plants)
+    protected void attack(double deltaTime, List<Plant> plants)
     {
         if (!alive || !eating) return;
 
@@ -55,7 +55,7 @@ public abstract class Zombies extends Entity
         if (eatTimer < attackInterval) return;
         eatTimer = 0;
 
-        for (Plants p : plants) {
+        for (Plant p : plants) {
             if (p.isAlive() && p.getRow() == row
                 && Math.abs(x - p.getX()) < Game.CELL_W * 0.5)
             {
@@ -121,5 +121,5 @@ public abstract class Zombies extends Entity
         gc.fillRect(x - barW / 2, y - 40, barW * hp / maxHp, 4);
     }
 
-    public abstract void act(List<Plants> plants, List<Zombies> newZombies, double deltaTime);
+    public abstract void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime);
 }

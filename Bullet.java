@@ -52,7 +52,7 @@ public class Bullet
      * 
      * Mark's Update 24/03: collisions are checked using pixels instead of grid pos
      */
-    public boolean contact(Zombies zombie){
+    public boolean contact(Zombie zombie){
         if (Math.abs(x - zombie.getX() - Game.CELL_W * 0.5) < Game.CELL_W * 0.5 && Math.abs(y - zombie.getY()) < Game.CELL_H * 0.4){
             hit = true;
             SoundManager.playHitSound();
