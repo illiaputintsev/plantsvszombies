@@ -1,6 +1,14 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+/**
+ * Represents a sun token that can be collected for currency.
+ * Suns either fall from the sky or are produced by sunflowers,
+ * and fly toward the counter when collected.
+ *
+ * @author Illia Putintsev
+ * @version 1.0
+ */
 public class Sun {
     private double x, y;
     private final int value;
@@ -12,6 +20,13 @@ public class Sun {
     private boolean collecting;
     private double scale;
 
+    /**
+     * Creates a sun token at the given position.
+     * @param x starting x coordinate
+     * @param y starting y coordinate
+     * @param value the amount of sun currency this token gives
+     * @param falling true if the sun falls from the sky, false if spawned by a sunflower
+     */
     public Sun(double x, double y, int value, boolean falling) {
         this.x = x;
         this.y = y;
@@ -25,6 +40,10 @@ public class Sun {
         this.scale = 1.0;
     }
 
+    /**
+     * Updates the sun's position each frame — falls, collects toward counter, or expires.
+     * @param deltaTime seconds since last frame
+     */
     public void update(double deltaTime) {
         if (collecting) {
             // Move toward the sun counter
@@ -58,10 +77,21 @@ public class Sun {
         }
     }
 
+    /**
+     * Draws the sun with rays at its current position and scale.
+     * @param gc the graphics context to draw on
+     */
     public void draw(GraphicsContext gc) {
         drawSunIcon(gc, this.x, this.y, this.scale);
     }
 
+    /**
+     * Draws a sun icon at a specified position and scale (reusable utility).
+     * @param gc the graphics context to draw on
+     * @param cx centre x position
+     * @param cy centre y position
+     * @param scale size multiplier
+     */
     public static void drawSunIcon(GraphicsContext gc, double cx, double cy, double scale) {
         double centerRadius = 14 * scale;
         double rayOuter = 22 * scale;
@@ -96,6 +126,12 @@ public class Sun {
         gc.fillOval(cx - innerHighlight, cy - innerHighlight, innerHighlight * 2, innerHighlight * 2);
     }
 
+    /**
+     * Checks whether a mouse position is within clicking range of this sun.
+     * @param mouseX the click x coordinate
+     * @param mouseY the click y coordinate
+     * @return true if the click is close enough to collect
+     */
     public boolean isClicked(double mouseX, double mouseY) {
         if (collecting) return false;
         double dx = mouseX - x;
@@ -103,6 +139,10 @@ public class Sun {
         return dx * dx + dy * dy <= 225;
     }
 
+    /**
+     * Marks this sun as being collected and begins the fly-to-counter animation.
+     * @return the sun value to add to the player's total
+     */
     public int collect() {
         collecting = true;
         return value;

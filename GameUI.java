@@ -14,7 +14,12 @@ import javafx.geometry.VPos;
 import javafx.scene.shape.ArcType;
 
 /**
- * GameUI class - handles rendering.
+ * GameUI class - handles rendering the game screen, processing mouse input,
+ * and managing the animation loop for gameplay.
+ *
+ * @author Mark Tarnavskyi
+ * @author Illia Putintsev
+ * @version 1.2
  */
 public class GameUI {
     private Game game;
@@ -40,6 +45,11 @@ public class GameUI {
     private static final double OVERLAY_BTN_H = 50;
     private static final double OVERLAY_BTN_GAP = 20;
 
+    /**
+     * Creates the game UI and starts the level music.
+     * @param game the game state to render
+     * @param stage the JavaFX stage to display on
+     */
     public GameUI(Game game, Stage stage) {
         this.game = game;
         this.stage = stage;
@@ -111,6 +121,8 @@ public class GameUI {
      * Processes all mouse clicks on the game canvas.
      * Priority order: pause overlay, pause button, end-state buttons,
      * shop bar selection, then grid placement or shovel removal.
+     * @param mx click x coordinate
+     * @param my click y coordinate
      */
     private void handleClick(double mx, double my) {
         // Pause overlay clicks | checked first, swallows all input
@@ -230,11 +242,25 @@ public class GameUI {
         levelSelect.show();
     }
     
+    /**
+     * Checks whether a point is inside a rectangle.
+     * @param mx point x
+     * @param my point y
+     * @param rx rectangle left edge
+     * @param ry rectangle top edge
+     * @param rw rectangle width
+     * @param rh rectangle height
+     * @return true if the point is inside
+     */
     private boolean isInsideRect(double mx, double my,
                                   double rx, double ry, double rw, double rh) {
         return mx >= rx && mx <= rx + rw && my >= ry && my <= ry + rh;
     }
 
+    /**
+     * Draws the entire game frame including grid, entities, UI, and overlays.
+     * @param gc the graphics context to draw on
+     */
     private void render(GraphicsContext gc) {
         gc.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
@@ -392,9 +418,13 @@ public class GameUI {
     }
 
     /**
-     * Draws a clickable button on the canvas
+     * Draws a styled button on the canvas.
+     * @param gc the graphics context
+     * @param text the button label
+     * @param bx left x position
+     * @param by top y position
+     * @param colour the button background colour
      */
-    
     private void drawButton(GraphicsContext gc, String text, double bx, double by, Color colour) {
         gc.setFill(colour);
         gc.fillRoundRect(bx, by, BUTTON_W, BUTTON_H, 10, 10);
@@ -407,6 +437,10 @@ public class GameUI {
         gc.setTextAlign(TextAlignment.LEFT);
     }
 
+    /**
+     * Draws the top shop bar with sun counter and plant seed packets.
+     * @param gc the graphics context to draw on
+     */
     private void drawShop(GraphicsContext gc) {
         // top bar background
         gc.setFill(Color.rgb(222, 184, 135));
@@ -447,6 +481,13 @@ public class GameUI {
         }
     }
 
+    /**
+     * Draws a single seed packet card in the shop bar.
+     * @param gc the graphics context
+     * @param index the shop slot index
+     * @param x left x position of the card
+     * @param y top y position of the card
+     */
     private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
         double w = Game.SHOP_CELL_W - 10;
         double h = Game.SHOP_CELL_H;
@@ -490,6 +531,13 @@ public class GameUI {
         }
     }
     
+    /**
+     * Draws the appropriate plant icon inside a shop seed packet.
+     * @param gc the graphics context
+     * @param index the plant type index
+     * @param cx centre x of the icon area
+     * @param cy centre y of the icon area
+     */
     private void drawShopPlantIcon(GraphicsContext gc, int index, double cx, double cy) {
         switch (index) {
             case 0: Sunflower.drawIcon(gc, cx, cy + 4, 0.6, true); break;
@@ -499,6 +547,10 @@ public class GameUI {
         }
     }
     
+    /**
+     * Draws the circular pause button in the top-right corner.
+     * @param gc the graphics context to draw on
+     */
     private void drawPauseButton(GraphicsContext gc) {
         double x = PAUSE_BTN_X;
         double y = PAUSE_BTN_Y;
@@ -575,6 +627,12 @@ public class GameUI {
         gc.fillText(label, x + OVERLAY_BTN_W / 2, y + OVERLAY_BTN_H / 2);
     }
     
+    /**
+     * Draws a rotated shovel icon for the shop slot.
+     * @param gc the graphics context
+     * @param cx centre x position
+     * @param cy centre y position
+     */
     private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {
         gc.save();
         gc.translate(cx, cy);
@@ -590,6 +648,10 @@ public class GameUI {
         gc.restore();
     }
     
+    /**
+     * Draws the perspective house on the left side of the game field.
+     * @param gc the graphics context to draw on
+     */
     private void drawHouse(GraphicsContext gc) {
         // === WALL (front face — full area behind roof) ===
         // extends from roof ridge down to ground, covers everything
@@ -675,6 +737,10 @@ public class GameUI {
         gc.strokePolygon(winX, winY, 4);
     }
         
+    /**
+     * Draws the pavement, road, and fence borders around the game field.
+     * @param gc the graphics context to draw on
+     */
     private void drawPavement(GraphicsContext gc) {
         // pavement zombie side
         gc.setFill(Color.DARKGRAY);
