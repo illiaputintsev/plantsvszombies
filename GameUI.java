@@ -6,9 +6,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+import javafx.geometry.VPos;
 import javafx.scene.shape.ArcType;
+
 /**
  * GameUI class - handles rendering.
  *
@@ -27,6 +31,16 @@ public class GameUI {
     private static final double BUTTON_Y = Game.HEIGHT / 2.0 + 80;
     private static final double BUTTON_W = 160;
     private static final double BUTTON_H = 40;
+    
+    // Pause button 
+    private static final double PAUSE_BTN_X = Game.WIDTH - 50;
+    private static final double PAUSE_BTN_Y = 20;
+    private static final double PAUSE_BTN_SIZE = 32;
+    
+    // Pause overlay buttons
+    private static final double OVERLAY_BTN_W = 200;
+    private static final double OVERLAY_BTN_H = 50;
+    private static final double OVERLAY_BTN_GAP = 20;
 
     public GameUI(Game game, Stage stage) {
         this.game = game;
@@ -62,28 +76,73 @@ public class GameUI {
         
         new AnimationTimer() {
             private long lastTime = -1;
-
+            private boolean wasPaused = false;
+        
             @Override
             public void handle(long now) {
                 if (lastTime < 0) { lastTime = now; return; }
+        
+                // After unpausing, skip one frame's delta so nothing jumps
+                if (wasPaused && !game.isPaused()) {
+                    lastTime = now;
+                    wasPaused = false;
+                }
+                if (game.isPaused()) {
+                    wasPaused = true;
+                }
+        
                 double deltaTime = (now - lastTime) / 1_000_000_000.0;
                 lastTime = now;
-
-                // stop loop if game is no longer running and an end state is reached
+        
                 if (!game.gameRunning && (game.levelComplete || game.gameOver || game.gameWon)) {
                     render(gc);
                     stop();
                     return;
                 }
-
-                game.update(deltaTime);
+        
+                if (!game.isPaused()) {
+                    game.update(deltaTime);
+                }
                 render(gc);
             }
-        }.start();
+        }.start();  
     }
 
+    /**
+     * 
+     * 
+     */
     private void handleClick(double mx, double my) {
+        // Pause overlay clicks | checked first, swallows all input
+        if (game.isPaused()) {
+            double btnX = Game.WIDTH / 2.0 - OVERLAY_BTN_W / 2;
+            double resumeY = Game.HEIGHT / 2.0 - 10;
+            double levelsY = resumeY + OVERLAY_BTN_H + OVERLAY_BTN_GAP;
 
+            if (isInsideRect(mx, my, btnX, resumeY, OVERLAY_BTN_W, OVERLAY_BTN_H)) {
+                game.resume();
+                SoundManager.playMenuBtn();
+            } else if (isInsideRect(mx, my, btnX, levelsY, OVERLAY_BTN_W, OVERLAY_BTN_H)) {
+                game.resume();
+                SoundManager.playMenuBtn();
+                goToLevelSelect();
+            }
+            return; // nothing else responds while paused
+        }
+        
+        // Pause button click
+        if (game.gameRunning) {
+            double cx = PAUSE_BTN_X + PAUSE_BTN_SIZE / 2;
+            double cy = PAUSE_BTN_Y + PAUSE_BTN_SIZE / 2;
+            double dx = mx - cx;
+            double dy = my - cy;
+            if (dx * dx + dy * dy <= (PAUSE_BTN_SIZE / 2) * (PAUSE_BTN_SIZE / 2)) {
+                game.pause();
+                SoundManager.playMenuBtn();
+                return;
+            }
+        }
+        
         // click button to go back to level select
         if (game.levelComplete || game.gameOver || game.gameWon) {
             if (mx >= BUTTON_X && mx <= BUTTON_X + BUTTON_W
@@ -170,6 +229,11 @@ public class GameUI {
         LevelUI levelSelect = new LevelUI(game, stage);
         levelSelect.show();
     }
+    
+    private boolean isInsideRect(double mx, double my,
+                                  double rx, double ry, double rw, double rh) {
+        return mx >= rx && mx <= rx + rw && my >= ry && my <= ry + rh;
+    }
 
     private void render(GraphicsContext gc) {
         gc.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
@@ -211,8 +275,9 @@ public class GameUI {
         }
 
         // Level progress bar
-        if (game.phase == 1 || game.phase == 3) {
+        if (game.phase == 1 || game.phase == 2||game.phase == 3) {
             double progressBarX = Game.WIDTH - 280;
+
             double progressBarY = 45;
             double progressBarWidth = 150;
             double progressBarHeight = 10;
@@ -268,6 +333,14 @@ public class GameUI {
             if (!(SoundManager.isLevelThemePlaying())){
                 SoundManager.playLevelTheme();
             }
+        }
+        
+        // pausing checks
+        if (game.gameRunning) {
+            drawPauseButton(gc);
+        }
+        if (game.isPaused()) {
+            drawPauseOverlay(gc);
         }
         
         // Level complete
@@ -343,7 +416,7 @@ public class GameUI {
         gc.setTextAlign(TextAlignment.LEFT);
     }
 
-private void drawShop(GraphicsContext gc) {
+    private void drawShop(GraphicsContext gc) {
         // top bar background
         gc.setFill(Color.rgb(222, 184, 135));
         gc.fillRect(0, 0, Game.WIDTH, 80);
@@ -383,309 +456,386 @@ private void drawShop(GraphicsContext gc) {
         }
     }
 
-private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
-    double w = Game.SHOP_CELL_W - 10;
-    double h = Game.SHOP_CELL_H;
-
-    boolean isShovel = (index == Game.SHOVEL_INDEX);
-    boolean affordable = isShovel || game.getSunAmount() >= SHOP_COSTS[index];
-
-        // card background
-    if (game.selectedPlant == index) {
-        gc.setFill(Color.rgb(255, 220, 90)); // selected = yellow
-    } else if (isShovel) {
-        gc.setFill(Color.rgb(170, 85, 0));
-    } else if (affordable) {
-        gc.setFill(Color.rgb(185, 230, 240)); // normal = blue
-    } else {
-        gc.setFill(Color.rgb(160, 160, 160));
-    }
-    gc.fillRoundRect(x, y, w, h, 8, 8);
-
-        // border
-    gc.setStroke(Color.rgb(110, 80, 40));
-    gc.setLineWidth(2);
-    gc.strokeRoundRect(x, y, w, h, 8, 8);
-
-    if (isShovel) {
-        drawShovelIcon(gc, x + w / 2, y + h / 2);
-        return;
-    }
-
-    drawShopPlantIcon(gc, index, x + w / 2, y + 23);
-
-    gc.setFill(Color.BLACK);
-    gc.setFont(Font.font(12));
-    gc.setTextAlign(TextAlignment.CENTER);
-    gc.fillText("☀ " + SHOP_COSTS[index], x + w / 2, y + 50);
-    gc.setTextAlign(TextAlignment.LEFT);
-
-    if (!affordable) {
-        gc.setFill(Color.rgb(80, 80, 80, 0.35));
-        gc.fillRoundRect(x, y, w, h, 8, 8);
-    }
-}
-    
-private void drawShopPlantIcon(GraphicsContext gc, int index, double cx, double cy) {
-    switch (index) {
-        case 0:
-            drawSunflowerIcon(gc, cx, cy);
-            break;
-        case 1:
-            drawWallnutIcon(gc, cx, cy);
-            break;
-        case 2:
-            drawPeashooterIcon(gc, cx, cy);
-            break;
-        case 3:
-            drawRepeaterIcon(gc, cx, cy);
-            break;
-    }
-}
-
-private void drawPeashooterIcon(GraphicsContext gc, double x, double y) {
-
-    gc.setFill(Color.YELLOWGREEN);
-    gc.fillOval(x - 12, y - 8, 20, 20);
-
-    gc.fillRoundRect(x + 2, y - 3, 10, 7, 4, 4);
-    gc.fillOval(x + 9, y - 5, 7, 10);
-
-    gc.setFill(Color.BLACK);
-    gc.fillOval(x + 12, y - 2, 3, 5);
-
-    gc.setFill(Color.WHITE);
-    gc.fillOval(x - 4, y - 3, 5, 6);
-    gc.setFill(Color.BLACK);
-    gc.fillOval(x - 1.5, y, 2, 3);
-}
-
-private void drawSunflowerIcon(GraphicsContext gc, double x, double y) {
-
-    gc.setFill(Color.GOLD);
-    for (int i = 0; i < 10; i++) {
-        double a = i * (Math.PI * 2 / 10.0);
-        double px = x + Math.cos(a) * 10;
-        double py = y + Math.sin(a) * 10;
-        gc.fillOval(px - 4, py - 4, 8, 8);
-    }
-
-    gc.setFill(Color.rgb(170, 120, 60));
-    gc.fillOval(x - 9, y - 9, 18, 18);
-
-    gc.setFill(Color.BLACK);
-    gc.fillOval(x - 4, y - 2, 2, 3);
-    gc.fillOval(x + 2, y - 2, 2, 3);
-
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(1);
-    gc.strokeArc(x - 3, y + 1, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
-}
-
-private void drawWallnutIcon(GraphicsContext gc, double x, double y) {
-    gc.setFill(Color.rgb(190, 150, 70));
-    gc.fillOval(x - 10, y - 12, 20, 26);
-
-    gc.setFill(Color.rgb(250, 245, 220));
-    gc.fillOval(x - 6, y - 3, 5, 7);
-    gc.fillOval(x + 1, y - 3, 5, 7);
-
-    gc.setFill(Color.BLACK);
-    gc.fillOval(x - 4, y, 1.8, 2);
-    gc.fillOval(x + 3, y, 1.8, 2);
-
-    gc.setStroke(Color.rgb(90, 70, 30));
-    gc.setLineWidth(1);
-    gc.strokeArc(x - 3, y + 4, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
-}
-
-private void drawRepeaterIcon(GraphicsContext gc, double x, double y) {
-
-    double bx = x - 5;
-    double by = y - 4;
-
-    gc.setFill(Color.YELLOWGREEN);
-    gc.fillOval(bx - 9, by - 6, 14, 14);
-    gc.fillRoundRect(bx + 1, by - 1, 7, 5, 4, 4);
-    gc.fillOval(bx + 6, by - 2, 5, 8);
-
-    gc.setFill(Color.BLACK);
-    gc.fillOval(bx + 8.5, by, 2, 3.5);
-
-    double fx = x + 4;
-    double fy = y + 1;
-
-    gc.setFill(Color.rgb(140, 180, 70));
-    gc.fillOval(fx - 10, fy - 7, 16, 16);
-
-    gc.setFill(Color.YELLOWGREEN);
-    gc.fillOval(fx - 9, fy - 6, 14, 14);
-    gc.fillRoundRect(fx + 1, fy - 1, 7, 5, 4, 4);
-    gc.fillOval(fx + 6, fy - 2, 5, 8);
-
-    gc.setFill(Color.BLACK);
-    gc.fillOval(fx + 8.5, fy, 2, 3.5);
-
-    gc.setFill(Color.WHITE);
-    gc.fillOval(fx - 1, fy - 1, 3.5, 4.5);
-    gc.setFill(Color.BLACK);
-    gc.fillOval(fx + 0.5, fy + 1, 1.4, 2);
-    
-    gc.setFill(Color.WHITE);
-    gc.fillOval(bx - 1, by - 1, 3.5, 4.5);
-    gc.setFill(Color.BLACK);
-    gc.fillOval(bx + 0.5, by + 1, 1.4, 2);
-}
-    
-private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {
-    gc.save();
-    gc.translate(cx, cy);
-    gc.rotate(30);
-
-    // handle
-    gc.setFill(Color.rgb(180, 120, 60));
-    gc.fillRoundRect(-3, -22, 6, 30, 3, 3);
-
-    // handle grip
-    gc.setFill(Color.rgb(140, 90, 40));
-    gc.fillRoundRect(-5, -24, 10, 6, 3, 3);
-
-    // blade
-    gc.setFill(Color.SILVER);
-    gc.fillRoundRect(-10, 6, 20, 16, 6, 6);
-
-    // blade shine
-    gc.setFill(Color.rgb(220, 220, 220, 0.5));
-    gc.fillRoundRect(-6, 8, 5, 12, 2, 2);
-
-    gc.restore();
-}
-
-private void drawHouse(GraphicsContext gc) {
-    // wall
-    gc.setFill(Color.web("#F5F5DC"));
-    gc.fillPolygon(
-    new double[]{0, 114, 114, 64},  // x  
-    new double[]{525, 525, 175, 110}, // y
-    4);
-        
-    // roof
-    gc.setFill(Color.web("#C4736A"));
-    gc.fillPolygon(
-        new double[]{0, 64, 64, 0},  // x  
-        new double[]{80, 85, 506, 485}, // y
+    private void drawHouse(GraphicsContext gc) {
+        // wall
+        gc.setFill(Color.web("#F5F5DC"));
+        gc.fillPolygon(
+        new double[]{0, 114, 114, 64},  // x  
+        new double[]{525, 525, 175, 110}, // y
         4);
+        
+        // roof
+        gc.setFill(Color.web("#C4736A"));
+        gc.fillPolygon(
+            new double[]{0, 64, 64, 0},  // x  
+            new double[]{80, 85, 506, 485}, // y
+            4);
             
-    // door  
-    gc.setFill(Color.web("#8B4513"));
-    gc.fillPolygon(
-    new double[]{114, 90, 90, 114},  // x  
-    new double[]{215, 200, 250, 265}, // y
-    4);
+        // door  
+        gc.setFill(Color.web("#8B4513"));
+        gc.fillPolygon(
+        new double[]{114, 90, 90, 114},  // x  
+        new double[]{215, 200, 250, 265}, // y
+        4);
         
-    //window
-    gc.setFill(Color.web("#87CEEB"));
-    gc.fillPolygon(
-    new double[]{80, 80, 110, 110},  // x  
-    new double[]{315, 415, 425, 325}, // y
-    4);
+        //window
+        gc.setFill(Color.web("#87CEEB"));
+        gc.fillPolygon(
+        new double[]{80, 80, 110, 110},  // x  
+        new double[]{315, 415, 425, 325}, // y
+        4);
         
-    // wall
-    // horizontal line
-    gc.setFill(Color.BLACK);
-    gc.fillRect(0, 525, 120, 6);
+        // wall
+        // horizontal line
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 525, 120, 6);
         
-    // perpendicular line
-    gc.setFill(Color.BLACK);
-    //           x,   y, w,   h
-    gc.fillRect(114, 175, 6, 350);
+        // perpendicular line
+        gc.setFill(Color.BLACK);
+        //           x,   y, w,   h
+        gc.fillRect(114, 175, 6, 350);
         
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    //            x1, y1, x2, y2
-    gc.strokeLine(70, 485, 114, 525);
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        //            x1, y1, x2, y2
+        gc.strokeLine(70, 485, 114, 525);
         
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    gc.strokeLine(70, 110, 114, 175);
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        gc.strokeLine(70, 110, 114, 175);
         
-    // roof
-    // perpendicular base line
-    gc.setFill(Color.BLACK);
-    gc.fillRect(64, 85, 6, 425);     
+        // roof
+        // perpendicular base line
+        gc.setFill(Color.BLACK);
+        gc.fillRect(64, 85, 6, 425);     
         
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    gc.strokeLine(64, 85, 0, 75);
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        gc.strokeLine(64, 85, 0, 75);
         
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(6);
-    gc.strokeLine(0, 485, 64, 506); 
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(6);
+        gc.strokeLine(0, 485, 64, 506); 
         
-    //door
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(92, 250, 114, 265);
+        //door
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(92, 250, 114, 265);
         
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(92, 200, 114, 215);
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(92, 200, 114, 215);
         
-    // top line
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(90, 200, 90, 250);
+        // top line
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(90, 200, 90, 250);
         
-    //window
-    // botton line
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(110, 325, 110, 425);
+        //window
+        // botton line
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(110, 325, 110, 425);
         
-    // top line
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(80, 315, 80, 415);
+        // top line
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(80, 315, 80, 415);
         
-    // first diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(110, 425, 80, 415);
+        // first diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(110, 425, 80, 415);
         
-    // second diagonal
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(4);
-    gc.strokeLine(110, 325, 80, 315);
-}
+        // second diagonal
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeLine(110, 325, 80, 315);
+    }
     
-private void drawPavement(GraphicsContext gc) {
-    // pavement zombie side
-    gc.setFill(Color.DARKGRAY);
-    gc.fillRect(920, 70, 1000, 600); 
+    private void drawSeedPacket(GraphicsContext gc, int index, double x, double y) {
+        double w = Game.SHOP_CELL_W - 10;
+        double h = Game.SHOP_CELL_H;
+    
+        boolean isShovel = (index == Game.SHOVEL_INDEX);
+        boolean affordable = isShovel || game.getSunAmount() >= SHOP_COSTS[index];
+    
+            // card background
+        if (game.selectedPlant == index) {
+            gc.setFill(Color.rgb(255, 220, 90)); // selected = yellow
+        } else if (isShovel) {
+            gc.setFill(Color.rgb(170, 85, 0));
+        } else if (affordable) {
+            gc.setFill(Color.rgb(185, 230, 240)); // normal = blue
+        } else {
+            gc.setFill(Color.rgb(160, 160, 160));
+        }
+        gc.fillRoundRect(x, y, w, h, 8, 8);
+    
+            // border
+        gc.setStroke(Color.rgb(110, 80, 40));
+        gc.setLineWidth(2);
+        gc.strokeRoundRect(x, y, w, h, 8, 8);
+    
+        if (isShovel) {
+            drawShovelIcon(gc, x + w / 2, y + h / 2);
+            return;
+        }
+    
+        drawShopPlantIcon(gc, index, x + w / 2, y + 23);
+    
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(12));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("☀ " + SHOP_COSTS[index], x + w / 2, y + 50);
+        gc.setTextAlign(TextAlignment.LEFT);
+    
+        if (!affordable) {
+            gc.setFill(Color.rgb(80, 80, 80, 0.35));
+            gc.fillRoundRect(x, y, w, h, 8, 8);
+        }
+    }
+    
+    private void drawShopPlantIcon(GraphicsContext gc, int index, double cx, double cy) {
+        switch (index) {
+            case 0:
+                drawSunflowerIcon(gc, cx, cy);
+                break;
+            case 1:
+                drawWallnutIcon(gc, cx, cy);
+                break;
+            case 2:
+                drawPeashooterIcon(gc, cx, cy);
+                break;
+            case 3:
+                drawRepeaterIcon(gc, cx, cy);
+                break;
+        }
+    }
+    
+    private void drawPauseButton(GraphicsContext gc) {
+        double x = PAUSE_BTN_X;
+        double y = PAUSE_BTN_Y;
+        double s = PAUSE_BTN_SIZE;
+
+        // Circle background
+        gc.setFill(Color.rgb(60, 60, 60, 0.85));
+        gc.fillOval(x, y, s, s);
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(1.5);
+        gc.strokeOval(x, y, s, s);
+
+        // Two vertical bars (standard pause icon)
+        double barW = s * 0.12;
+        double barH = s * 0.40;
+        double cx = x + s / 2;
+        double cy = y + s / 2;
+        double gap = s * 0.10;
+
+        gc.setFill(Color.WHITE);
+        gc.fillRoundRect(cx - gap - barW, cy - barH / 2, barW, barH, 2, 2);
+        gc.fillRoundRect(cx + gap,        cy - barH / 2, barW, barH, 2, 2);
+    }
+
+    /**
+     * Draws the full-screen pause overlay with Resume and Back to Levels buttons.
+     */
+    private void drawPauseOverlay(GraphicsContext gc) {
+        double w = Game.WIDTH;
+        double h = Game.HEIGHT;
+
+        // Dim background
+        gc.setFill(Color.rgb(0, 0, 0, 0.55));
+        gc.fillRect(0, 0, w, h);
+
+        // "PAUSED" title
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 52));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText("PAUSED", w / 2, h / 2 - 80);
+
+        // Buttons
+        double btnX = w / 2 - OVERLAY_BTN_W / 2;
+        double resumeY = h / 2 - 10;
+        double levelsY = resumeY + OVERLAY_BTN_H + OVERLAY_BTN_GAP;
+
+        drawOverlayButton(gc, btnX, resumeY, "Resume");
+        drawOverlayButton(gc, btnX, levelsY, "Back to Levels");
+
+        // Reset text alignment so other drawing isn't affected next frame
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setTextBaseline(VPos.BASELINE);
+    }
+
+    /**
+     * Draws a single styled button for the pause overlay.
+     */
+    private void drawOverlayButton(GraphicsContext gc, double x, double y, String label) {
+        // Button background (PvZ-style green)
+        gc.setFill(Color.DARKGREY);
+        gc.fillRoundRect(x, y, OVERLAY_BTN_W, OVERLAY_BTN_H, 12, 12);
+
+        // Border
+        gc.setStroke(Color.rgb(50, 100, 25));
+        gc.setLineWidth(2);
+        gc.strokeRoundRect(x, y, OVERLAY_BTN_W, OVERLAY_BTN_H, 12, 12);
+
+        // Label
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText(label, x + OVERLAY_BTN_W / 2, y + OVERLAY_BTN_H / 2);
+    }
+    
+
+    private void drawPeashooterIcon(GraphicsContext gc, double x, double y) {
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(x - 12, y - 8, 20, 20);
+    
+        gc.fillRoundRect(x + 2, y - 3, 10, 7, 4, 4);
+        gc.fillOval(x + 9, y - 5, 7, 10);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x + 12, y - 2, 3, 5);
+    
+        gc.setFill(Color.WHITE);
+        gc.fillOval(x - 4, y - 3, 5, 6);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x - 1.5, y, 2, 3);
+    }
+    
+    private void drawSunflowerIcon(GraphicsContext gc, double x, double y) {
+    
+        gc.setFill(Color.GOLD);
+        for (int i = 0; i < 10; i++) {
+            double a = i * (Math.PI * 2 / 10.0);
+            double px = x + Math.cos(a) * 10;
+            double py = y + Math.sin(a) * 10;
+            gc.fillOval(px - 4, py - 4, 8, 8);
+        }
+    
+        gc.setFill(Color.rgb(170, 120, 60));
+        gc.fillOval(x - 9, y - 9, 18, 18);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x - 4, y - 2, 2, 3);
+        gc.fillOval(x + 2, y - 2, 2, 3);
+    
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1);
+        gc.strokeArc(x - 3, y + 1, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
+    }
+    
+    private void drawWallnutIcon(GraphicsContext gc, double x, double y) {
+        gc.setFill(Color.rgb(190, 150, 70));
+        gc.fillOval(x - 10, y - 12, 20, 26);
+    
+        gc.setFill(Color.rgb(250, 245, 220));
+        gc.fillOval(x - 6, y - 3, 5, 7);
+        gc.fillOval(x + 1, y - 3, 5, 7);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(x - 4, y, 1.8, 2);
+        gc.fillOval(x + 3, y, 1.8, 2);
+    
+        gc.setStroke(Color.rgb(90, 70, 30));
+        gc.setLineWidth(1);
+        gc.strokeArc(x - 3, y + 4, 6, 3, 180, 180, javafx.scene.shape.ArcType.OPEN);
+    }
+    
+    private void drawRepeaterIcon(GraphicsContext gc, double x, double y) {
+    
+        double bx = x - 5;
+        double by = y - 4;
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(bx - 9, by - 6, 14, 14);
+        gc.fillRoundRect(bx + 1, by - 1, 7, 5, 4, 4);
+        gc.fillOval(bx + 6, by - 2, 5, 8);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(bx + 8.5, by, 2, 3.5);
+    
+        double fx = x + 4;
+        double fy = y + 1;
+    
+        gc.setFill(Color.rgb(140, 180, 70));
+        gc.fillOval(fx - 10, fy - 7, 16, 16);
+    
+        gc.setFill(Color.YELLOWGREEN);
+        gc.fillOval(fx - 9, fy - 6, 14, 14);
+        gc.fillRoundRect(fx + 1, fy - 1, 7, 5, 4, 4);
+        gc.fillOval(fx + 6, fy - 2, 5, 8);
+    
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx + 8.5, fy, 2, 3.5);
+    
+        gc.setFill(Color.WHITE);
+        gc.fillOval(fx - 1, fy - 1, 3.5, 4.5);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(fx + 0.5, fy + 1, 1.4, 2);
         
-    // strip lines road zombie side
-    gc.setFill(Color.YELLOW);
-    gc.fillRect(950, 70, 7, 530);
+        gc.setFill(Color.WHITE);
+        gc.fillOval(bx - 1, by - 1, 3.5, 4.5);
+        gc.setFill(Color.BLACK);
+        gc.fillOval(bx + 0.5, by + 1, 1.4, 2);
+    }
         
-    gc.setFill(Color.YELLOW);
-    gc.fillRect(960, 70, 7, 530);
+    private void drawShovelIcon(GraphicsContext gc, double cx, double cy) {
+        gc.save();
+        gc.translate(cx, cy);
+        gc.rotate(30);
+    
+        // handle
+        gc.setFill(Color.rgb(180, 120, 60));
+        gc.fillRoundRect(-3, -22, 6, 30, 3, 3);
+    
+        // handle grip
+        gc.setFill(Color.rgb(140, 90, 40));
+        gc.fillRoundRect(-5, -24, 10, 6, 3, 3);
+    
+        // blade
+        gc.setFill(Color.SILVER);
+        gc.fillRoundRect(-10, 6, 20, 16, 6, 6);
+    
+        // blade shine
+        gc.setFill(Color.rgb(220, 220, 220, 0.5));
+        gc.fillRoundRect(-6, 8, 5, 12, 2, 2);
+    
+        gc.restore();
+    }
         
-    // bottom side wall
-    gc.setFill(Color.web("#8B6914"));
-    gc.fillRect(0, 580, 920, 20);
-        
-    // top side wall
-    gc.setFill(Color.web("#8B6914"));
-    gc.fillRect(0, 70, 920, 10);
-        
-    // pavement house side
-    gc.setFill(Color.web("#A0A0A0"));
-    gc.fillRect(0, 80, 200, 520);
-}
+    private void drawPavement(GraphicsContext gc) {
+        // pavement zombie side
+        gc.setFill(Color.DARKGRAY);
+        gc.fillRect(920, 70, 1000, 600); 
+            
+        // strip lines road zombie side
+        gc.setFill(Color.YELLOW);
+        gc.fillRect(950, 70, 7, 530);
+            
+        gc.setFill(Color.YELLOW);
+        gc.fillRect(960, 70, 7, 530);
+            
+        // bottom side wall
+        gc.setFill(Color.web("#8B6914"));
+        gc.fillRect(0, 580, 920, 20);
+            
+        // top side wall
+        gc.setFill(Color.web("#8B6914"));
+        gc.fillRect(0, 70, 920, 10);
+            
+        // pavement house side
+        gc.setFill(Color.web("#A0A0A0"));
+        gc.fillRect(0, 80, 200, 520);
+    }
 }
