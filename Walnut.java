@@ -3,26 +3,34 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * Write a description of class Wallnut here.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * A defensive plant with high health that blocks zombies from advancing.
+ * Does not attack — absorbs damage while other plants deal with threats.
+ * Visual cracks appear as it takes damage to indicate remaining health.
  */
 public class Walnut extends Plant
 {
     /**
-     * Constructor for objects of class Wallnut
+     * Creates a Walnut with high HP at the given grid position.
+     * @param row the grid row
+     * @param col the grid column
      */
     public Walnut(int row, int col)
     {
         super(1000, 50, row, col);
     }
 
+    /**
+     * Walnut has no active behaviour — it simply absorbs damage.
+     */
     @Override
     public void act(List<Entity> entities, List<Bullet> bullets, Game game, double deltaTime) {
         if (!alive) return;
     }
 
+    /**
+     * Draws the walnut with crack detail based on remaining HP.
+     * @param gc the graphics context to draw on
+     */ 
     public void draw(GraphicsContext gc) {
         // shadow
         gc.setFill(Color.rgb(0, 0, 0, 0.12));
@@ -85,6 +93,14 @@ public class Walnut extends Plant
         gc.setLineWidth(1);
     }
     
+    /**
+     * Draws a reusable walnut icon at the given position and scale.
+     * @param gc the graphics context to draw on
+     * @param cx centre x position
+     * @param cy centre y position
+     * @param scale size multiplier (1.0 = full size)
+     * @param headOnly true to skip the shadow (used for shop icons)
+     */
     public static void drawIcon(GraphicsContext gc, double cx, double cy, double scale, boolean headOnly) {
         gc.save();
         gc.translate(cx, cy);

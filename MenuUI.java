@@ -25,13 +25,21 @@ public class MenuUI {
         {330, 420}, {360, 480}, {390, 450},
         {420, 510}, {450, 440}, {480, 490}
     };
-
+    
+    /**
+     * Creates the main menu screen.
+     * @param stage the JavaFX stage
+     * @param game the game state
+     */
     public MenuUI(Stage stage, Game game) {
         this.stage = stage;
         this.game = game;
         SoundManager.playMenuTheme();
     }
 
+    /**
+     * Displays the main menu with background, animated zombies, and buttons.
+     */
     public void show() {
         // static background canvas (sky, ground, gravestone, house)
         Canvas bgCanvas = new Canvas(Game.WIDTH, Game.HEIGHT);
@@ -84,6 +92,10 @@ public class MenuUI {
         stage.show();
     }
 
+    /**
+     * Draws the static sky, ground, and gravestone background.
+     * @param gc the graphics context
+     */
     private void drawBackground(GraphicsContext gc) {
         // sky
         gc.setFill(Color.LIGHTBLUE);
@@ -103,6 +115,10 @@ public class MenuUI {
         gc.fillOval(400, 500, 400, 170);
     }
 
+    /**
+     * Draws the small house on the menu background.
+     * @param gc the graphics context
+     */
     private void drawHouse(GraphicsContext gc) {
         // Base / Foundation
         gc.setFill(Color.web("#8D8075"));
@@ -129,6 +145,11 @@ public class MenuUI {
         gc.fillRect(239, 370, 8, 8);
     }
 
+    /**
+     * Draws all zombies with idle sway animation.
+     * @param gc the graphics context
+     * @param time elapsed seconds since menu opened
+     */
     private void drawAnimatedZombies(GraphicsContext gc, double time) {
         for (int i = 0; i < zombiePositions.length; i++) {
             double baseX = zombiePositions[i][0];
@@ -141,6 +162,11 @@ public class MenuUI {
         }
     }
 
+    /**
+     * Draws the orbiting sun in the top-left corner.
+     * @param gc the graphics context
+     * @param time elapsed seconds since menu opened
+     */
     private void drawAnimatedSun(GraphicsContext gc, double time) {
         // sun orbits clockwise in a circle
         double centerX = 110;
@@ -151,6 +177,11 @@ public class MenuUI {
         Sun.drawSunIcon(gc, sunX, sunY, 3.0);
     }
 
+    /**
+     * Draws the "Plants vs Zombies" title with bobbing animation and shadow.
+     * @param gc the graphics context
+     * @param time elapsed seconds since menu opened
+     */
     private void drawTitle(GraphicsContext gc, double time) {
         double titleX = 290;
         double titleY = 140;
@@ -181,10 +212,22 @@ public class MenuUI {
 
     }
 
+    /**
+     * Draws a small zombie using the shared static drawing method.
+     * @param gc the graphics context
+     * @param x centre x position
+     * @param y centre y position
+     */
     private void drawBackgroundZombie(GraphicsContext gc, double x, double y) {
         Zombie.drawBody(gc, x, y, 0.3, false);
     }
 
+    /**
+     * Creates the overlay with Adventure and How To Play buttons.
+     * @param tutorialCanvas the canvas for the tutorial overlay
+     * @param tgc the tutorial canvas graphics context
+     * @return the AnchorPane containing menu buttons
+     */
     private AnchorPane createOverlay(Canvas tutorialCanvas, GraphicsContext tgc) {
         AnchorPane overlay = new AnchorPane();
 
@@ -213,6 +256,11 @@ public class MenuUI {
         return overlay;
     }
 
+    /**
+     * Opens the tutorial slideshow overlay.
+     * @param tutorialCanvas the canvas to draw the tutorial on
+     * @param tgc the tutorial canvas graphics context
+     */
     private void openTutorial(Canvas tutorialCanvas, GraphicsContext tgc) {
         SoundManager.playMenuBtn();
         tutorial.open();
@@ -250,6 +298,9 @@ public class MenuUI {
         AnchorPane.setLeftAnchor(node, left);
     }
 
+    /**
+     * Navigates to the level select screen and stops the menu animation.
+     */
     private void startGame() {
         if (menuAnimation != null) menuAnimation.stop();
         LevelUI levelSelect = new LevelUI(game, stage);

@@ -12,6 +12,13 @@ public abstract class Zombie extends Entity
     protected double flashTimer;
     private static final double ZOMBIE_SPACING = 20; // min gap between zombies in same row
 
+    /**
+     * Creates a zombie with the given stats at the right edge of the screen.
+     * @param hp starting health
+     * @param row the lane row
+     * @param col starting grid column
+     * @param speed movement speed in pixels per second
+     */
     public Zombie(int hp, int row, int col, double speed)
     {
         super(hp, row, col, true);
@@ -23,6 +30,13 @@ public abstract class Zombie extends Entity
         this.x = Game.WIDTH + 20 + Math.random() * 30;
     }
 
+    /**
+     * Moves the zombie left unless blocked by a plant or another zombie.
+     * @param deltaTime seconds since last frame
+     * @param plants list of plants to check for blocking
+     * @param allZombies all zombies for spacing checks
+     * @return true if the zombie moved, false if blocked
+     */
     protected boolean move(double deltaTime, List<Plant> plants, List<Zombie> allZombies)
     {
         if (!alive) return false;
@@ -57,7 +71,9 @@ public abstract class Zombie extends Entity
     }
 
     /**
-     * Attacks the plant on the zombie's current cell.
+     * Attacks the plant blocking this zombie on its current cell.
+     * @param deltaTime seconds since last frame
+     * @param plants list of plants to damage
      */
     protected void attack(double deltaTime, List<Plant> plants)
     {
@@ -77,17 +93,32 @@ public abstract class Zombie extends Entity
         }
     }
 
+    /**
+     * Checks whether this zombie has reached the player's house.
+     * @return true if the zombie passed the left grid boundary
+     */
     public boolean hasReachedHouse()
     {
         return x < Game.GRID_X - 20;
     }
 
+    /**
+     * Starts the damage flash effect.
+     */
     public void triggerFlash() { flashTimer = 0.01; }
 
+    /**
+     * Counts down the flash timer each frame.
+     * @param deltaTime seconds since last frame
+     */
     public void updateFlash(double deltaTime) {
         if (flashTimer > 0) flashTimer -= deltaTime;
     }
 
+    /**
+     * Checks whether the zombie is currently flashing white from damage.
+     * @return true if the flash timer is active
+     */
     public boolean isFlashing() { return flashTimer > 0; }
 
     public boolean isEating() { return eating; }
@@ -97,6 +128,10 @@ public abstract class Zombie extends Entity
         return Game.pixelXToCol(x);
     }
 
+    /**
+     * Draws this zombie with an HP bar above its head.
+     * @param gc the graphics context to draw on
+     */
     public void draw(GraphicsContext gc) {
         Zombie.drawBody(gc, x, y, 1.0, isFlashing());
 
@@ -109,7 +144,11 @@ public abstract class Zombie extends Entity
     
     /**
      * Draws a zombie body at a given position and scale (reusable across screens).
-     * Use scale 1.0 for gameplay, smaller for menu/tutorial.
+     * @param gc the graphics context to draw on
+     * @param cx centre x position
+     * @param cy centre y position
+     * @param scale size multiplier (1.0 = gameplay, 0.3 = menu)
+     * @param flash true to render entirely white (damage feedback)
      */
     public static void drawBody(GraphicsContext gc, double cx, double cy, double scale, boolean flash) {
         gc.save();
@@ -137,5 +176,11 @@ public abstract class Zombie extends Entity
         gc.restore();
     }
 
+    /**
+     * Performs this zombie's per-frame behaviour (moving and attacking).
+     * @param plants list of plants on the board
+     * @param newZombies list of all zombies for spacing
+     * @param deltaTime seconds since last frame
+     */
     public abstract void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime);
 }
