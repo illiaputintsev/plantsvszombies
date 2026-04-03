@@ -62,107 +62,133 @@ public class SoundManager {
     }
 
     public static void playDrums(){
-        if (!drums.isPlaying()){
+        if (drums != null && !drums.isPlaying()){
             drums.play();
         } 
     }
     
     public static void playSunPicked(){
-        sunPicked.play(0.8);
+        if (sunPicked != null) {
+            sunPicked.play(0.8);
+        }
     }
     
     public static void playEating(){
-        if (!eating.isPlaying()){
+        if (eating != null && !eating.isPlaying()){
             eating.play(0.95);
         }
     }
     
     public static void playSwallow() {
-        swallow.play(0.5);
+        if (swallow != null) {
+            swallow.play(0.5);
+        }
     }
     
     public static void playShovel() {
-        shovelSound.play(0.2);
+        if (shovelSound != null) {
+            shovelSound.play(0.2);
+        }
     }
 
     public static void playPlant() {
-        plantSound.play(0.2);
+        if (plantSound != null) {
+            plantSound.play(0.2);
+        }
     }
     
     public static void playHitSound(){
-        hitSound.play(0.1);
+        if (hitSound != null) {
+            hitSound.play(0.1);
+        }
     }
     
     public static void playZombie() {
         if (random.nextInt(2) == 0) {
-            if (!zombieS1.isPlaying()){
+            if (zombieS1 != null && !zombieS1.isPlaying()){
                 zombieS1.play(0.4);
             }
-            else if (!zombieS2.isPlaying()){
+            else if (zombieS2 != null && !zombieS2.isPlaying()){
                 zombieS2.play(0.6);
             }
         } else {
-            if (!zombieS2.isPlaying()){
+            if (zombieS2 != null && !zombieS2.isPlaying()){
                 zombieS2.play(0.5);
             }
-            else if (!zombieS1.isPlaying()){
+            else if (zombieS1 != null && !zombieS1.isPlaying()){
                 zombieS1.play(0.45);
             }
         }
     }
 
     public static void playZombie2() {
-        if (!zombieS2.isPlaying()){
+        if (zombieS2 != null && !zombieS2.isPlaying()){
             zombieS2.play();
         }
     }
     
     public static void playMenuBtn() {
-        menuBtn.play();
+        if (menuBtn != null) {
+            menuBtn.play();
+        }
     }
     
     public static void playMenuTheme() {
-        if (!(menuTheme.isPlaying())) {
+        if (menuTheme != null && !menuTheme.isPlaying()) {
             menuTheme.play(0.5);
         }
     }
     
     public static void stopMenuTheme() {
-        menuTheme.stop();
+        if (menuTheme != null) {
+            menuTheme.stop();
+        }
     }
 
     public static boolean isLevelThemePlaying(){
-        return levelTheme.isPlaying();
+        return levelTheme != null && levelTheme.isPlaying();
     }
     
     public static void playLevelTheme() {
-        if (!(levelTheme.isPlaying())) {
+        if (levelTheme != null && !levelTheme.isPlaying()) {
             levelTheme.play(0.75);
         }
     }
     
     public static void stopLevelTheme() {
-        levelTheme.stop();
+        if (levelTheme != null) {
+            levelTheme.stop();
+        }
     }
     
     public static void playGameOver() {
-        gameOver.play();
+        if (gameOver != null) {
+            gameOver.play();
+        }
     }
     
     public static void stopGameOver() {
-        gameOver.stop();
+        if (gameOver != null) {
+            gameOver.stop();
+        }
     }
     
     public static void playShoot1() {
-        peaShoot1.play();
+        if (peaShoot1 != null) {
+            peaShoot1.play();
+        }
     }
     
     public static void playShoot2() {
-        peaShoot2.play();
+        if (peaShoot2 != null) {
+            peaShoot2.play();
+        }
     }
     
     public static void playLVLComplete() {
-        levelComplete.play(0.5);
+        if (levelComplete != null) {
+            levelComplete.play(0.5);
+        }
     }
 
 }
