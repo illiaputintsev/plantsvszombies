@@ -94,7 +94,7 @@ public class GameUI {
                 double deltaTime = (now - lastTime) / 1_000_000_000.0;
                 lastTime = now;
         
-                if (!game.gameRunning) {
+                if (!game.isGameRunning()) {
                     render(gc);
                     stop();
                     return;
@@ -131,7 +131,7 @@ public class GameUI {
         }
         
         // Pause button click
-        if (game.gameRunning) {
+        if (game.isGameRunning()) {
             double cx = PAUSE_BTN_X + PAUSE_BTN_SIZE / 2;
             double cy = PAUSE_BTN_Y + PAUSE_BTN_SIZE / 2;
             double dx = mx - cx;
@@ -144,7 +144,7 @@ public class GameUI {
         }
         
         // click button to go back to level select
-        if (game.levelComplete || game.gameOver || game.gameWon) {
+        if (game.isLevelComplete() || game.isGameOver() || game.isGameWon()) {
             if (mx >= BUTTON_X && mx <= BUTTON_X + BUTTON_W
                 && my >= BUTTON_Y && my <= BUTTON_Y + BUTTON_H) {
                 goToLevelSelect();
@@ -154,7 +154,7 @@ public class GameUI {
         }
 
         // Don't allow clicks when game is over
-        if (game.gameOver) return;
+        if (game.isGameOver()) return;
 
         // Check if the click is inside the shop bar
         if (my >= Game.SHOP_Y && my <= Game.SHOP_Y + Game.SHOP_CELL_H) {
@@ -165,20 +165,20 @@ public class GameUI {
             }
 
             // Clicking the already-selected slot deselects it
-            if (slot == game.selectedPlant) {
-                game.selectedPlant = -1;
+            if (slot == game.getSelectedPlant()) {
+                game.setSelectedPlant(-1);
                 return;
             }
 
             // Shovel is always selectable (no sun cost)
             if (slot == Game.SHOVEL_INDEX) {
-                game.selectedPlant = Game.SHOVEL_INDEX;
+                game.setSelectedPlant(Game.SHOVEL_INDEX);
                 return;
             }
 
             // For plants, only select if the player can afford it
-            if (game.sun >= SHOP_COSTS[slot]) {
-                game.selectedPlant = slot;
+            if (game.getSunAmount() >= SHOP_COSTS[slot]) {
+                game.setSelectedPlant(slot);
             }
             return;
         }
@@ -193,31 +193,31 @@ public class GameUI {
         }
 
         // Shovel selected: remove plant if one is present
-        if (game.selectedPlant == Game.SHOVEL_INDEX) {
+        if (game.getSelectedPlant() == Game.SHOVEL_INDEX) {
             if (game.isTileOccupied(row, col)) {
                 game.removePlant(row, col);
-                SoundManager.playShowel();
+                SoundManager.playShovel();
             }
-            game.selectedPlant = -1;
+            game.setSelectedPlant(-1);
             return;
         }
 
         // Plant selected: place it if the tile is empty
-        if (game.selectedPlant != -1) {
-            Plants p = null;
-            if (game.selectedPlant == 0) {
+        if (game.getSelectedPlant() != -1) {
+            Plant p = null;
+            if (game.getSelectedPlant() == 0) {
                 p = new Sunflower(row, col);
-            } else if (game.selectedPlant == 1) {
+            } else if (game.getSelectedPlant() == 1) {
                 p = new Walnut(row, col);
-            } else if (game.selectedPlant == 2) {
+            } else if (game.getSelectedPlant() == 2) {
                 p = new Peashooter(row, col);
-            } else if (game.selectedPlant == 3) {
+            } else if (game.getSelectedPlant() == 3) {
                 p = new Repeater(row, col);
             }
 
             if (p != null) {
                 game.placePlant(p, row, col);
-                game.selectedPlant = -1;
+                game.setSelectedPlant(-1);
             }
         }
     }
@@ -257,18 +257,18 @@ public class GameUI {
             }
         }
 
-        for (Plants p : game.Plant) {
+        for (Plant p : game.getPlants()) {
             if (p.isAlive()) p.draw(gc);
         }
-        for (Zombies z : game.Zombie) {
+        for (Zombie z : game.getZombies()) {
             if (z.isAlive()) z.draw(gc);
         }
-        for (Bullet b : game.bullets) {
+        for (Bullet b : game.getBullets()) {
             b.draw(gc);
         }
 
         // Level indicator
-        int displayLevel = (game.phase == 0) ? game.level + 1 : game.level;
+        int displayLevel = (game.getPhase() == 0) ? game.getLevel() + 1 : game.getLevel();
         if (displayLevel > 0) {
             gc.setFont(Font.font(14));
             gc.setFill(Color.BLACK);
@@ -276,21 +276,21 @@ public class GameUI {
         }
 
         // Level progress bar
-        if (game.phase == 1 || game.phase == 2||game.phase == 3) {
+        if (game.getPhase() == 1 || game.getPhase() == 2||game.getPhase() == 3) {
             double progressBarX = Game.WIDTH - 280;
 
             double progressBarY = 45;
             double progressBarWidth = 150;
             double progressBarHeight = 10;
-            int totalZombies = game.zombieCount + game.finalWaveZombieAmount;
-            int spawnedSoFar = game.spawnedTotal + game.finalWaveSpawnedCount;
+            int totalZombies = game.getZombieCount() + game.getFinalWaveZombieAmount();
+            int spawnedSoFar = game.getSpawnedTotal() + game.getFinalWaveSpawnedCount();
             double progress = (double) spawnedSoFar / totalZombies;
             double headX = progressBarX + (progressBarWidth * progress);
             double headY = progressBarY;
 
             gc.setFill(Color.GRAY);
             gc.fillRect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
-            gc.setFill(game.phase == 3 ? Color.RED : Color.ORANGERED);
+            gc.setFill(game.getPhase() == 3 ? Color.RED : Color.ORANGERED);
             gc.fillRect(progressBarX, progressBarY, progressBarWidth * progress, progressBarHeight);
             gc.setStroke(Color.BLACK);
             gc.strokeRect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
@@ -309,12 +309,12 @@ public class GameUI {
         }}
 
         // Center message
-        if (game.message != null && !game.message.isEmpty() && game.messageTimer > 0) {
-            double textWidth = game.message.length() * 12;
+        if (game.getMessage() != null && !game.getMessage().isEmpty() && game.getMessageTimer() > 0) {
+            double textWidth = game.getMessage().length() * 12;
             double messageX = Game.WIDTH / 2.0 - textWidth / 2 - 10;
 
             //final wave warning
-            if (game.phase == 2 || game.phase == 3) {
+            if (game.getPhase() == 2 || game.getPhase() == 3) {
                 gc.setFill(Color.color(0.8, 0, 0, 0.7));
             } else {
                 gc.setFill(Color.color(0, 0, 0, 0.5));
@@ -324,12 +324,19 @@ public class GameUI {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
             gc.setTextAlign(TextAlignment.CENTER);
-            gc.fillText(game.message, Game.WIDTH / 2.0, Game.GRID_Y + 36);
+            gc.fillText(game.getMessage(), Game.WIDTH / 2.0, Game.GRID_Y + 36);
             gc.setTextAlign(TextAlignment.LEFT);
+        }
+
+        
+        if (!(game.isLevelComplete() || game.isGameOver() || game.isGameWon())){
+            if (!(SoundManager.isLevelThemePlaying())){
+                SoundManager.playLevelTheme();
+            }
         }
         
         // pausing checks
-        if (game.gameRunning) {
+        if (game.isGameRunning()) {
             drawPauseButton(gc);
         }
         if (game.isPaused()) {
@@ -337,7 +344,7 @@ public class GameUI {
         }
         
         // Level complete
-        if (game.levelComplete) {
+        if (game.isLevelComplete()) {
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.LIMEGREEN);
@@ -349,7 +356,7 @@ public class GameUI {
         }
 
         // Game over
-        if (game.gameOver) {
+        if (game.isGameOver()) {
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.RED);
@@ -358,15 +365,15 @@ public class GameUI {
             gc.fillText("GAME OVER", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
-            gc.fillText("Reached Level " + game.level, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 60);
+            gc.fillText("Score: " + game.getScore(), Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("Reached Level " + game.getLevel(), Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 60);
             gc.setTextAlign(TextAlignment.LEFT);
 
             drawButton(gc, "Home", BUTTON_X, BUTTON_Y, Color.DARKRED);
         }
 
         // Game won
-        if (game.gameWon) {
+        if (game.isGameWon()) {
             gc.setFill(Color.color(0, 0, 0, 0.6));
             gc.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
             gc.setFill(Color.GOLD);
@@ -375,7 +382,7 @@ public class GameUI {
             gc.fillText("YOU WIN!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 - 10);
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font(20));
-            gc.fillText("Score: " + game.score, Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
+            gc.fillText("Score: " + game.getScore(), Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 30);
             gc.fillText("All " + Game.TOTAL_LEVELS + " levels completed!", Game.WIDTH / 2.0, Game.HEIGHT / 2.0 + 60);
             gc.setTextAlign(TextAlignment.LEFT);
 
@@ -448,7 +455,7 @@ public class GameUI {
         boolean affordable = isShovel || game.getSunAmount() >= SHOP_COSTS[index];
     
             // card background
-        if (game.selectedPlant == index) {
+        if (game.getSelectedPlant() == index) {
             gc.setFill(Color.rgb(255, 220, 90)); // selected = yellow
         } else if (isShovel) {
             gc.setFill(Color.rgb(170, 85, 0));

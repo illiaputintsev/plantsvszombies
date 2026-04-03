@@ -2,7 +2,7 @@ import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class StrongZombie extends Zombies
+public class StrongZombie extends Zombie
 {
     public static final int HP = 400;
 
@@ -12,7 +12,7 @@ public class StrongZombie extends Zombies
     }
 
     @Override
-    public void act(List<Plants> plants, List<Zombies> newZombies, double deltaTime)
+    public void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime)
     {
         if (!alive) return;
 

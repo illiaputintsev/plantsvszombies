@@ -9,7 +9,7 @@ import java.util.Random;
  */
 public class SoundManager {
     private static Random random;
-    private static AudioClip showelSound;
+    private static AudioClip shovelSound;
     private static AudioClip plantSound;
     private static AudioClip menuBtn;
     private static AudioClip zombieS1;
@@ -29,7 +29,7 @@ public class SoundManager {
 
     public static void init() {
         random = new Random();
-        showelSound = loadSound("/sounds/showelOut.wav");
+        shovelSound = loadSound("/sounds/showelOut.wav");
         plantSound = loadSound("/sounds/plantingSound.wav");
         menuBtn = loadSound("/sounds/menuButton.wav");
         menuTheme = loadSound("/sounds/theme_menu.wav");
@@ -81,8 +81,8 @@ public class SoundManager {
         swallow.play(0.5);
     }
     
-    public static void playShowel() {
-        showelSound.play(0.2);
+    public static void playShovel() {
+        shovelSound.play(0.2);
     }
 
     public static void playPlant() {
