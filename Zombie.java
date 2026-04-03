@@ -10,6 +10,7 @@ public abstract class Zombie extends Entity
     protected double eatTimer;
     protected double attackInterval;
     protected double flashTimer;
+    private static final double ZOMBIE_SPACING = 20; // min gap between zombies in same row
 
     public Zombie(int hp, int row, int col, double speed)
     {
@@ -19,27 +20,38 @@ public abstract class Zombie extends Entity
         this.eatTimer = 0;
         this.attackInterval = 1.0;
         this.flashTimer = 0;
-        // start at right edge of screen with small random offset so they don't overlap
         this.x = Game.WIDTH + 20 + Math.random() * 30;
     }
 
-    protected boolean move(double deltaTime, List<Plant> plants)
+    protected boolean move(double deltaTime, List<Plant> plants, List<Zombie> allZombies)
     {
         if (!alive) return false;
 
-        // If there is a plant on the zombie's current cell, stay and eat it
         for (Plant p : plants) {
             if (p.isAlive() && p.getRow() == row
                 && Math.abs(x - p.getX()) < Game.CELL_W * 0.5)
             {
                 eating = true;
-                return false; // blocked — will attack this cell
+                return false;
             }
         }
 
         eating = false;
         eatTimer = 0;
-        x -= speed * deltaTime;
+
+        double newX = x - speed * deltaTime;
+        for (Zombie other : allZombies) {
+            if (other != this && other.isAlive() && other.row == this.row
+                && other.x < this.x)
+            {
+                double minX = other.x + ZOMBIE_SPACING;
+                if (newX < minX) {
+                    newX = minX;
+                }
+            }
+        }
+
+        x = newX;
         col = Game.pixelXToCol(x);
         return true;
     }
@@ -88,37 +100,39 @@ public abstract class Zombie extends Entity
     public void draw(GraphicsContext gc)
     {
         boolean flash = isFlashing();
+        double dx = x;
+        double dy = y;
 
         // legs
         gc.setFill(flash ? Color.WHITE : Color.DARKSLATEGRAY);
-        gc.fillRect(x - 8, y + 8, 7, 16);
-        gc.fillRect(x + 4, y + 8, 7, 16);
+        gc.fillRect(dx - 8, dy + 8, 7, 16);
+        gc.fillRect(dx + 4, dy + 8, 7, 16);
 
         // body
         gc.setFill(flash ? Color.WHITE : Color.DARKKHAKI);
-        gc.fillRect(x - 10, y - 16, 24, 26);
+        gc.fillRect(dx - 10, dy - 16, 24, 26);
 
         // arms
         gc.setFill(flash ? Color.WHITE : Color.DARKSEAGREEN);
-        gc.fillRect(x - 18, y - 8, 10, 6);
-        gc.fillRect(x + 14, y - 12, 10, 6);
+        gc.fillRect(dx - 18, dy - 8, 10, 6);
+        gc.fillRect(dx + 14, dy - 12, 10, 6);
 
         // head
         gc.setFill(flash ? Color.WHITE : Color.YELLOWGREEN);
-        gc.fillOval(x - 10, y - 34, 22, 22);
+        gc.fillOval(dx - 10, dy - 34, 22, 22);
 
         // eyes
         gc.setFill(flash ? Color.WHITE : Color.RED);
-        gc.fillOval(x - 5, y - 28, 4, 4);
-        gc.fillOval(x + 4, y - 28, 4, 4);
+        gc.fillOval(dx - 5, dy - 28, 4, 4);
+        gc.fillOval(dx + 4, dy - 28, 4, 4);
 
         // HP bar background
         double barW = 28;
         gc.setFill(Color.DARKRED);
-        gc.fillRect(x - barW / 2, y - 40, barW, 4);
+        gc.fillRect(dx - barW / 2, dy - 40, barW, 4);
         // HP bar fill
         gc.setFill(Color.RED);
-        gc.fillRect(x - barW / 2, y - 40, barW * hp / maxHp, 4);
+        gc.fillRect(dx - barW / 2, dy - 40, barW * hp / maxHp, 4);
     }
 
     public abstract void act(List<Plant> plants, List<Zombie> newZombies, double deltaTime);
